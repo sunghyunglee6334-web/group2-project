@@ -1,2 +1,1 @@
-# group2-project
-group2 project
+#오늘부터 프로젝트 시작
