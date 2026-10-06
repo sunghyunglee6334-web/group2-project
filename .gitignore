@@ -1,0 +1,10 @@
+# 김치 이미지·라벨 데이터 (저작권·NDA) - GitHub 에 올리지 않음
+**/data/
+**/이물검출_학습데이터*/
+*.jpg
+*.jpeg
+*.zip
+.venv/
+__pycache__/
+*.pyc
+settings.json
