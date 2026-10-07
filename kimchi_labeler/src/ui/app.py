@@ -13,7 +13,7 @@ import signal
 import tkinter as tk
 from datetime import datetime
 from pathlib import Path
-from tkinter import filedialog, messagebox, simpledialog, ttk
+from tkinter import filedialog, messagebox, ttk
 
 from PIL import Image
 
@@ -25,15 +25,21 @@ from ..config import (CLASS_COLORS, CLASS_NAMES, IMAGE_EXTS, PROJECT_ROOT, REPOR
 from ..validation.validator import critical_count, validate, write_report
 from ..yolo.yolo_io import pixel_to_yolo, yolo_to_pixel
 from . import dialogs
+from .hangul import HangulIME
 from .menubar import SEPARATOR, MenuBar, command, radio, submenu
-from .panels import build_main_window
-from .style import (BG, EDIT_STATUSES, MODE_CURSORS, SCENE_FROM_LABEL, SCENE_LABELS,
-                    STATUS_COLORS, STATUS_MARK, TEXT, class_label, highlight_only)
+from .panels import build_main_window, class_rows, show_warn
+from .style import (BG, EDIT_STATUSES, MODE_CURSORS, ORANGE_TEXT, SCENE_FROM_LABEL, SCENE_LABELS,
+                    STATUS_COLORS, STATUS_KO, STATUS_TEXT_COLORS, TEXT3, TEXT4, class_label,
+                    init_fonts, setup_ttk)
+
+# 이미지 목록 동그라미 안 기호 (색은 상태 색)
+STATUS_ICON = {"PENDING": "", "WORKING": "", "PASS": "@check", "EDITED": "@edit", "REVIEW": "!",
+               "REVIEWED": "@check2", "FINAL": "@check2"}
 
 MODE_MESSAGES = {
     "draw": "새 BBox 그리기: 빈 곳을 드래그하세요 (클릭하면 BBox 선택)",
-    "select": "선택 이동: BBox 안을 드래그하면 이동, 모서리/변 핸들로 크기 조절",
-    "pan": "Pan: 드래그로 화면 이동",
+    "select": "박스 편집: BBox 안을 드래그하면 BBox 이동, 모서리/변 핸들로 크기 조절 (이미지는 그대로)",
+    "pan": "화면 이동: 드래그로 보는 위치만 이동 (BBox 는 안 바뀜) · 한 번 더 누르거나 Esc 면 그리기로",
 }
 
 
@@ -54,18 +60,14 @@ class LabelApp(CanvasEditor):
         self._loading = False       # 화면 값을 채우는 중에는 '변경됨'으로 보지 않는다
 
         root.title("조각김치 이물검출 라벨링 프로그램")
-        root.geometry("1480x900")
-        root.minsize(1200, 720)
+        root.geometry("1600x960")
+        root.minsize(1280, 760)
         root.configure(bg=BG)
-        style = ttk.Style(root)
-        if "clam" in style.theme_names():
-            style.theme_use("clam")     # 콤보박스, 표 모양을 OS 와 상관없이 같게
+        init_fonts(root)                # 한글 글꼴 자동 선택
+        setup_ttk(root)                 # 콤보박스, 표, 스크롤바 모양
+        self.ime = HangulIME(root)      # 이슈/메모/작업자 칸 한글 입력 (WSL 에서도 동작)
 
         # 콤보박스에서 값을 고르면 글자가 선택(파란/회색 배경)된 채로 남는다. 칠하지 않게 한다.
-        style.map("TCombobox",
-                  fieldbackground=[("readonly", "white")],
-                  selectbackground=[("readonly", "white"), ("!focus", "white")],
-                  selectforeground=[("readonly", TEXT), ("!focus", TEXT)])
         def clear(event):
             event.widget.after_idle(event.widget.selection_clear)
 
@@ -74,8 +76,10 @@ class LabelApp(CanvasEditor):
         root.bind_class("TCombobox", "<FocusOut>", clear, add="+")
 
         self.filter_var = tk.StringVar(value="전체")
-        self.build_menu()
         build_main_window(self)
+        self.build_menu()               # 메뉴는 화면 위 버튼('⌄', '⋯')에 붙으므로 화면을 먼저 만든다
+        self.class_list.set_rows(class_rows(self, {}))
+        self.sync_class_widgets()
         self.bind_canvas()
         self.bind_keys()
         self.refresh_people()
@@ -87,33 +91,32 @@ class LabelApp(CanvasEditor):
 
     # ================================================================ 메뉴
     def build_menu(self):
+        # 메뉴 막대는 숨기고(키보드 처리만), 화면 위 '조각김치 라벨링 ⌄' 와 '⋯' 버튼 아래에 연다.
         self.menubar = MenuBar(self.root)
-        self.menubar.pack(side=tk.TOP, fill=tk.X)
-        tk.Frame(self.root, height=1, bg="#d1d5db").pack(side=tk.TOP, fill=tk.X)
-
+        self.menubar.place(x=0, y=0, width=1, height=1)
         bar = self.menubar
+        title, more = self.title_btn, self.more_btn
 
         bar.add_menu("파일(F)", [
-            command("RAW 폴더 열기...", self.open_raw_folder, "Ctrl+O"),
-            command("이미지 추가 (연습용)...", self.add_images),
+            command("폴더 열기...", self.open_raw_folder, "Ctrl+O"),
+            command("파일 열기 (연습용 이미지 추가)...", self.add_images),
             SEPARATOR,
             command("저장", self.save, "Ctrl+S"),
             command("저장 후 다음", self.save_next, "Space"),
             SEPARATOR,
             command("종료", self.on_close, "Ctrl+Q"),
-        ], underline=3)
+        ], underline=3, anchor=title)
 
         filter_items = [radio(name, self.filter_var, name, self.change_filter) for name in FILTERS]
-        bar.add_menu("보기(V)", [
+        view_items = [
             command("Fit to Window", self.fit, "F"),
             command("Zoom In", lambda: self.zoom_center(1.25), "+"),
             command("Zoom Out", lambda: self.zoom_center(0.8), "-"),
             command("라벨 숨기기 / 보이기", self.toggle_labels, "H"),
             SEPARATOR,
             submenu("목록 보기 필터", filter_items),
-        ], underline=3)
-
-        bar.add_menu("도구(T)", [
+        ]
+        tool_items = [
             command("새 BBox 그리기", lambda: self.set_mode("draw"), "W"),
             command("선택 이동 / 크기 조절", lambda: self.set_mode("select"), "V"),
             command("Pan (화면 이동)", lambda: self.set_mode("pan")),
@@ -122,7 +125,7 @@ class LabelApp(CanvasEditor):
             command("Undo", self.undo, "Ctrl+Z"),
             SEPARATOR,
             command("Validation 실행", self.run_validation),
-        ], underline=3)
+        ]
 
         review_items = [
             command("PASS", lambda: self.set_status("PASS"), "P"),
@@ -134,18 +137,38 @@ class LabelApp(CanvasEditor):
         ]
         for name in ("내 담당-미완료", "내 검수 대상", "REVIEW", "PASS 표본검수"):
             review_items.append(command(f"'{name}' 만 보기", lambda x=name: self.apply_filter(x)))
-        bar.add_menu("검수(Q)", review_items, underline=3)
-
-        bar.add_menu("통계(S)", [
+        stat_items = [
             command("진행현황", self.show_progress),
             command("Class 별 BBox 통계", self.show_class_stats),
             command("QA Summary 생성", self.make_qa_summary),
-        ], underline=3)
-
-        bar.add_menu("도움말(H)", [
+        ]
+        help_items = [
             command("단축키 보기", self.show_shortcuts, "F1"),
             command("프로그램 정보", self.show_about),
-        ], underline=4)
+        ]
+
+        # Alt+V / Alt+T / Alt+Q / Alt+S / Alt+H 로 바로 여는 메뉴 ('⋯' 버튼 아래에 열림)
+        for name, items, u in (("보기(V)", view_items, 3), ("도구(T)", tool_items, 3),
+                               ("검수(Q)", review_items, 3), ("통계(S)", stat_items, 3),
+                               ("도움말(H)", help_items, 4)):
+            bar.add_menu(name, items, underline=u, anchor=more, align="right")
+
+        # '⋯' 버튼: 보기 · 도구 · 검수 · 통계 · 도움말을 하위 메뉴로 묶음
+        self.more_menu = len(bar.menus)
+        bar.add_menu("더보기", [submenu("보기", view_items), submenu("도구", tool_items),
+                             submenu("검수", review_items), submenu("통계", stat_items),
+                             submenu("도움말", help_items)], anchor=more, align="right")
+
+        # 장면 유형 고르기 (오른쪽 '장면 유형' 칸을 누르면 열림)
+        self.scene_menu = len(bar.menus)
+        bar.add_menu("장면", [radio(label, self.scene_var, label, self.on_scene_select)
+                            for label in SCENE_LABELS.values()], anchor=self.scene_tile)
+
+        title.command = lambda: bar.toggle(0)
+        more.command = lambda: bar.toggle(self.more_menu)
+
+    def open_scene_menu(self):
+        self.menubar.toggle(self.scene_menu)
 
     # ================================================================ 단축키
     def bind_keys(self):
@@ -166,15 +189,17 @@ class LabelApp(CanvasEditor):
                 return "break"
             return handler
 
-        for key in ("a", "A", "<Left>"):
+        for key in ("a", "A", "<Left>", "<Up>"):          # ← ↑ : 이전 (목록이 위아래라 ↑↓ 도 됨)
             r.bind(key, guard(self.prev))
-        for key in ("d", "D", "<Right>"):
+        for key in ("d", "D", "<Right>", "<Down>"):       # → ↓ : 다음
             r.bind(key, guard(self.next))
 
         r.bind("<space>", guard(self.save_next))
+        r.bind("<Shift-space>", always(self.ime.toggle))     # Shift+Space 는 저장이 아니라 한/영 전환
+        self.ime.watch_toggle(r)                              # 한/영 키는 어디서 눌러도 전환
         r.bind("<Delete>", guard(self.delete_selected))
         r.bind("<BackSpace>", guard(self.delete_selected))
-        r.bind("<Escape>", guard(self.clear_selection))
+        r.bind("<Escape>", guard(self.on_escape))
 
         # Caps Lock 이 켜져 있으면 대문자로 들어오므로 둘 다 묶는다.
         for letter, func in (("s", self.save), ("z", self.undo),
@@ -210,53 +235,65 @@ class LabelApp(CanvasEditor):
     # ================================================================ 모드
     def set_mode(self, mode):
         self.mode = mode
-        highlight_only(self.mode_buttons[mode], self.tool_buttons)   # 단축키(W, V)로 바꿔도 표시
+        for m, button in self.mode_buttons.items():       # 단축키(W, V)로 바꿔도 표시
+            button.set_active(m == mode)
         self.canvas.configure(cursor=MODE_CURSORS[mode])
         self.status_bar.set(MODE_MESSAGES[mode])
         if self.s.cur:
             self.draw_boxes()
 
+    def on_mode_button(self, mode):
+        """아래 모드 버튼. '화면 이동' 을 한 번 더 누르면 그리기로 돌아간다 (켜기/끄기)."""
+        self.set_mode("draw" if mode == "pan" and self.mode == "pan" else mode)
+
+    def on_escape(self):
+        """Esc: 화면 이동 중이면 그리기로 돌아가고, 아니면 BBox 선택 해제 (원래 동작)."""
+        if self.mode == "pan":
+            self.set_mode("draw")
+        else:
+            self.clear_selection()
+
     def toggle_labels(self):
         self.hide_labels = not self.hide_labels
-        self.hide_btn.configure(text="보이기(H)" if self.hide_labels else "숨김(H)")
-        highlight_only(self.hide_btn, self.tool_buttons)
+        self.hide_btn.set_text("라벨 보기" if self.hide_labels else "라벨 숨김")
+        self.hide_btn.set_active(self.hide_labels)
         self.draw_boxes()
 
     # ================================================================ 이미지 목록
-    def _list_text(self, key):
+    def _list_row(self, key):
+        """목록 한 줄: 동그라미(데이터셋 번호, 상태 색) · 파일명 · 'train · BBox 2개' · 상태"""
+        rec = self.s.by_key[key]
         row = self.s.manifest.get(key)
-        return f"{STATUS_MARK.get(row['status'], '?')} {row['image_name']}"
-
-    def _list_color(self, key):
-        return STATUS_COLORS.get(self.s.manifest.get(key)["status"], TEXT)
+        status = row["status"]
+        digits = "".join(ch for ch in rec.source_dataset if ch.isdigit())
+        n = row["final_bbox_count"] or row["original_bbox_count"]
+        sub = (f"데이터셋{digits[-1:]}" if digits else rec.source_dataset) + f" · {rec.original_split}"
+        sub += f" · BBox {n}개" if n != "" else ""
+        return dict(icon=STATUS_ICON.get(status, ""), icon_fg="white",
+                    icon_bg="#D1D6DB" if status in ("PENDING", "WORKING") else STATUS_COLORS.get(status, TEXT4),
+                    title=row["image_name"], sub=sub, right=STATUS_KO.get(status, status),
+                    right_fg=STATUS_TEXT_COLORS.get(status, TEXT4))
 
     def refresh_image_list(self):
-        lb = self.img_list
-        lb.delete(0, tk.END)
-        for i, key in enumerate(self.s.view_keys):
-            lb.insert(tk.END, self._list_text(key))
-            lb.itemconfig(i, fg=self._list_color(key))
-        self.list_title.set(f"이미지 목록 ({self.s.total})")
+        self.img_list.set_rows([self._list_row(k) for k in self.s.view_keys])
+        self.tab_var.set(self.s.filter_name)
 
     def update_list_item(self, i):
-        key = self.s.view_keys[i]
-        self.img_list.delete(i)
-        self.img_list.insert(i, self._list_text(key))
-        self.img_list.itemconfig(i, fg=self._list_color(key))
+        self.img_list.update_row(i, self._list_row(self.s.view_keys[i]))
 
     def highlight_list(self):
-        lb = self.img_list
-        lb.selection_clear(0, tk.END)
-        if self.s.total:
-            lb.selection_set(self.s.index)
-            lb.see(self.s.index)
+        self.img_list.set_selected(self.s.index if self.s.total else None)
 
-    def on_image_list_select(self, _event):
-        selection = self.img_list.curselection()
-        if selection and selection[0] != self.s.index:
-            self.goto(selection[0])
+    def on_image_pick(self, i):
+        if i != self.s.index or not self.s.cur:
+            self.goto(i)
             self.highlight_list()
         self.canvas.focus_set()
+
+    def on_tab(self, name):
+        """목록 위 탭 (전체 / 내 담당 / 확인 필요) = 보기 필터."""
+        if name != self.s.filter_name:
+            self.apply_filter(name)
 
     # ================================================================ 이미지 이동
     def confirm_leave(self):
@@ -298,6 +335,8 @@ class LabelApp(CanvasEditor):
             self.status_bar.set(f"불러오기 실패: {e}")
             return
 
+        self.empty_frame.place_forget()
+        self.overlay.visible = True
         self.make_pyramid(img)
         self.selected = None
         self.drag = None
@@ -317,12 +356,22 @@ class LabelApp(CanvasEditor):
         self.selected = None
         self.drag = None
 
-        self.head_var.set(message or f"'{self.s.filter_name}' 에 해당하는 이미지가 없습니다")
+        text = message or f"'{self.s.filter_name}' 에 해당하는 이미지가 없습니다"
+        self.head_var.set(text)
+        self.empty_title.configure(text=text)
+        self.empty_sub.configure(text="" if message else "목록 위 탭이나 ⋯ → 보기 → 목록 보기 필터에서 '전체' 로 바꿔 보세요.")
+        self.empty_button.pack_forget()
+        self.empty_frame.place(relx=0.5, rely=0.45, anchor="center")
+        self.overlay.visible = False
+        self.overlay.draw()
         self.sub_var.set("")
         self.zoom_var.set("")
-        self.warn_var.set("")
+        self.dirty_pill.set("")
+        self.pos_var.set(f"0 / {self.s.total}")
+        self.set_warnings([])
         self.info_var.set("")
-        self.box_list.delete(0, tk.END)
+        self.box_list.set_rows([])
+        self.class_list.set_rows(class_rows(self, {}))
         self.refresh_box_info()
 
     def load_meta(self):
@@ -334,7 +383,7 @@ class LabelApp(CanvasEditor):
         self.status_var.set(status if status in EDIT_STATUSES else "PASS")
         self.scene_var.set(SCENE_LABELS.get(row["scene_type"], row["scene_type"]))
         self.issue_var.set(row["issue"])
-        self.reviewer_var.set(row["reviewer"])
+        self.reviewer_var.set("" if row["reviewer"] == self.s.worker else row["reviewer"])
         self.note_text.delete("1.0", tk.END)
         self.note_text.insert("1.0", row["note"])
         self.note_text.edit_modified(False)
@@ -378,17 +427,22 @@ class LabelApp(CanvasEditor):
 
     # ================================================================ 오른쪽 정보 갱신
     def refresh_box_list(self):
-        lb = self.box_list
-        lb.delete(0, tk.END)
+        """BBox 목록과, Class 목록 옆의 Class 별 BBox 개수."""
+        rows, counts = [], {}
         for i, box in enumerate(self.s.cur.boxes):
-            name = CLASS_NAMES.get(box.cls, "범위 밖")
-            lb.insert(tk.END, f"{i + 1:>2} | {box.cls} {name[:7]:<7} | {box.w:.0f}x{box.h:.0f}")
-            color = "#dc2626" if box.cls in UNUSED_CLASS_IDS else CLASS_COLORS.get(box.cls, "#ff0000")
-            lb.itemconfig(i, fg=color)
-
-        if self.selected is not None and self.selected < len(self.s.cur.boxes):
-            lb.selection_set(self.selected)
-            lb.see(self.selected)
+            counts[box.cls] = counts.get(box.cls, 0) + 1
+            unused = box.cls in UNUSED_CLASS_IDS or box.cls not in CLASS_NAMES
+            color = "#F04452" if unused else CLASS_COLORS.get(box.cls, "#ff0000")
+            rows.append(dict(icon=str(box.cls), icon_bg=color,
+                             title=f"#{i + 1}  {CLASS_NAMES.get(box.cls, '범위 밖')}",
+                             right=f"{box.w:.0f}×{box.h:.0f}", right_fg=TEXT3))
+        self.box_list.set_rows(rows)
+        if self.selected is not None and self.selected < len(rows):
+            self.box_list.set_selected(self.selected)
+        else:
+            self.box_list.set_selected(None)
+        self.class_list.set_rows(class_rows(self, counts))
+        self.sync_class_widgets()
 
     def refresh_box_info(self):
         cur = self.s.cur
@@ -396,6 +450,7 @@ class LabelApp(CanvasEditor):
             for var in self.info_vars.values():
                 var.set("")
             self.px_var.set("BBox 를 클릭하면 표시됩니다")
+            self.box_title.set(f"전체 {len(cur.boxes)}개" if cur else "")
             return
 
         box = cur.boxes[self.selected]
@@ -407,6 +462,7 @@ class LabelApp(CanvasEditor):
         self.info_vars["h"].set(f"{h:.4f}")
 
         nb = box.normalized()
+        self.box_title.set(f"#{self.selected + 1} / {len(cur.boxes)}  ·  {CLASS_NAMES.get(cls, '범위 밖')}")
         self.px_var.set(f"#{self.selected + 1}  픽셀 ({nb.x1:.0f},{nb.y1:.0f})-({nb.x2:.0f},{nb.y2:.0f})  "
                         f"{nb.w:.0f}x{nb.h:.0f}")
 
@@ -416,9 +472,14 @@ class LabelApp(CanvasEditor):
             return
         row = self.s.manifest.get(cur.rec.rel_image)
 
-        dirty = "  ● 저장 안 됨" if self.s.is_dirty() else ""
         source = "WORK 저장본" if cur.from_work else "RAW 원본"
-        self.head_var.set(f"{cur.rec.image_name}    ( {self.s.index + 1} / {self.s.total} ){dirty}")
+        self.head_var.set(cur.rec.image_name)
+        if self.s.is_dirty():
+            self.dirty_pill.set("●  저장 안 됨", fg=ORANGE_TEXT, bg="#FFF4E5")
+        else:
+            st = row["status"]
+            self.dirty_pill.set(STATUS_KO.get(st, st), fg=STATUS_TEXT_COLORS.get(st, TEXT4), bg="#F2F4F6")
+        self.pos_var.set(f"{self.s.index + 1} / {self.s.total}")
         self.sub_var.set(f"{cur.rec.source_dataset} / {cur.rec.original_split}   ·   "
                          f"{cur.width}x{cur.height}   ·   라벨: {source}")
 
@@ -429,12 +490,35 @@ class LabelApp(CanvasEditor):
             f"마지막 저장: {row['updated_at'] or '-'}"
         )
 
-        self.warn_var.set("   ".join("⚠ " + w for w in self.collect_warnings()))
+        self.set_warnings(self.collect_warnings())
+        self.refresh_progress()
 
+    def set_warnings(self, warnings):
+        """경고가 있을 때만 이미지 위에 노란 카드를 보여준다."""
+        self.warn_var.set("\n".join("⚠  " + w for w in warnings))
+        show_warn(self, bool(warnings))
+
+    def refresh_progress(self):
+        """왼쪽 '작업 현황' 카드: 완료 장수 + 상태별 막대 (원래 아래 상태바에 있던 전체 진행)."""
         progress = self.s.progress()
+        total = len(self.s.records)
+
+        def get(*keys):
+            return sum(progress.get(k, 0) for k in keys)
+
+        waiting = get("PENDING", "WORKING")
         done = sum(n for status, n in progress.items() if status not in ("PENDING", "WORKING"))
-        counts = "  ".join(f"{status}:{n}" for status, n in progress.items())
-        self.status_bar.set(f"전체 진행 {done}/{len(self.s.records)}   {counts}")
+        self.hero_done.set(str(done))
+        self.hero_total.set(f"/ {total}장 완료")
+        pct = done * 100 // total if total else 0
+        self.hero_sub.set(f"남은 이미지 {waiting}장  ·  {pct}%")
+        self.hero_bars.set([
+            ("PASS", get("PASS"), STATUS_COLORS["PASS"]),
+            ("수정", get("EDITED"), STATUS_COLORS["EDITED"]),
+            ("확인 필요", get("REVIEW"), STATUS_COLORS["REVIEW"]),
+            ("검수 완료", get("REVIEWED", "FINAL"), STATUS_COLORS["REVIEWED"]),
+            ("대기", waiting, "#D1D6DB"),
+        ], total)
 
     def collect_warnings(self):
         cur = self.s.cur
@@ -465,12 +549,12 @@ class LabelApp(CanvasEditor):
         self.draw_boxes()
         self.refresh_info()
 
-    def on_box_list_select(self, _event):
-        selection = self.box_list.curselection()
-        if not selection:
+    def on_box_pick(self, i):
+        """오른쪽 BBox 목록에서 누른 BBox 를 선택."""
+        if not self.s.cur or i >= len(self.s.cur.boxes):
             return
         self.canvas.focus_set()
-        self.selected = selection[0]
+        self.selected = i
         self.select_class_of(self.selected)
         self.draw_boxes()
 
@@ -484,14 +568,10 @@ class LabelApp(CanvasEditor):
         self.sync_class_widgets()
 
     def sync_class_widgets(self):
+        """오른쪽 Class 목록에서 지금 Class 한 줄만 파랗게."""
         cid = self.class_var.get()
-        self.class_combo_var.set(class_label(cid))
-        self.class_swatch.configure(bg=CLASS_COLORS.get(cid, "#ff0000"))
-
-    def on_class_combo(self, _event):
-        cid = int(self.class_combo_var.get().split(".")[0])
-        self.canvas.focus_set()
-        self.pick_class(cid)
+        index = self.class_ids.index(cid) if cid in self.class_ids else None
+        self.class_list.set_selected(index, see=False)
 
     def pick_class(self, cid):
         if cid in UNUSED_CLASS_IDS:
@@ -555,7 +635,7 @@ class LabelApp(CanvasEditor):
             self.s.meta_dirty = True
             self.refresh_info()
 
-    def on_scene_select(self, _event):
+    def on_scene_select(self, _event=None):
         self.mark_meta_dirty()
         self.canvas.focus_set()
 
@@ -575,7 +655,9 @@ class LabelApp(CanvasEditor):
             team.insert(0, self.s.worker)
 
         self.worker_combo.configure(values=team)
-        self.reviewer_combo.configure(values=[""] + team)
+        # 검수자 목록에는 지금 작업자(나)를 넣지 않는다 (교차검수는 다른 사람이 함)
+        self.reviewer_combo.configure(values=[""] + [n for n in team if n != self.s.worker])
+
 
     def on_worker_change(self):
         name = self.worker_var.get().strip()
@@ -813,7 +895,8 @@ def ask_worker(root, worker):
     if worker:
         return worker
 
-    worker = simpledialog.askstring("작업자", "작업자 이름(이니셜)을 입력하세요:", parent=root) or ""
+    worker = dialogs.ask_text(root, "작업자", "작업자 이름(이니셜)을 입력하세요",
+                              "한글은 오른쪽 [영문] 버튼, 한/영 키 또는 Shift+Space", HangulIME(root)) or ""
     worker = worker.strip()
     if worker:
         settings["worker"] = worker
@@ -844,6 +927,8 @@ def ask_session(root, raw, work, worker):
 def run(raw=None, work=None, worker=None):
     root = tk.Tk()
     root.withdraw()
+    init_fonts(root)
+    setup_ttk(root)
 
     worker = ask_worker(root, worker)
     if not worker:

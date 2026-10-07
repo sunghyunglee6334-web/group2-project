@@ -15,11 +15,16 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 from ..config import ACTIVE_CLASS_IDS, CLASS_COLORS, CLASS_NAMES, UNUSED_CLASS_IDS
-from ..ui.style import HANDLE_CURSORS, HANDLE_RADIUS
+from ..ui.style import FONT_BOX, FONT_SMALL_BOLD, HANDLE_CURSORS, HANDLE_RADIUS, MODE_CURSORS, text_on
 from ..yolo.yolo_io import Box
 
 DRAG_START_PX = 3       # 이보다 적게 움직이면 클릭으로 본다
 CLICK_PX = 4            # 새 BBox 모드에서 이보다 짧게 끌면 'BBox 선택' 클릭
+HUD_SPACE = 64          # Fit 할 때 아래쪽 Zoom 막대 자리로 비워 둘 높이
+
+# Zoom 막대의 + / − 버튼이 거치는 배율 (보기 좋은 숫자로 끊어서)
+ZOOM_STEPS = [0.05, 0.0625, 0.08, 0.1, 0.125, 0.15, 0.2, 0.25, 0.33, 0.5, 0.67, 0.75,
+              1.0, 1.25, 1.5, 2.0, 3.0, 4.0, 6.0, 8.0, 12.0, 16.0]
 
 
 class CanvasEditor:
@@ -52,7 +57,9 @@ class CanvasEditor:
         if not self.pyramid:
             return
         width, height = self.pyramid[0].size
-        self.view.fit(width, height, self.canvas.winfo_width(), self.canvas.winfo_height())
+        # 아래쪽 Zoom 막대 자리(HUD_SPACE)를 비워 두고 맞춘다
+        self.view.fit(width, height, self.canvas.winfo_width(),
+                      max(1, self.canvas.winfo_height() - HUD_SPACE), margin=16)
         self.fit_mode = True
         self.render()
 
@@ -64,12 +71,50 @@ class CanvasEditor:
         self.render()
 
     def zoom_center(self, factor):
-        self.zoom_at(factor, self.canvas.winfo_width() / 2, self.canvas.winfo_height() / 2)
+        """Zoom In / Out: 한 단계씩 (25 → 33 → 50 → 67 → 75 → 100 → 125 ...%), 가운데에 배율을 크게 표시."""
+        if not self.pyramid:
+            return
+        scale = self.view.scale
+        if factor > 1:
+            target = next((z for z in ZOOM_STEPS if z > scale * 1.01), ZOOM_STEPS[-1])
+        else:
+            target = next((z for z in reversed(ZOOM_STEPS) if z < scale * 0.99), ZOOM_STEPS[0])
+        self.zoom_to(target)
+
+    def zoom_to(self, scale):
+        self.overlay.toast(f"{scale * 100:.0f}%" if scale >= 0.1 else f"{scale * 100:.1f}%")
+        self.zoom_at(scale / self.view.scale, self.canvas.winfo_width() / 2, self.canvas.winfo_height() / 2)
+
+    def zoom_in(self):
+        self.zoom_center(1.25)
+
+    def zoom_out(self):
+        self.zoom_center(0.8)
+
+    def zoom_actual(self):
+        """100% = 원본 픽셀 1개가 화면 픽셀 1개."""
+        if self.pyramid:
+            self.zoom_to(1.0)
+
+    def percent_text(self):
+        p = self.view.scale * 100
+        return f"{p:.0f}%" if p >= 10 else f"{p:.1f}%"
+
+    def jump_view(self, ix, iy):
+        """미니맵을 누르면 그 위치가 화면 가운데로 오게 이동."""
+        v = self.view
+        v.pan(self.canvas.winfo_width() / 2 - (ix * v.scale + v.offset_x),
+              self.canvas.winfo_height() / 2 - (iy * v.scale + v.offset_y))
+        self.fit_mode = False
+        self.render()
 
     def on_wheel(self, event):
         self.zoom_at(1.25 if event.delta > 0 else 0.8, event.x, event.y)
 
     def on_resize(self, _event):
+        if not self.pyramid:
+            self.overlay.draw()          # 이미지가 없어도 둥근 모서리는 다시 그린다
+            return
         if self.fit_mode:
             self.fit()
         else:
@@ -84,6 +129,7 @@ class CanvasEditor:
             if min(src.size) < 400:
                 break
             self.pyramid.append(src.reduce(2))
+        self.overlay.set_map_image(self.pyramid[-1], img.size)
 
     def render(self):
         c = self.canvas
@@ -116,6 +162,7 @@ class CanvasEditor:
 
         self.draw_boxes()
         self.zoom_var.set(f"배율 {self.view.scale * 100:.0f}%")
+        self.overlay.draw(rect)          # Zoom 막대 · 미니맵 · 배율 표시 · 둥근 모서리
 
     # ---- BBox 그리기
     def handles(self, box):
@@ -147,12 +194,13 @@ class CanvasEditor:
             self.selected = None
 
         if self.hide_labels:
-            c.create_text(10, 10, text="라벨 숨김 (H 로 다시 보기)", anchor="nw",
-                          fill="#fbbf24", font=("", 10, "bold"), tags="box")
+            c.create_text(18, 18, text="라벨 숨김 · H 로 다시 보기", anchor="nw",
+                          fill="#FFD60A", font=FONT_SMALL_BOLD, tags="box")
         else:
             for i, box in enumerate(cur.boxes):
                 self._draw_one_box(i, box)
 
+        c.tag_raise("overlay")          # Zoom 막대·미니맵은 항상 BBox 위
         self.refresh_box_list()
         self.refresh_box_info()
 
@@ -173,13 +221,14 @@ class CanvasEditor:
         c.create_rectangle(x1, y1, x2, y2, outline=color, width=4 if selected else 2,
                            dash=dash, tags="box")
 
-        # Class 이름표: 위에 공간이 없으면 BBox 안쪽에 붙인다.
-        label = f"{box.cls} {CLASS_NAMES.get(box.cls, '?')}"
-        ty = y1 - 19 if y1 > 21 else y1 + 2
-        text_id = c.create_text(x1 + 5, ty + 2, text=label, anchor="nw", fill="white",
-                                font=("", 10, "bold"), tags="box")
+        # Class 이름표: 위에 공간이 없으면 BBox 안쪽에 붙인다. 밝은 색(노랑 등)이면 검은 글자.
+        label = f"{box.cls}  {CLASS_NAMES.get(box.cls, '?')}"
+        ty = y1 - 21 if y1 > 23 else y1 + 2
+        text_id = c.create_text(x1 + 7, ty + 10, text=label, anchor="w", fill=text_on(color),
+                                font=FONT_BOX, tags="box")
         right = c.bbox(text_id)[2]
-        bg_id = c.create_rectangle(x1, ty, right + 5, ty + 19, fill=color, outline="", tags="box")
+        bg_id = c.create_rectangle(x1 - (1 if selected else 0), ty, right + 7, ty + 20, fill=color,
+                                   outline="", tags="box")
         c.tag_lower(bg_id, text_id)
 
         if selected:
@@ -191,12 +240,17 @@ class CanvasEditor:
     def on_motion(self, event):
         c = self.canvas
         c.delete("cross")
+        if self.pyramid and self.overlay.on_motion(event.x, event.y):
+            return                      # Zoom 막대 / 미니맵 위
+        if self.mode in ("draw", "pan"):
+            c.configure(cursor=MODE_CURSORS[self.mode])
 
         if self.mode == "draw":
-            c.create_line(event.x, 0, event.x, c.winfo_height(), fill="#22d3ee",
+            c.create_line(event.x, 0, event.x, c.winfo_height(), fill="#64D2FF",
                           dash=(2, 4), tags="cross")
-            c.create_line(0, event.y, c.winfo_width(), event.y, fill="#22d3ee",
+            c.create_line(0, event.y, c.winfo_width(), event.y, fill="#64D2FF",
                           dash=(2, 4), tags="cross")
+            c.tag_raise("overlay")
         elif self.mode == "select" and self.s.cur:
             handle = self.hit_handle(event.x, event.y)
             if handle:
@@ -220,6 +274,14 @@ class CanvasEditor:
             return
 
         self.canvas.focus_set()
+        part = self.overlay.hit(event.x, event.y)       # Zoom 막대 / 미니맵을 눌렀으면 그것만 처리
+        if part == "hud":
+            self.overlay.click(event.x, event.y)
+            return
+        if part == "map":
+            self.drag = dict(kind="map")
+            self.overlay.map_jump(event.x, event.y)
+            return
         if self.mode == "pan":
             self.on_pan_start(event)
             return
@@ -248,6 +310,9 @@ class CanvasEditor:
 
     # ---- 마우스: 왼쪽 버튼 드래그
     def on_left_drag(self, event):
+        if self.drag and self.drag["kind"] == "map":
+            self.overlay.map_jump(event.x, event.y)
+            return
         if self.mode == "pan" and self.pan_last:
             self.on_pan_drag(event)
             return
@@ -298,12 +363,11 @@ class CanvasEditor:
     # ---- 마우스: 왼쪽 버튼 놓음
     def on_left_up(self, event):
         self.canvas.delete("rubber")
+        d, self.drag = self.drag, None
         if self.mode == "pan":
             self.pan_last = None
             return
-
-        d, self.drag = self.drag, None
-        if not d:
+        if not d or d["kind"] == "map":
             return
 
         if d["kind"] in ("move", "resize"):

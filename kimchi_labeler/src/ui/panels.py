@@ -1,337 +1,398 @@
-"""화면 배치.
+"""화면 배치 (토스 스타일 카드 레이아웃).
 
 LabelApp 이 쓰는 위젯을 만들어 app 의 속성으로 붙인다.
-여기서는 '어디에 무엇을 놓을지'만 정하고, 버튼을 눌렀을 때의 동작은 app 의 메서드가 한다.
+여기서는 '어디에 무엇을 놓을지'만 정하고, 눌렀을 때의 동작은 app 의 메서드가 한다.
 
-  ┌ 메뉴 막대 ──────────────────────────────────────────────────────────┐
-  │ 이미지 목록 │        이미지 (Canvas)        │ Class / BBox │ 작업 상태 │
-  ├ 보기 도구 ─── 라벨 도구 ─────────────────── 이미지 이동 및 저장 ──────┤
-  └ 상태바 ─────────────────────────────────────────────────────────────┘
+  조각김치 라벨링 ⌄      (상태 메시지)                          [파일 열기] [Validation] [⋯]
+  ┌ 작업 현황 ─────┐  ┌ 파일명 ─────────────── ● 저장 안 됨 ┐  ┌ Class ──────────┐
+  │ 3 / 16장 완료  │  │ ⚠ 경고                                │  │ ⓪ 나뭇잎·종이류   │
+  │ ▬▬ 상태 막대   │  │                                       │  │ ...              │
+  └───────────────┘  │          이미지 (어두운 바탕)            │  └─────────────────┘
+  ┌ 전체|내 담당|… ┐  │                        [미니맵]        │  ┌ 선택한 BBox ────┐
+  │ ① 파일명  PASS │  │       ( − 26% + | 맞춤 100% )          │  │ X  Y  너비  높이  │
+  │ ② ...         │  │ [그리기][선택][이동]  ‹ 1/16 ›  [되돌리기][삭제] │  └─────────────────┘
+  │               │  └───────────────────────────────────────┘  ┌ 검수 상태 ──────┐
+  └───────────────┘                                             │ PASS 수정 …      │
+                                                                 │ 장면 · 작업자 …   │
+                                                                 │ 메모        [한글] │
+                                                                 └─────────────────┘
+                                                                 [ 저장 ][ 저장하고 다음 (→) ]
 """
 import tkinter as tk
 from tkinter import ttk
 
-from ..bbox.session import FILTERS
-from ..config import ACTIVE_CLASS_IDS, CLASS_COLORS, CLASS_NAMES, SCENE_TYPES
-from .style import (BG, BLUE, BLUE_DARK, BORDER, CANVAS_BG, EDIT_STATUSES, FONT, FONT_BOLD,
-                    FONT_HEADER, FONT_MONO, FONT_SMALL, GREEN, GREEN_DARK, PANEL_BG, SCENE_LABELS,
-                    STATUS_COLORS, SUB_TEXT, TEXT, WARN_TEXT, action_button, big_button, class_label,
-                    group_box)
+from ..config import CLASS_COLORS, CLASS_NAMES, UNUSED_CLASS_IDS
+from .overlay import CanvasOverlay
+from .style import (BG, BLUE, CANVAS_BG, CARD, EDIT_STATUSES, FILL, FONT, FONT_APP, FONT_BIG,
+                    FONT_BOLD, FONT_CAPTION, FONT_CTA, FONT_HEADER, FONT_LARGE, FONT_MONO_BOLD,
+                    FONT_SMALL, FONT_SMALL_BOLD, FONT_TITLE, SCENE_LABELS, STATUS_KO, TEXT, TEXT2,
+                    TEXT3, WARN_BG, WARN_TEXT)
+from .widgets import (BarChart, Card, ChoiceGroup, Pill, RichList, RoundButton, ScrollFrame, Tabs,
+                      flat_entry, tile)
+
+# 검수 상태 버튼: 선택되면 상태마다 다른 색 (바탕, 글자, 테두리)
+STATUS_CHOICE_STYLES = {
+    "PASS": ("#E8F3FF", "#3182F6", "#3182F6"),        # 파랑
+    "EDITED": ("#FFF4E5", "#E07B00", "#FF9F0A"),      # 주황
+    "REVIEW": ("#FFEEF0", "#F04452", "#F04452"),      # 빨강
+    "REVIEWED": ("#E6F8EF", "#00A661", "#00C473"),    # 초록
+}
+
+TAB_OPTIONS = [("전체", "전체"), ("내 담당", "내 담당"), ("REVIEW", "확인 필요")]
+# 선택 = BBox 를 고르고 옮기는 것, 화면 이동 = 이미지(보는 위치)를 옮기는 것 → 이름으로 구분
+MODE_OPTIONS = [("draw", "그리기"), ("select", "박스 편집"), ("pan", "화면 이동")]
+GAP = 14
 
 
 def build_main_window(app):
     root = app.root
+    root.configure(bg=BG)
 
-    # 아래쪽(상태바, 도구 막대)을 먼저 붙여야 창을 줄여도 버튼이 가려지지 않는다.
-    app.status_bar = tk.StringVar(value="준비")
-    status = tk.Label(
-        root,
-        textvariable=app.status_bar,
-        anchor="w",
-        relief=tk.SUNKEN,
-        bd=1,
-        bg=BG,
-        padx=6,
-        pady=2,
-    )
-    status.pack(side=tk.BOTTOM, fill=tk.X)
+    build_header(app, root)
 
-    build_bottom_tools(app, root)
+    main = tk.Frame(root, bg=BG)
+    main.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
+    main.rowconfigure(0, weight=1)
+    main.columnconfigure(1, weight=1)
 
-    # 경고 줄은 세 영역 아래에 가로로 길게 둔다.
-    # 그래야 이미지 목록, 이미지, 오른쪽 칸의 아래쪽 선이 한 줄로 맞는다.
-    app.warn_var = tk.StringVar()
-    warn = tk.Label(root, textvariable=app.warn_var, bg=BG, fg=WARN_TEXT, anchor="w",
-                    justify=tk.LEFT, wraplength=1400, padx=10, pady=2)
-    warn.pack(side=tk.BOTTOM, fill=tk.X)
+    left = tk.Frame(main, bg=BG, width=300)
+    left.grid(row=0, column=0, sticky="ns", padx=(0, GAP))
+    left.pack_propagate(False)
+    build_left(app, left)
 
-    panes = tk.PanedWindow(root, orient=tk.HORIZONTAL, bg=BG, bd=0, sashwidth=6, sashrelief=tk.FLAT)
-    panes.pack(fill=tk.BOTH, expand=True, padx=6, pady=(6, 0))
+    center = Card(main, expand=True, padx=18, pady=16)
+    center.grid(row=0, column=1, sticky="nsew")
+    build_center(app, center.body)
 
-    left = tk.Frame(panes, bg=BG)
-    build_image_list(app, left)
-    panes.add(left, minsize=200, width=250, stretch="never")
-
-    center = tk.Frame(panes, bg=BG)
-    build_center(app, center)
-    panes.add(center, minsize=400, stretch="always")
-
-    right = tk.Frame(panes, bg=BG)
-    column_a = tk.Frame(right, bg=BG, width=260)
-    column_b = tk.Frame(right, bg=BG, width=240)
-    column_a.pack(side=tk.LEFT, fill=tk.Y, padx=(4, 4))
-    column_b.pack(side=tk.LEFT, fill=tk.Y)
-    column_a.pack_propagate(False)
-    column_b.pack_propagate(False)
-    build_class_panel(app, column_a)
-    build_status_panel(app, column_b)
-    panes.add(right, minsize=510, stretch="never")
+    right = tk.Frame(main, bg=BG, width=360)
+    right.grid(row=0, column=2, sticky="ns", padx=(GAP, 0))
+    right.pack_propagate(False)
+    build_right(app, right)
 
 
-# 1. 왼쪽: 이미지 목록
-def build_image_list(app, parent):
-    app.list_title = tk.StringVar(value="이미지 목록")
+# ==================================================================== 맨 위
+def build_header(app, root):
+    bar = tk.Frame(root, bg=BG, padx=24, pady=14)
+    bar.pack(side=tk.TOP, fill=tk.X)
 
-    frame = group_box(parent, "")
-    frame.configure(labelwidget=tk.Label(frame, textvariable=app.list_title, bg=PANEL_BG,
-                                         fg=TEXT, font=FONT_BOLD))
-    frame.pack(fill=tk.BOTH, expand=True)
+    app.title_btn = RoundButton(bar, "조각김치 라벨링  ⌄", None, variant="ghost", height=44,
+                                font=FONT_APP, padx=10, radius=12, tooltip="파일 메뉴")
+    app.title_btn.pack(side=tk.LEFT)
+    app.mode_pill = Pill(bar, height=26)
+    app.mode_pill.pack(side=tk.LEFT, padx=(6, 0))
 
-    filter_combo = ttk.Combobox(
-        frame,
-        textvariable=app.filter_var,
-        values=list(FILTERS),
-        state="readonly",
-    )
-    filter_combo.pack(fill=tk.X, pady=(0, 4))
-    filter_combo.bind("<<ComboboxSelected>>", lambda e: app.change_filter())
+    app.status_bar = tk.StringVar(value="")
+    tk.Label(bar, textvariable=app.status_bar, bg=BG, fg=TEXT3, font=FONT_SMALL,
+             anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(18, 12))
 
-    holder = tk.Frame(frame, bg=PANEL_BG)
-    holder.pack(fill=tk.BOTH, expand=True)
-
-    app.img_list = tk.Listbox(
-        holder,
-        exportselection=False,
-        activestyle="none",
-        font=FONT_MONO,
-        selectbackground="#dbeafe",
-        selectforeground=TEXT,
-        relief=tk.FLAT,
-        highlightthickness=1,
-        highlightbackground=BORDER,
-        takefocus=0,
-    )
-    scroll = tk.Scrollbar(holder, command=app.img_list.yview)
-    app.img_list.configure(yscrollcommand=scroll.set)
-    scroll.pack(side=tk.RIGHT, fill=tk.Y)
-    app.img_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-    app.img_list.bind("<<ListboxSelect>>", app.on_image_list_select)
-
-    legend = tk.Label(frame, text="○대기 ✓PASS ✎EDITED !REVIEW ✔검수완료",
-                      bg=PANEL_BG, fg=SUB_TEXT, font=FONT_SMALL)
-    legend.pack(anchor="w", pady=(4, 0))
+    app.more_btn = RoundButton(bar, "⋯", None, variant="ghost", height=40, width=44, font=FONT_LARGE,
+                               tooltip="메뉴: 보기 · 도구 · 검수 · 통계 · 도움말")
+    app.more_btn.pack(side=tk.RIGHT, padx=(6, 0))
+    RoundButton(bar, "Validation", app.run_validation, variant="white", height=40,
+                tooltip="전체 라벨 자동 검사").pack(side=tk.RIGHT, padx=(8, 0))
+    RoundButton(bar, "파일 열기", app.add_images, variant="white", height=40,
+                tooltip="사진 파일을 골라 추가 (연습용 · 실제 RAW 에서는 막힘)").pack(side=tk.RIGHT, padx=(8, 0))
+    RoundButton(bar, "폴더 열기", app.open_raw_folder, variant="white", height=40,
+                tooltip="Ctrl+O · 이미지가 들어 있는 RAW 상위 폴더 선택").pack(side=tk.RIGHT)
 
 
-# 2. 가운데: 파일명, 이미지, 경고
+# ==================================================================== 왼쪽: 작업 현황 + 이미지 목록
+def build_left(app, parent):
+    hero = Card(parent, padx=22, pady=20)
+    hero.pack(fill=tk.X)
+    b = hero.body
+    tk.Label(b, text="작업 현황", bg=CARD, fg=TEXT2, font=FONT_SMALL_BOLD, anchor="w").pack(fill=tk.X)
+    row = tk.Frame(b, bg=CARD)
+    row.pack(fill=tk.X, pady=(4, 0))
+    app.hero_done = tk.StringVar(value="0")
+    app.hero_total = tk.StringVar(value="/ 0장 완료")
+    tk.Label(row, textvariable=app.hero_done, bg=CARD, fg=TEXT, font=FONT_BIG).pack(side=tk.LEFT)
+    tk.Label(row, textvariable=app.hero_total, bg=CARD, fg=TEXT3, font=FONT_BOLD).pack(
+        side=tk.LEFT, padx=(6, 0), pady=(8, 0))
+    app.hero_sub = tk.StringVar(value="")
+    tk.Label(b, textvariable=app.hero_sub, bg=CARD, fg=TEXT3, font=FONT_SMALL, anchor="w").pack(fill=tk.X)
+    app.hero_bars = BarChart(b)
+    app.hero_bars.pack(fill=tk.X, pady=(12, 0))
+
+    lst = Card(parent, expand=True, padx=0, pady=6)
+    lst.pack(fill=tk.BOTH, expand=True, pady=(12, 0))
+    app.tab_var = tk.StringVar(value="전체")
+    Tabs(lst.body, TAB_OPTIONS, app.tab_var, command=app.on_tab).pack(fill=tk.X, padx=16)
+    app.img_list = RichList(lst.body, app.on_image_pick)
+    app.img_list.pack(fill=tk.BOTH, expand=True, pady=(6, 4))
+
+
+# ==================================================================== 가운데: 이미지
 def build_center(app, parent):
-    head = tk.Frame(parent, bg=BG)
+    head = tk.Frame(parent, bg=CARD)
     head.pack(fill=tk.X)
+    app.head_var = tk.StringVar(value="")
+    app.sub_var = tk.StringVar(value="")
+    names = tk.Frame(head, bg=CARD)
+    names.pack(side=tk.LEFT, fill=tk.X, expand=True)
+    tk.Label(names, textvariable=app.head_var, bg=CARD, fg=TEXT, font=FONT_HEADER, anchor="w").pack(fill=tk.X)
+    tk.Label(names, textvariable=app.sub_var, bg=CARD, fg=TEXT3, font=FONT_SMALL, anchor="w").pack(fill=tk.X)
+    side = tk.Frame(head, bg=CARD)
+    side.pack(side=tk.RIGHT, anchor="n")
+    app.dirty_pill = Pill(side, height=30)
+    app.dirty_pill.pack(anchor="e")
+    app.zoom_var = tk.StringVar()           # 마우스 위치의 원본 좌표 + 배율
+    tk.Label(side, textvariable=app.zoom_var, bg=CARD, fg=TEXT3, font=FONT_CAPTION, anchor="e").pack(
+        anchor="e", pady=(4, 0))
 
-    app.head_var = tk.StringVar()
-    tk.Label(head, textvariable=app.head_var, bg=BG, fg=TEXT,
-             font=FONT_HEADER).pack(side=tk.LEFT, padx=4)
+    # 경고 (있을 때만 show_warn 으로 보인다)
+    app.warn_var = tk.StringVar()
+    app.warn_card = Card(parent, fill=WARN_BG, radius=12, padx=14, pady=10)
+    tk.Label(app.warn_card.body, textvariable=app.warn_var, bg=WARN_BG, fg=WARN_TEXT, font=FONT_SMALL_BOLD,
+             anchor="w", justify=tk.LEFT, wraplength=760).pack(fill=tk.X)
 
-    app.zoom_var = tk.StringVar()
-    tk.Label(head, textvariable=app.zoom_var, bg=BG, fg=SUB_TEXT).pack(side=tk.RIGHT, padx=6)
+    # 아래 막대: 모드 / 이동 / 되돌리기·삭제
+    nav = tk.Frame(parent, bg=CARD)
+    nav.pack(side=tk.BOTTOM, fill=tk.X, pady=(12, 0))
+    app.mode_buttons = {}
+    tips = {"draw": "W · 드래그로 새 BBox",
+            "select": "V · BBox 를 골라 옮기거나 핸들로 크기 조절 (이미지는 안 움직임)",
+            "pan": "보는 위치만 옮기기 (BBox 는 안 바뀜) · 한 번 더 누르거나 Esc 면 그리기로"}
+    for mode, label in MODE_OPTIONS:
+        btn = RoundButton(nav, label, lambda m=mode: app.on_mode_button(m), variant="white", height=40,
+                          tooltip=tips[mode])
+        btn.pack(side=tk.LEFT, padx=(0, 6))
+        app.mode_buttons[mode] = btn
 
-    app.sub_var = tk.StringVar()
-    tk.Label(parent, textvariable=app.sub_var, bg=BG, fg=SUB_TEXT).pack(anchor="w", padx=4)
+    RoundButton(nav, "삭제", app.delete_selected, variant="danger", height=40,
+                tooltip="Del").pack(side=tk.RIGHT)
+    RoundButton(nav, "되돌리기", app.undo, variant="gray", height=40,
+                tooltip="Ctrl+Z").pack(side=tk.RIGHT, padx=(0, 6))
+    app.hide_btn = RoundButton(nav, "라벨 숨김", app.toggle_labels, variant="gray", height=40,
+                               tooltip="H")
+    app.hide_btn.pack(side=tk.RIGHT, padx=(0, 6))
 
-    app.canvas = tk.Canvas(parent, bg=CANVAS_BG, highlightthickness=0, cursor="crosshair")
-    app.canvas.pack(fill=tk.BOTH, expand=True, pady=(4, 0))
+    move = tk.Frame(nav, bg=CARD)
+    move.place(relx=0.5, rely=0.5, anchor="center")
+    RoundButton(move, "‹", app.prev, variant="gray", height=40, width=40, font=FONT_LARGE,
+                tooltip="A / ←").pack(side=tk.LEFT)
+    app.pos_var = tk.StringVar(value="0 / 0")
+    tk.Label(move, textvariable=app.pos_var, bg=CARD, fg=TEXT, font=FONT_BOLD, width=10).pack(side=tk.LEFT)
+    RoundButton(move, "›", app.next, variant="gray", height=40, width=40, font=FONT_LARGE,
+                tooltip="D / →").pack(side=tk.LEFT)
+
+    # 이미지 무대
+    app.stage = tk.Frame(parent, bg=CANVAS_BG)
+    app.stage.pack(fill=tk.BOTH, expand=True, pady=(12, 0))
+    app.canvas = tk.Canvas(app.stage, bg=CANVAS_BG, highlightthickness=0, bd=0, cursor="crosshair")
+    app.canvas.pack(fill=tk.BOTH, expand=True)
+    app.overlay = CanvasOverlay(app)        # Zoom 막대 · 미니맵 · 배율 토스트 · 둥근 모서리
+
+    # 이미지가 없을 때 안내
+    app.empty_frame = tk.Frame(app.stage, bg=CANVAS_BG)
+    app.empty_title = tk.Label(app.empty_frame, text="", bg=CANVAS_BG, fg="#FFFFFF", font=FONT_HEADER)
+    app.empty_title.pack()
+    app.empty_sub = tk.Label(app.empty_frame, text="", bg=CANVAS_BG, fg="#B0B8C1", font=FONT,
+                             justify=tk.CENTER)
+    app.empty_sub.pack(pady=(8, 16))
+    app.empty_button = RoundButton(app.empty_frame, "폴더 열기", app.open_raw_folder, variant="primary",
+                                   height=44)
+    app.empty_button.pack()
 
 
-# 3. 오른쪽 1열: Class 선택, BBox 정보, BBox 목록
-def build_class_panel(app, parent):
-    first = ACTIVE_CLASS_IDS[0]
+def show_warn(app, on):
+    if on and not app.warn_card.winfo_ismapped():
+        app.warn_card.pack(fill=tk.X, pady=(12, 0), before=app.stage)
+    elif not on and app.warn_card.winfo_ismapped():
+        app.warn_card.pack_forget()
 
-    # 3-1. Class 선택
-    frame = group_box(parent, "Class 선택 (숫자키 0~6)")
-    frame.pack(fill=tk.X)
 
-    app.class_var = tk.IntVar(value=first)
-    app.class_combo_var = tk.StringVar(value=class_label(first))
+# ==================================================================== 오른쪽
+def build_right(app, parent):
+    # 맨 아래 큰 저장 버튼 (스크롤과 상관없이 항상 보이게 먼저 붙인다)
+    cta = tk.Frame(parent, bg=BG)
+    cta.pack(side=tk.BOTTOM, fill=tk.X, pady=(12, 0))
+    cta.columnconfigure(0, weight=1, uniform="cta")
+    cta.columnconfigure(1, weight=2, uniform="cta")
+    RoundButton(cta, "저장", app.save, variant="soft", height=54, radius=16, font=FONT_CTA,
+                tooltip="Ctrl+S").grid(row=0, column=0, sticky="ew", padx=(0, 8))
+    RoundButton(cta, "저장하고 다음", app.save_next, variant="primary", height=54, radius=16,
+                font=FONT_CTA, tooltip="Space", arrow=30).grid(row=0, column=1, sticky="ew")
 
-    class_combo = ttk.Combobox(
-        frame,
-        textvariable=app.class_combo_var,
-        values=[class_label(cid) for cid in CLASS_NAMES],
-        state="readonly",
-    )
-    class_combo.pack(fill=tk.X)
-    class_combo.bind("<<ComboboxSelected>>", app.on_class_combo)
+    scroll = ScrollFrame(parent, bg=BG)
+    scroll.pack(fill=tk.BOTH, expand=True)
+    body = scroll.body
 
-    app.class_swatch = tk.Label(frame, text="", height=1, bg=CLASS_COLORS[first])
-    app.class_swatch.pack(fill=tk.X, pady=(4, 0))
+    build_class_card(app, body)
+    build_box_card(app, body)
+    build_review_card(app, body)
 
-    # 3-2. 현재 선택된 BBox 정보 (YOLO 좌표를 직접 고칠 수 있다)
-    frame = group_box(parent, "현재 선택된 BBox 정보")
-    frame.pack(fill=tk.X, pady=6)
-    frame.columnconfigure(1, weight=1)
 
+def card_title(parent, text, right_var=None):
+    row = tk.Frame(parent, bg=CARD)
+    row.pack(fill=tk.X, pady=(0, 10))
+    tk.Label(row, text=text, bg=CARD, fg=TEXT, font=FONT_TITLE).pack(side=tk.LEFT)
+    if right_var is not None:
+        tk.Label(row, textvariable=right_var, bg=CARD, fg=TEXT3, font=FONT_SMALL_BOLD).pack(side=tk.RIGHT)
+    return row
+
+
+def build_class_card(app, parent):
+    card = Card(parent, padx=14, pady=16)
+    card.pack(fill=tk.X)
+    title = card_title(card.body, "Class")
+    title.pack_configure(padx=6)
+    tk.Label(title, text="숫자키 0~6", bg=CARD, fg=TEXT3, font=FONT_SMALL_BOLD).pack(side=tk.RIGHT)
+
+    app.class_var = tk.IntVar(value=min(c for c in CLASS_NAMES if c not in UNUSED_CLASS_IDS))
+    app.class_ids = list(CLASS_NAMES)
+    app.class_list = RichList(card.body, lambda i: app.pick_class(app.class_ids[i]), row_h=40,
+                              icon_d=28, two_line=False, pad=0, scroll=False)
+    app.class_list.pack(fill=tk.X)
+
+
+def build_box_card(app, parent):
+    card = Card(parent, padx=20, pady=16)
+    card.pack(fill=tk.X, pady=(12, 0))
+    app.box_title = tk.StringVar(value="")
+    card_title(card.body, "선택한 BBox", app.box_title)
+
+    grid = tk.Frame(card.body, bg=CARD)
+    grid.pack(fill=tk.X)
     app.info_vars = {key: tk.StringVar() for key in ("cls", "cx", "cy", "w", "h")}
     app.info_entries = {}
-    rows = [("Class", "cls"), ("X(중심)", "cx"), ("Y(중심)", "cy"), ("너비", "w"), ("높이", "h")]
+    for i, (label, key) in enumerate((("X", "cx"), ("Y", "cy"), ("너비", "w"), ("높이", "h"))):
+        grid.columnconfigure(i, weight=1, uniform="tile")
+        t, e = tile(grid, label, app.info_vars[key], font=FONT_MONO_BOLD)
+        t.grid(row=0, column=i, sticky="ew", padx=(0 if i == 0 else 6, 0))
+        e.bind("<Return>", lambda ev: app.apply_box_entries())
+        app.info_entries[key] = e
 
-    for row, (text, key) in enumerate(rows):
-        tk.Label(frame, text=text, bg=PANEL_BG).grid(row=row, column=0, sticky="w", pady=2)
+    foot = tk.Frame(card.body, bg=CARD)
+    foot.pack(fill=tk.X, pady=(8, 0))
+    app.px_var = tk.StringVar(value="")
+    tk.Label(foot, textvariable=app.px_var, bg=CARD, fg=TEXT3, font=FONT_CAPTION, anchor="w",
+             justify=tk.LEFT, wraplength=220).pack(side=tk.LEFT, fill=tk.X, expand=True)
+    RoundButton(foot, "좌표 적용", app.apply_box_entries, variant="soft", height=32, padx=12,
+                font=FONT_SMALL_BOLD, tooltip="Enter").pack(side=tk.RIGHT)
 
-        entry = tk.Entry(frame, textvariable=app.info_vars[key], width=16, relief=tk.SOLID, bd=1)
-        if key == "cls":
-            entry.configure(state="readonly", readonlybackground="white")
-        else:
-            entry.bind("<Return>", lambda e: app.apply_box_entries())
-        entry.grid(row=row, column=1, sticky="ew", padx=(6, 0), pady=2)
-        app.info_entries[key] = entry
-
-    app.px_var = tk.StringVar(value="BBox 를 클릭하면 표시됩니다")
-    tk.Label(frame, textvariable=app.px_var, bg=PANEL_BG, fg=SUB_TEXT,
-             font=FONT_SMALL).grid(row=5, column=0, columnspan=2, sticky="w", pady=(4, 0))
-
-    apply_button = tk.Button(frame, text="좌표 적용 (Enter)", command=app.apply_box_entries,
-                             takefocus=0)
-    apply_button.grid(row=6, column=0, columnspan=2, sticky="ew", pady=(4, 0))
-
-    # 3-3. BBox 목록
-    frame = group_box(parent, "BBox 목록")
-    frame.pack(fill=tk.BOTH, expand=True)
-
-    app.box_list = tk.Listbox(
-        frame,
-        exportselection=False,
-        activestyle="none",
-        font=FONT_MONO,
-        relief=tk.FLAT,
-        highlightthickness=1,
-        highlightbackground=BORDER,
-        takefocus=0,
-    )
-    app.box_list.pack(fill=tk.BOTH, expand=True)
-    app.box_list.bind("<<ListboxSelect>>", app.on_box_list_select)
+    # BBox 목록 (누르면 그 BBox 선택)
+    tk.Label(card.body, text="BBox 목록", bg=CARD, fg=TEXT2, font=FONT_SMALL_BOLD, anchor="w").pack(
+        fill=tk.X, pady=(14, 2))
+    app.box_list = RichList(card.body, app.on_box_pick, row_h=40, icon_d=26, two_line=False, pad=0,
+                            title_font=FONT)
+    app.box_list.configure(height=4 * 40 + 8)
+    app.box_list.pack(fill=tk.X)
 
 
-# 4. 오른쪽 2열: 작업 상태, Scene Type, 작업자, 파일 정보, 메모
-def build_status_panel(app, parent):
-    # 4-1. 작업 상태
-    frame = group_box(parent, "작업 상태 (P / E / R)")
-    frame.pack(fill=tk.X)
+def build_review_card(app, parent):
+    card = Card(parent, padx=20, pady=16)
+    card.pack(fill=tk.X, pady=(12, 0))
+    b = card.body
+    card_title(b, "검수 상태")
 
     app.status_var = tk.StringVar(value="PASS")
-    for status in EDIT_STATUSES:
-        button = tk.Radiobutton(
-            frame,
-            text=status,
-            variable=app.status_var,
-            value=status,
-            command=app.mark_meta_dirty,
-            anchor="w",
-            fg=STATUS_COLORS[status],
-            font=FONT_BOLD,
-            bg=PANEL_BG,
-            activebackground=PANEL_BG,
-            highlightthickness=0,
-            takefocus=0,
-        )
-        button.pack(fill=tk.X)
+    ChoiceGroup(b, [(s, STATUS_KO[s]) for s in EDIT_STATUSES], app.status_var,
+                command=lambda v: app.mark_meta_dirty(), height=40, styles=STATUS_CHOICE_STYLES).pack(fill=tk.X)
 
-    # 4-2. Scene Type
-    frame = group_box(parent, "Scene Type")
-    frame.pack(fill=tk.X, pady=(6, 0))
+    grid = tk.Frame(b, bg=CARD)
+    grid.pack(fill=tk.X, pady=(10, 0))
+    grid.columnconfigure(0, weight=1, uniform="who")
+    grid.columnconfigure(1, weight=1, uniform="who")
 
     app.scene_var = tk.StringVar(value=SCENE_LABELS[""])
-    scene_combo = ttk.Combobox(
-        frame,
-        textvariable=app.scene_var,
-        values=[SCENE_LABELS[code] for code in SCENE_TYPES],
-        state="readonly",
-    )
-    scene_combo.pack(fill=tk.X)
-    scene_combo.bind("<<ComboboxSelected>>", app.on_scene_select)
+    app.scene_tile, scene_label = tile(grid, "장면 유형  ⌄", app.scene_var, entry=False)
+    app.scene_tile.grid(row=0, column=0, columnspan=2, sticky="ew")
+    for w in (app.scene_tile, app.scene_tile.body, *app.scene_tile.body.winfo_children()):
+        w.configure(cursor="hand2")
+        w.bind("<ButtonRelease-1>", lambda e: app.open_scene_menu(), add="+")
 
-    # 4-3. 작업자 / 검수자
-    frame = group_box(parent, "작업자 / 검수자")
-    frame.pack(fill=tk.X, pady=(6, 0))
-    frame.columnconfigure(1, weight=1)
-
-    tk.Label(frame, text="작업자", bg=PANEL_BG).grid(row=0, column=0, sticky="w")
+    # 작업자 / 검수자: 팀원 이름을 고르거나 직접 입력 (콤보박스, 원래 동작 그대로)
     app.worker_var = tk.StringVar(value=app.s.worker)
-    app.worker_combo = ttk.Combobox(frame, textvariable=app.worker_var, width=14)
-    app.worker_combo.grid(row=0, column=1, sticky="ew", padx=(6, 0), pady=2)
+    t, app.worker_combo = combo_tile(grid, "작업자", app.worker_var)
+    t.grid(row=1, column=0, sticky="ew", pady=(8, 0), padx=(0, 4))
     app.worker_combo.bind("<<ComboboxSelected>>", lambda e: app.on_worker_change())
     app.worker_combo.bind("<Return>", lambda e: app.on_worker_change())
+    app.ime.attach(app.worker_combo)
 
-    tk.Label(frame, text="검수자", bg=PANEL_BG).grid(row=1, column=0, sticky="w")
+    def apply_worker_on_leave(_event):
+        """이름을 고치고 Enter 없이 다른 곳을 눌러도 적용. 비워 두면 원래 이름으로 되돌림."""
+        if app.worker_var.get().strip():
+            app.on_worker_change()
+        else:
+            app.worker_var.set(app.s.worker)
+
+    app.worker_combo.bind("<FocusOut>", apply_worker_on_leave, add="+")
+
     app.reviewer_var = tk.StringVar()
-    app.reviewer_combo = ttk.Combobox(frame, textvariable=app.reviewer_var, width=14)
-    app.reviewer_combo.grid(row=1, column=1, sticky="ew", padx=(6, 0), pady=2)
+    t, app.reviewer_combo = combo_tile(grid, "검수자", app.reviewer_var)
+    t.grid(row=1, column=1, sticky="ew", pady=(8, 0), padx=(4, 0))
     app.reviewer_combo.bind("<<ComboboxSelected>>", lambda e: app.mark_meta_dirty())
     app.reviewer_combo.bind("<KeyRelease>", lambda e: app.mark_meta_dirty())
-
-    # 4-4. 파일 정보
-    frame = group_box(parent, "파일 정보")
-    frame.pack(fill=tk.X, pady=(6, 0))
+    app.ime.attach(app.reviewer_combo)
 
     app.info_var = tk.StringVar()
-    tk.Label(frame, textvariable=app.info_var, bg=PANEL_BG, justify=tk.LEFT,
-             wraplength=220).pack(anchor="w")
+    tk.Label(b, textvariable=app.info_var, bg=CARD, fg=TEXT3, font=FONT_CAPTION, anchor="w",
+             justify=tk.LEFT).pack(fill=tk.X, pady=(10, 0))
 
-    # 4-5. 이슈 / 메모
-    frame = group_box(parent, "이슈 / 메모")
-    frame.pack(fill=tk.BOTH, expand=True, pady=(6, 0))
+    build_note_card(app, parent)
 
-    tk.Label(frame, text="Issue (문제)", bg=PANEL_BG, fg=SUB_TEXT).pack(anchor="w")
+
+def build_note_card(app, parent):
+    """이슈 · 노트 (원래 레이아웃처럼 한 묶음). 이름은 크게, 설명은 회색으로."""
+    card = Card(parent, padx=20, pady=16)
+    card.pack(fill=tk.X, pady=(12, 0))
+    b = card.body
+
+    head = card_title(b, "이슈 · 노트")
+    app.ime_btn = RoundButton(head, "영문", app.ime.toggle, variant="gray", height=26, padx=12,
+                              radius=13, font=FONT_SMALL_BOLD, tooltip="한/영 전환 · Shift+Space 또는 한/영 키")
+    app.ime_btn.pack(side=tk.RIGHT)
+
+    def on_ime(korean):
+        app.ime_btn.set_text("한글" if korean else "영문")
+        app.ime_btn.set_active(korean)
+    app.ime.on_change(on_ime)
+
+    def field_label(text, hint):
+        row = tk.Frame(b, bg=CARD)
+        row.pack(fill=tk.X, pady=(0, 4))
+        tk.Label(row, text=text, bg=CARD, fg=TEXT, font=FONT_BOLD).pack(side=tk.LEFT)
+        tk.Label(row, text=hint, bg=CARD, fg=TEXT3, font=FONT_SMALL).pack(side=tk.LEFT, padx=(8, 0))
+
+    field_label("이슈", "문제")
     app.issue_var = tk.StringVar()
-    tk.Entry(frame, textvariable=app.issue_var, relief=tk.SOLID, bd=1).pack(fill=tk.X)
-    app.issue_var.trace_add("write", lambda *args: app.mark_meta_dirty())
+    box = Card(b, fill=FILL, radius=12, padx=12, pady=9)
+    box.pack(fill=tk.X)
+    app.issue_entry = flat_entry(box.body, app.issue_var)
+    app.issue_entry.pack(fill=tk.X)
+    app.issue_var.trace_add("write", lambda *a: app.mark_meta_dirty())
+    app.ime.attach(app.issue_entry)
 
-    tk.Label(frame, text="Note (판단·수정 이유)", bg=PANEL_BG, fg=SUB_TEXT).pack(anchor="w", pady=(4, 0))
-    app.note_text = tk.Text(
-        frame,
-        height=4,
-        wrap="word",
-        font=FONT,
-        relief=tk.FLAT,
-        highlightthickness=1,
-        highlightbackground=BORDER,
-    )
-    app.note_text.pack(fill=tk.BOTH, expand=True)
+    tk.Frame(b, height=12, bg=CARD).pack()
+    field_label("노트", "판단 · 수정 이유")
+    memo = Card(b, fill=FILL, radius=12, padx=12, pady=10)
+    memo.pack(fill=tk.X)
+    app.note_text = tk.Text(memo.body, height=3, wrap="word", font=FONT, bg=FILL, fg=TEXT,
+                            insertbackground=BLUE, relief=tk.FLAT, bd=0, padx=0, pady=0,
+                            highlightthickness=0, undo=True, selectbackground="#C9E2FF")
+    app.note_text.pack(fill=tk.X)
     app.note_text.bind("<<Modified>>", app.on_note_modified)
+    app.ime.attach(app.note_text)
 
 
-# 5. 아래: 보기 도구, 라벨 도구, 이동/저장
-def build_bottom_tools(app, root):
-    bar = tk.Frame(root, bg=BG, padx=6, pady=4)
-    bar.pack(side=tk.BOTTOM, fill=tk.X)
-    app.mode_buttons = {}
-    app.tool_buttons = tools = []      # 이 중 마지막으로 누른 버튼 하나만 파란색
+def combo_tile(parent, label, var):
+    """회색 둥근 칸 안의 납작한 콤보박스 (목록에서 고르거나 직접 입력)."""
+    card = Card(parent, fill=FILL, radius=12, padx=12, pady=8)
+    tk.Label(card.body, text=label, bg=FILL, fg=TEXT3, font=FONT_CAPTION, anchor="w").pack(fill=tk.X)
+    combo = ttk.Combobox(card.body, textvariable=var, style="Tile.TCombobox", font=FONT_BOLD, width=8)
+    combo.pack(fill=tk.X, pady=(1, 0))
+    return card, combo
 
-    # 5-1. 보기 도구
-    frame = group_box(bar, "보기 도구")
-    frame.pack(side=tk.LEFT)
 
-    action_button(frame, "Zoom In", lambda: app.zoom_center(1.25), tools).pack(side=tk.LEFT, padx=2)
-    action_button(frame, "Zoom Out", lambda: app.zoom_center(0.8), tools).pack(side=tk.LEFT, padx=2)
-    action_button(frame, "Fit", app.fit, tools).pack(side=tk.LEFT, padx=2)
-
-    app.mode_buttons["pan"] = action_button(frame, "Pan", lambda: app.set_mode("pan"), tools)
-    app.mode_buttons["pan"].pack(side=tk.LEFT, padx=2)
-
-    app.hide_btn = action_button(frame, "숨김(H)", app.toggle_labels, tools)
-    app.hide_btn.pack(side=tk.LEFT, padx=2)
-
-    # 5-2. 라벨 도구
-    frame = group_box(bar, "라벨 도구")
-    frame.pack(side=tk.LEFT, padx=6)
-
-    app.mode_buttons["draw"] = action_button(frame, "새 BBox (W)", lambda: app.set_mode("draw"), tools)
-    app.mode_buttons["draw"].pack(side=tk.LEFT, padx=2)
-
-    app.mode_buttons["select"] = action_button(frame, "선택 이동 (V)", lambda: app.set_mode("select"),
-                                                 tools)
-    app.mode_buttons["select"].pack(side=tk.LEFT, padx=2)
-
-    action_button(frame, "삭제 (Del)", app.delete_selected, tools).pack(side=tk.LEFT, padx=2)
-    action_button(frame, "Undo", app.undo, tools).pack(side=tk.LEFT, padx=2)
-    action_button(frame, "Validation", app.run_validation, tools).pack(side=tk.LEFT, padx=2)
-
-    # 5-3. 이미지 이동 및 저장
-    frame = group_box(bar, "이미지 이동 및 저장")
-    frame.pack(side=tk.RIGHT)
-
-    for text, command in (("◀ 이전", app.prev), ("다음 ▶", app.next)):
-        button = tk.Button(frame, text=text, command=command, font=FONT_BOLD,
-                           padx=10, pady=6, takefocus=0)
-        button.pack(side=tk.LEFT, padx=2)
-
-    big_button(frame, "저장", app.save, GREEN, GREEN_DARK).pack(side=tk.LEFT, padx=(6, 2))
-    big_button(frame, "저장 후 다음", app.save_next, BLUE, BLUE_DARK).pack(side=tk.LEFT, padx=2)
+def class_rows(app, counts):
+    """Class 목록 행 데이터 (오른쪽에 현재 이미지의 BBox 개수)."""
+    rows = []
+    for cid in app.class_ids:
+        unused = cid in UNUSED_CLASS_IDS
+        color = CLASS_COLORS.get(cid, "#ff0000")
+        n = counts.get(cid, 0)
+        rows.append(dict(icon=str(cid), icon_bg="#D1D6DB" if unused else color, title=CLASS_NAMES[cid],
+                         right="사용 안 함" if unused else (f"{n}개" if n else ""), right_fg=TEXT3,
+                         dim=unused))
+    return rows

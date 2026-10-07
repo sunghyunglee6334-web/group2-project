@@ -10,13 +10,16 @@ tk.Menu 대신 직접 만든다. WSLg 에서 tk.Menu 의 드롭다운(별도 ove
 """
 import tkinter as tk
 
-from .style import BORDER, FONT, SUB_TEXT, TEXT
+from .style import BG, BLUE_SOFT, FONT, FONT_SMALL, LINE, TEXT, TEXT3
+
+SUB_TEXT = TEXT3
 
 CLICK_GUARD = "MenuClickGuard"     # 메뉴가 열려 있을 때 바깥 클릭을 막는 bindtag
 
-BAR_BG = "#ffffff"
+BAR_BG = BG
 POPUP_BG = "#ffffff"
-HOVER_BG = "#dbeafe"
+HOVER_BG = BLUE_SOFT
+BORDER = LINE
 
 SEPARATOR = {"kind": "separator"}
 
@@ -43,6 +46,7 @@ class MenuBar(tk.Frame):
         self.key_target = None      # 방향키가 움직일 드롭다운 (본 메뉴 또는 하위 메뉴)
         self.focus_before = None
         self.opened_by_hover = False
+        self.anchors = {}           # 메뉴 번호 -> (드롭다운을 붙일 위젯, 'left' | 'right')
 
         # 메뉴가 열려 있는 동안 키보드는 메뉴 막대가 받는다.
         # 창(root)의 단축키(A, D, Space ...)가 같이 눌리지 않도록 root 태그는 뺀다.
@@ -63,11 +67,15 @@ class MenuBar(tk.Frame):
         self.root.bind("<F10>", lambda e: self._open_by_key(0), add="+")
 
     # ---- 메뉴 추가
-    def add_menu(self, text, items, underline=-1):
+    def add_menu(self, text, items, underline=-1, anchor=None, align="left"):
+        """anchor 위젯을 주면 막대에 제목을 그리지 않고, 그 위젯 아래에 드롭다운을 연다.
+        (토스 디자인: 화면 위쪽 '조각김치 라벨링 ⌄' 와 '⋯' 버튼이 메뉴를 연다)"""
         index = len(self.menus)
-        title = tk.Label(self, text=text, bg=BAR_BG, fg=TEXT, font=FONT,
-                         padx=10, pady=3, underline=underline)
-        title.pack(side=tk.LEFT)
+        title = tk.Label(self, text=text, bg=BAR_BG, fg=TEXT, font=FONT_SMALL,
+                         padx=10, pady=4, underline=underline)
+        self.anchors[index] = (anchor, align)
+        if anchor is None:
+            title.pack(side=tk.LEFT)
 
         title.bind("<ButtonPress-1>", lambda e: self.toggle(index))
         title.bind("<B1-Motion>", self._on_title_drag)
@@ -103,9 +111,14 @@ class MenuBar(tk.Frame):
         self._paint_titles()
 
         title, items = self.menus[index]
-        x = title.winfo_rootx()
-        y = title.winfo_rooty() + title.winfo_height()
-        self.dropdown = Dropdown(self, items, x, y)
+        anchor, align = self.anchors.get(index, (None, "left"))
+        if anchor is not None:
+            x = anchor.winfo_rootx() + (anchor.winfo_width() if align == "right" else 0)
+            y = anchor.winfo_rooty() + anchor.winfo_height() + 6
+        else:
+            x = title.winfo_rootx()
+            y = title.winfo_rooty() + title.winfo_height()
+        self.dropdown = Dropdown(self, items, x, y, align=align)
         self.key_target = self.dropdown
 
         self.focus_set()
@@ -294,8 +307,9 @@ class MenuBar(tk.Frame):
 class Dropdown(tk.Frame):
     """드롭다운 하나. 메인 창 안에 place() 로 띄우는 Frame."""
 
-    def __init__(self, bar, items, x, y, parent=None):
+    def __init__(self, bar, items, x, y, parent=None, align="left"):
         super().__init__(bar.root, bg=POPUP_BG, bd=0)
+        self.align = align
         self.bar = bar
         self.parent = parent
         self.child = None
@@ -304,7 +318,7 @@ class Dropdown(tk.Frame):
         self.active = None
 
         box = tk.Frame(self, bg=POPUP_BG, highlightthickness=1,
-                       highlightbackground=BORDER, highlightcolor=BORDER, pady=3)
+                       highlightbackground="#D1D6DB", highlightcolor="#D1D6DB", pady=6, padx=4)
         box.pack(fill=tk.BOTH, expand=True)
 
         for item in items:
@@ -323,7 +337,7 @@ class Dropdown(tk.Frame):
         right = "▸" if item["kind"] == "submenu" else item.get("accel", "")
         mark = tk.Label(row, text=self._mark(item), width=2, bg=POPUP_BG, fg=TEXT, font=FONT)
         label = tk.Label(row, text=item["label"], anchor="w", bg=POPUP_BG, fg=TEXT,
-                         font=FONT, padx=2, pady=3)
+                         font=FONT, padx=4, pady=7)
         accel = tk.Label(row, text=right, anchor="e", bg=POPUP_BG, fg=SUB_TEXT,
                          font=FONT, padx=12)
 
@@ -349,8 +363,13 @@ class Dropdown(tk.Frame):
         root = self.bar.root
         self.update_idletasks()
         width, height = self.winfo_reqwidth(), self.winfo_reqheight()
+        if self.align == "right":
+            x -= width
         x = x - root.winfo_rootx()
         y = y - root.winfo_rooty()
+        if self.parent is not None and x + width > root.winfo_width():
+            # 하위 메뉴가 오른쪽 창 밖으로 나가면 부모 메뉴의 왼쪽에 연다
+            x = self.parent.winfo_rootx() - root.winfo_rootx() - width + 4
         x = max(0, min(x, root.winfo_width() - width))
         y = max(0, min(y, root.winfo_height() - height))
         self.place(x=x, y=y)
