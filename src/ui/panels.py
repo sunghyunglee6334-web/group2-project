@@ -16,7 +16,7 @@ LabelApp 이 쓰는 위젯을 만들어 app 의 속성으로 붙인다.
                                                                  │ 장면 · 작업자 …   │
                                                                  │ 메모        [한글] │
                                                                  └─────────────────┘
-                                                                 [ 저장 ][ 저장하고 다음 장 → ]
+                                                                 [ 저장 ][ 저장하고 다음 (→) ]
 """
 import tkinter as tk
 from tkinter import ttk
@@ -211,8 +211,8 @@ def build_right(app, parent):
     cta.columnconfigure(1, weight=2, uniform="cta")
     RoundButton(cta, "저장", app.save, variant="soft", height=54, radius=16, font=FONT_CTA,
                 tooltip="Ctrl+S").grid(row=0, column=0, sticky="ew", padx=(0, 8))
-    RoundButton(cta, "저장하고 다음 장", app.save_next, variant="primary", height=54, radius=16,
-                font=FONT_CTA, tooltip="Space").grid(row=0, column=1, sticky="ew")
+    RoundButton(cta, "저장하고 다음", app.save_next, variant="primary", height=54, radius=16,
+                font=FONT_CTA, tooltip="Space", arrow=30).grid(row=0, column=1, sticky="ew")
 
     scroll = ScrollFrame(parent, bg=BG)
     scroll.pack(fill=tk.BOTH, expand=True)
@@ -309,6 +309,15 @@ def build_review_card(app, parent):
     app.worker_combo.bind("<<ComboboxSelected>>", lambda e: app.on_worker_change())
     app.worker_combo.bind("<Return>", lambda e: app.on_worker_change())
     app.ime.attach(app.worker_combo)
+
+    def apply_worker_on_leave(_event):
+        """이름을 고치고 Enter 없이 다른 곳을 눌러도 적용. 비워 두면 원래 이름으로 되돌림."""
+        if app.worker_var.get().strip():
+            app.on_worker_change()
+        else:
+            app.worker_var.set(app.s.worker)
+
+    app.worker_combo.bind("<FocusOut>", apply_worker_on_leave, add="+")
 
     app.reviewer_var = tk.StringVar()
     t, app.reviewer_combo = combo_tile(grid, "검수자", app.reviewer_var)

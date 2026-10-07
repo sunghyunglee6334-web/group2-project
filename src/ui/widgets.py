@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import ttk
 
-from .icons import icon_image
+from .icons import arrow_badge, icon_image
 from .style import (BG, BLUE, BLUE_HOVER, BLUE_PRESS, BLUE_SOFT, BLUE_SOFT_HOVER, CARD, FILL,
                     FILL_HOVER, FILL_PRESS, FONT, FONT_BOLD, FONT_BUTTON, FONT_CAPTION, FONT_SMALL,
                     FONT_SMALL_BOLD, LINE, RED, TEXT, TEXT2, TEXT3, TEXT4, text_on)
@@ -77,7 +77,9 @@ class RoundButton(tk.Canvas):
     """
 
     def __init__(self, parent, text, command=None, variant="gray", height=40, width=None,
-                 font=FONT_BUTTON, padx=16, radius=12, tooltip=None, outline_active=False):
+                 font=FONT_BUTTON, padx=16, radius=12, tooltip=None, outline_active=False,
+                 arrow=0):
+        """arrow=지름(px) 을 주면 글자 오른쪽에 동그란 화살표를 붙인다 ('저장하고 다음')."""
         self.bg_parent = parent_bg(parent)
         super().__init__(parent, height=height, bg=self.bg_parent, highlightthickness=0, bd=0,
                          takefocus=0, cursor="hand2")
@@ -89,6 +91,8 @@ class RoundButton(tk.Canvas):
         self.hover = self.pressed = self.active = False
         self.enabled = True
         self.fg_override = None
+        self.arrow = arrow
+        self.arrow_gap = 10
 
         self._resize_to_text()
         self.bind("<Configure>", lambda e: self.redraw())
@@ -106,7 +110,8 @@ class RoundButton(tk.Canvas):
         tmp = self.create_text(0, 0, text=self.text, font=self.font)
         x1, _, x2, _ = self.bbox(tmp)
         self.delete(tmp)
-        self.configure(width=(x2 - x1) + self.padx * 2)
+        extra = self.arrow + self.arrow_gap if self.arrow else 0
+        self.configure(width=(x2 - x1) + extra + self.padx * 2)
 
     def set_text(self, text, fg=None):
         self.text = text
@@ -151,7 +156,16 @@ class RoundButton(tk.Canvas):
             inset = width / 2
             round_rect(self, inset, inset, w - inset, h - inset, self.radius,
                        fill=fill or self.bg_parent, outline=outline or fill or self.bg_parent, width=width)
-        self.create_text(w / 2, h / 2, text=self.text, fill=fg, font=self.font)
+        if not self.arrow:
+            self.create_text(w / 2, h / 2, text=self.text, fill=fg, font=self.font)
+            return
+        # 글자 + 화살표를 한 덩어리로 보고 가운데 정렬
+        tid = self.create_text(0, h / 2, text=self.text, fill=fg, font=self.font, anchor="w")
+        x1, _, x2, _ = self.bbox(tid)
+        left = w / 2 - ((x2 - x1) + self.arrow_gap + self.arrow) / 2
+        self.move(tid, left - x1, 0)
+        self.create_image(left + (x2 - x1) + self.arrow_gap, h / 2 + 1, anchor="w",
+                          image=arrow_badge(self, self.arrow))
 
     def _enter(self, _e):
         self.hover = True
@@ -262,10 +276,14 @@ class RichList(tk.Canvas):
         self.bind("<Motion>", self._motion)
         self.bind("<Leave>", lambda e: self._set_hover(None))
         self.bind("<ButtonRelease-1>", self._click)
+        self._drag = None               # 스크롤바를 잡고 끄는 중이면 (시작 y, 시작 top)
+        self._sb_hot = False            # 마우스가 스크롤바 위에 있는지
         if scroll:
-            self.bind("<MouseWheel>", lambda e: self.scroll_by(-1 if e.delta > 0 else 1))
-            self.bind("<Button-4>", lambda e: self.scroll_by(-1))
-            self.bind("<Button-5>", lambda e: self.scroll_by(1))
+            self.bind("<MouseWheel>", lambda e: self.scroll_by(-3 if e.delta > 0 else 3))
+            self.bind("<Button-4>", lambda e: self.scroll_by(-3))
+            self.bind("<Button-5>", lambda e: self.scroll_by(3))
+            self.bind("<ButtonPress-1>", self._press)
+            self.bind("<B1-Motion>", self._drag_move)
 
     # ---- 데이터
     def set_rows(self, rows):
@@ -316,11 +334,51 @@ class RichList(tk.Canvas):
         for i in range(first, last):
             self._draw_row(i, self.rows[i], 4 + i * self.row_h - self.top, w)
 
+        thumb = self._thumb()
+        if thumb:                               # 스크롤바 (잡고 끌 수 있음)
+            ty, th = thumb
+            hot = self._sb_hot or self._drag
+            x1 = w - (10 if hot else 7)
+            color = TEXT3 if hot else TEXT4
+            round_rect(self, x1, ty + 2, w - 2, ty + th - 2, 4, fill=color, outline=color)
+
+    # ---- 스크롤바 잡고 끌기
+    SB_HIT = 14                                 # 오른쪽 끝에서 이만큼은 스크롤바 영역
+
+    def _thumb(self):
+        """(위치 y, 높이). 스크롤할 필요 없으면 None"""
+        h = self.winfo_height()
         total = len(self.rows) * self.row_h + 8
-        if self.scroll and total > h:           # 얇은 스크롤 표시
-            th = max(30, h * h / total)
-            ty = (h - th) * (self.top / max(1, total - h))
-            round_rect(self, w - 5, ty + 2, w - 1, ty + th - 2, 2, fill=FILL_PRESS, outline=FILL_PRESS)
+        if not self.scroll or total <= h or h <= 1:
+            return None
+        th = max(30, h * h / total)
+        ty = (h - th) * (self.top / max(1, total - h))
+        return ty, th
+
+    def _on_bar(self, e):
+        return self._thumb() is not None and e.x >= self.winfo_width() - self.SB_HIT
+
+    def _press(self, e):
+        self._drag = None
+        if not self._on_bar(e):
+            return
+        ty, th = self._thumb()
+        if not (ty <= e.y <= ty + th):          # 빈 곳을 누르면 그 위치로 바로 이동
+            h = self.winfo_height()
+            ratio = (e.y - th / 2) / max(1, h - th)
+            self.top = max(0, min(self._max_top(), ratio * self._max_top()))
+            self.redraw()
+        self._drag = (e.y, self.top)
+
+    def _drag_move(self, e):
+        if not self._drag:
+            return
+        ty, th = self._thumb() or (0, 0)
+        h = self.winfo_height()
+        y0, top0 = self._drag
+        per_px = self._max_top() / max(1, h - th)
+        self.top = max(0, min(self._max_top(), top0 + (e.y - y0) * per_px))
+        self.redraw()
 
     def _draw_row(self, i, row, y, w):
         p = self.pad
@@ -384,9 +442,17 @@ class RichList(tk.Canvas):
             self.redraw()
 
     def _motion(self, e):
-        self._set_hover(self._index_at(e.y))
+        hot = self._on_bar(e)
+        if hot != self._sb_hot:
+            self._sb_hot = hot
+            self.redraw()
+        self._set_hover(None if hot else self._index_at(e.y))
 
     def _click(self, e):
+        if self._drag is not None or self._on_bar(e):   # 스크롤바 조작은 선택이 아님
+            self._drag = None
+            self.redraw()
+            return
         i = self._index_at(e.y)
         if i is not None:
             self.on_select(i)

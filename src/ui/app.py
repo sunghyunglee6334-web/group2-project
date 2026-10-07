@@ -196,6 +196,7 @@ class LabelApp(CanvasEditor):
 
         r.bind("<space>", guard(self.save_next))
         r.bind("<Shift-space>", always(self.ime.toggle))     # Shift+Space 는 저장이 아니라 한/영 전환
+        self.ime.watch_toggle(r)                              # 한/영 키는 어디서 눌러도 전환
         r.bind("<Delete>", guard(self.delete_selected))
         r.bind("<BackSpace>", guard(self.delete_selected))
         r.bind("<Escape>", guard(self.on_escape))
@@ -895,7 +896,7 @@ def ask_worker(root, worker):
         return worker
 
     worker = dialogs.ask_text(root, "작업자", "작업자 이름(이니셜)을 입력하세요",
-                              "한글은 오른쪽 [영문] 버튼을 누르거나 Shift+Space", HangulIME(root)) or ""
+                              "한글은 오른쪽 [영문] 버튼, 한/영 키 또는 Shift+Space", HangulIME(root)) or ""
     worker = worker.strip()
     if worker:
         settings["worker"] = worker
