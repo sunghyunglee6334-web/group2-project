@@ -55,6 +55,30 @@ def _draw(kind: str, bg: str, fg: str, d: int) -> Image.Image:
     return img.resize((d, d), Image.LANCZOS)
 
 
+def _draw_arrow_badge(d: int) -> Image.Image:
+    """반투명 흰 동그라미 + 흰 화살표 (파란 버튼 위에 얹는 '다음' 표시)."""
+    S = d * SS
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    g = ImageDraw.Draw(img)
+    u = S / 24                           # 24px 기준 단위
+    g.ellipse((0, 0, S - 1, S - 1), fill=(255, 255, 255, 60))
+    white = (255, 255, 255, 255)
+    w = int(2.6 * u)
+    _round_line(g, [(7 * u, 12 * u), (17 * u, 12 * u)], w, white)                       # 몸통
+    _round_line(g, [(12.5 * u, 7.5 * u), (17 * u, 12 * u), (12.5 * u, 16.5 * u)], w, white)  # 머리
+    return img.resize((d, d), Image.LANCZOS)
+
+
+def arrow_badge(widget, d: int) -> ImageTk.PhotoImage:
+    """'저장하고 다음' 버튼 옆 화살표. 바탕이 반투명이라 버튼 색(hover/눌림)이 바뀌어도 자연스럽다."""
+    key = (str(widget.winfo_toplevel()), "arrow_badge", d)
+    photo = _cache.get(key)
+    if photo is None:
+        photo = ImageTk.PhotoImage(_draw_arrow_badge(d), master=widget)
+        _cache[key] = photo
+    return photo
+
+
 def icon_image(widget, kind: str, bg: str, fg: str, d: int) -> ImageTk.PhotoImage:
     """kind: 'check' | 'check2' | 'edit' | 'alert' | '' (빈 원). 같은 값이면 만들어 둔 것을 돌려준다."""
     key = (str(widget.winfo_toplevel()), kind, bg, fg, d)

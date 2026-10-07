@@ -208,7 +208,14 @@ class _Target:
 class HangulIME:
     """여러 입력칸이 같은 한/영 상태를 공유한다."""
 
-    TOGGLE_KEYS = ("<Shift-space>", "<KeyPress-Hangul>", "<KeyPress-Alt_R>")
+    TOGGLE_KEYS = ("<Shift-space>",)
+    # 한/영 키는 키보드·Windows 설정·WSL 에 따라 들어오는 이름이 다르다. 아는 이름을 모두 받는다.
+    #   Hangul           : 리눅스 한글 키보드의 한/영 키
+    #   Alt_R            : 한/영 키가 오른쪽 Alt 자리인 키보드 (WSLg 에서 흔함)
+    #   ISO_Level3_Shift : 오른쪽 Alt 가 AltGr 로 잡힌 경우
+    #   Mode_switch      : 일부 X 키맵
+    TOGGLE_KEYSYMS = {"Hangul", "Alt_R", "ISO_Level3_Shift", "Mode_switch"}
+    TOGGLE_KEYCODES = {130}         # 이름 없이 들어올 때의 X 키코드 (KEY_HANGEUL)
 
     def __init__(self, root, korean: bool = False):
         self.root = root
@@ -218,6 +225,7 @@ class HangulIME:
         self.target: _Target | None = None
         self.start = None
         self.length = 0
+        self._toggle_down = False    # 한/영 키를 눌렀다는 신호를 받았는지 (떼기만 오는 키보드 대비)
 
     # ---- 상태
     def on_change(self, func) -> None:
@@ -242,6 +250,7 @@ class HangulIME:
     # ---- 연결
     def attach(self, widget) -> None:
         widget.bind("<KeyPress>", self._on_key, add="+")
+        widget.bind("<KeyRelease>", self._on_key_release, add="+")
         widget.bind("<BackSpace>", self._on_backspace)
         for seq in self.TOGGLE_KEYS:
             try:
@@ -251,8 +260,36 @@ class HangulIME:
         for seq in ("<ButtonPress>", "<FocusOut>", "<FocusIn>"):
             widget.bind(seq, self.commit, add="+")
 
+    def watch_toggle(self, root) -> None:
+        """입력칸 밖(이미지 화면 등)에서 한/영 키를 눌러도 전환되게 창 전체에서 한/영 키만 받는다."""
+        root.bind("<KeyPress>", lambda e: self._on_toggle_only(e, True), add="+")
+        root.bind("<KeyRelease>", lambda e: self._on_toggle_only(e, False), add="+")
+
+    def _on_toggle_only(self, event, pressed):
+        if not self._is_toggle_key(event):
+            return None
+        if pressed:
+            self._toggle_down = True
+            return self.toggle()
+        return self._on_key_release(event)
+
     # ---- 키 처리
+    def _is_toggle_key(self, event) -> bool:
+        return event.keysym in self.TOGGLE_KEYSYMS or event.keycode in self.TOGGLE_KEYCODES
+
+    def _on_key_release(self, event):
+        """한/영 키 중에는 '뗐다' 신호만 오는 것이 있다. 누름 신호를 못 받았으면 여기서 전환."""
+        if not self._is_toggle_key(event):
+            return None
+        if not self._toggle_down:
+            self.toggle()
+        self._toggle_down = False
+        return "break"
+
     def _on_key(self, event):
+        if self._is_toggle_key(event):               # 한/영 키
+            self._toggle_down = True
+            return self.toggle()
         if event.state & 0x4:                       # Ctrl 조합(복사/붙여넣기 등)은 그대로
             self.commit()
             return None
