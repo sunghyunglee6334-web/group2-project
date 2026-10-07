@@ -1,0 +1,20 @@
+# NDA: 실제 데이터(JPG·TXT·WORK·FINAL)는 절대 Git 에 올리지 않습니다
+data/
+*.jpg
+*.jpeg
+*.png
+*.txt
+!requirements.txt
+settings.json
+
+# 보고서: 문서(md)와 Golden 결과는 올리고, 자동 생성 csv 는 제외
+reports/*.csv
+!reports/golden_test.txt
+
+# BBox 기준서 예시 이미지 (반드시 연습용 dummy 데이터 화면만 사용)
+!docs/images/*.png
+!docs/images/*.jpg
+
+__pycache__/
+*.pyc
+.venv/
