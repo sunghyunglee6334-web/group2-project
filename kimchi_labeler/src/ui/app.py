@@ -731,7 +731,8 @@ class LabelApp(CanvasEditor):
         self.status_bar.set("Validation 실행 중...")
         self.root.update_idletasks()
 
-        issues = validate(self.s.paths, use_work=True, records=self.s.records)
+        issues = validate(self.s.paths, use_work=True, records=self.s.records,
+                          manifest=self.s.manifest)
         out = REPORT_DIR / f"validation_{datetime.now():%Y%m%d_%H%M%S}.csv"
         write_report(issues, out)
 
