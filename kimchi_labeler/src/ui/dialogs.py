@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from ..config import CLASS_NAMES
-from ..validation.validator import critical_count, summarize
+from ..validation.validator import CHECKS, summarize
 from .style import (FONT_CAPTION, FONT_MONO, FONT_SMALL, FONT_TITLE, SCENE_LABELS,
                     SEPARATOR, SURFACE, TEXT, TEXT2, TEXT3, class_label)
 from .widgets import Card, RoundButton, flat_entry
@@ -125,31 +125,64 @@ def ask_text(root, title, message, hint="", ime=None, initial=""):
 
 
 def validation_window(root, issues, image_count, report_path, on_jump):
-    """Validation 결과 표. 행을 더블클릭하면 on_jump(이미지 상대경로)."""
+    """Validation 결과 창.
+    위: 전체 몇 장 중 몇 건인지 + 검사 항목별 정상/오류 체크리스트
+    아래: 문제 항목 표. 행을 더블클릭하면 on_jump(이미지 상대경로)."""
     win = tk.Toplevel(root, bg=SURFACE)
     win.title("Validation 결과")
-    win.geometry("1020x600")
+    win.geometry("1020x680")
 
-    crit = critical_count(issues)
+    summary = summarize(issues)
+    counts = {sev: sum(summary.get(sev, {}).values()) for sev in ("CRITICAL", "REVIEW", "INFO")}
+    by_code = {code: n for codes in summary.values() for code, n in codes.items()}
+    bad_images = len({i.rel_path for i in issues if i.severity in ("CRITICAL", "REVIEW")})
+
+    crit = counts["CRITICAL"]
+    if crit:
+        verdict, verdict_color = f"  CRITICAL {crit}건", "#D70015"
+    elif counts["REVIEW"]:
+        verdict, verdict_color = f"  CRITICAL 0건 · 확인 필요 {counts['REVIEW']}건", "#C93400"
+    else:
+        verdict, verdict_color = "  CRITICAL 0건 · 통과", "#248A3D"
+
     head = tk.Frame(win, bg=SURFACE, padx=20, pady=14)
     head.pack(fill=tk.X)
     tk.Label(head, text="Validation 결과", bg=SURFACE, fg=TEXT, font=FONT_TITLE).pack(side=tk.LEFT)
-    tk.Label(head, text=("  CRITICAL 0건 · 통과" if crit == 0 else f"  CRITICAL {crit}건"),
-             bg=SURFACE, fg="#248A3D" if crit == 0 else "#D70015", font=FONT_TITLE).pack(side=tk.LEFT)
+    tk.Label(head, text=verdict, bg=SURFACE, fg=verdict_color, font=FONT_TITLE).pack(side=tk.LEFT)
     tk.Label(head, text="행을 더블클릭하면 그 이미지로 이동", bg=SURFACE, fg=TEXT3,
              font=FONT_SMALL).pack(side=tk.RIGHT)
 
-    # 요약
-    parts = [f"검사 {image_count}장", f"CRITICAL {critical_count(issues)}건"]
-    summary = summarize(issues)
-    for severity in ("CRITICAL", "REVIEW", "INFO"):
-        for code, n in summary.get(severity, {}).items():
-            parts.append(f"{code} {n}")
-
+    # 요약: 전체 중 문제 이미지 수
+    parts = [f"검사 완료 {image_count}장", f"문제 이미지 {bad_images}장",
+             f"CRITICAL {counts['CRITICAL']}건", f"REVIEW {counts['REVIEW']}건",
+             f"INFO {counts['INFO']}건"]
     tk.Label(win, text="   ·   ".join(parts), wraplength=980, justify=tk.LEFT, bg=SURFACE, fg=TEXT2,
              font=FONT_SMALL, padx=20).pack(anchor="w")
+
+    # 검사 항목별 체크리스트
+    checks = tk.Frame(win, bg=SURFACE, padx=20, pady=6)
+    checks.pack(fill=tk.X)
+    for name, codes in CHECKS:
+        n = sum(by_code.get(c, 0) for c in codes)
+        severity = next((i.severity for i in issues if i.code in codes), "")
+        if n == 0:
+            text, color = f"✓ {name}: 정상", "#248A3D"
+        elif severity == "CRITICAL":
+            text, color = f"⚠ {name}: 오류 {n}건", SEVERITY_COLORS["CRITICAL"]
+        elif severity == "REVIEW":
+            text, color = f"⚠ {name}: 확인 필요 {n}건", SEVERITY_COLORS["REVIEW"]
+        else:
+            text, color = f"ⓘ {name}: {n}건", SEVERITY_COLORS["INFO"]
+        tk.Label(checks, text=text, bg=SURFACE, fg=color, font=FONT_SMALL, anchor="w").pack(anchor="w")
+
     tk.Label(win, text=f"보고서  {report_path}", bg=SURFACE, fg=TEXT3, font=FONT_CAPTION,
              padx=20).pack(anchor="w", pady=(2, 8))
+
+    # 문제 항목이 0건이면 빈 표 대신 안내를 보여준다
+    if not issues:
+        tk.Label(win, text=f"표시할 문제 항목이 없습니다 (검사한 {image_count}장 모두 0건)",
+                 bg=SURFACE, fg="#248A3D", font=FONT_SMALL).pack(pady=24)
+        return win
 
     # 결과 표
     columns = ("severity", "code", "file", "line", "message")
@@ -172,8 +205,8 @@ def validation_window(root, issues, image_count, report_path, on_jump):
     table.pack(fill=tk.BOTH, expand=True, padx=(20, 0), pady=(0, 16))
 
     # 더블클릭 -> 이미지로 이동
-    def jump(_event):
-        item = table.focus()
+    def jump(event):
+        item = table.identify_row(event.y) or table.focus()
         if item:
             on_jump(table.item(item, "values")[2])
 
