@@ -69,6 +69,8 @@ class LabelSession:
         self.by_key = {r.rel_image: r for r in self.records}
         self.manifest = Manifest(paths.manifest)
         from ..manifest_builder import add_records
+        from ..yolo.dataset import migrate_legacy_work
+        migrate_legacy_work(self.records, paths)     # 예전 WORK/labels/ 저장본 자동 이전
         add_records(self.manifest, self.records, paths)
         self.manifest.save()
         self.filter_name = "전체"

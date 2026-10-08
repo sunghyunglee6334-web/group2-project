@@ -44,12 +44,35 @@ class ImageRecord:
         return paths.raw / self._raw_rel(self.rel_label, paths)
 
     def work_label(self, paths: Paths) -> Path:
-        return paths.work / self._raw_rel(self.rel_label, paths)
+        # RAW 를 상위폴더로 열든 데이터1/2 폴더로 열든 같은 위치 (manifest 의 label_relative_path 와 동일)
+        return paths.work / self.rel_label
+
+    def legacy_work_labels(self, paths: Paths) -> list[Path]:
+        """예전 버전(WORK/labels/...)에 저장된 위치 후보."""
+        return [paths.work_labels / self.rel_label,
+                paths.work_labels / self._raw_rel(self.rel_label, paths)]
 
     def effective_label(self, paths: Paths) -> Path:
         """WORK 에 저장본이 있으면 그것, 없으면 RAW 원본."""
         w = self.work_label(paths)
         return w if w.exists() else self.raw_label(paths)
+
+
+def migrate_legacy_work(records: list["ImageRecord"], paths: Paths) -> int:
+    """예전 WORK/labels/... 저장본을 새 위치로 복사한다 (원본은 지우지 않음, 새 위치에 이미 있으면 건드리지 않음)."""
+    import shutil
+    moved = 0
+    for rec in records:
+        new = rec.work_label(paths)
+        if new.exists():
+            continue
+        for old in rec.legacy_work_labels(paths):
+            if old.exists() and old != new:
+                new.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(old, new)
+                moved += 1
+                break
+    return moved
 
 
 def image_rel_to_label_rel(rel_image: str) -> tuple[str, str, str]:
