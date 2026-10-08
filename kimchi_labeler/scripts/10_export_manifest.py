@@ -26,9 +26,15 @@ from src.bbox.session import canonical  # noqa: E402
 from src.validation.validator import image_size  # noqa: E402
 from src.yolo.yolo_io import read_label_file  # noqa: E402
 
-COLUMNS = ["file_name", "relative_path", "source_dataset", "original_split", "scene_type",
-           "worker", "reviewer", "status", "qa_status", "review_reason",
-           "original_bbox_count", "final_bbox_count", "note", "updated_at"]
+COLUMNS = [
+    "file_name", "relative_path",
+    "source_dataset", "original_split",
+    "scene_type", "worker", "reviewer",
+    "status", "qa_status", "review_reason",
+    "original_bbox_count", "final_bbox_count", "bbox_diff",
+    "original_class_count", "final_class_count", "class_diff",
+    "note", "updated_at"
+    ]
 
 QA_DONE = {"PASS", "REVIEWED", "FINAL"}
 
@@ -75,6 +81,10 @@ def main() -> None:
             "review_reason": r["issue"] if status == "REVIEW" or r["issue"] else "",
             "original_bbox_count": r["original_bbox_count"],
             "final_bbox_count": r["final_bbox_count"],
+            "bbox_diff": r["bbox_diff"],
+            "original_class_count": r["original_class_count"],
+            "final_class_count": r["final_class_count"],
+            "class_diff": r["class_diff"],
             "note": r["note"],
             "updated_at": r["updated_at"],
         })
