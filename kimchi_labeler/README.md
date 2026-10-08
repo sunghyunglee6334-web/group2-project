@@ -12,13 +12,11 @@
 전제: Windows 11 + WSL2(Ubuntu 22.04 이상). 아래는 모두 **WSL 터미널**에서 실행합니다.
 
 ```bash
-# 1) Windows 다운로드 폴더의 zip 을 WSL 홈(~)에 풀기
-ZIP=$(ls -t /mnt/c/Users/*/Downloads/kimchi_labeler*.zip | head -1)
-echo "$ZIP"
-python3 -m zipfile -e "$ZIP" ~/
+# 1) GitHub 에서 받기 (폴더 이름은 group2_project 로 통일)
+git clone https://github.com/sunghyunglee6334-web/group2-project.git ~/group2_project
 
 # 2) 설치 (패키지, 한글 글꼴, 가상환경, 연습 데이터, 자동 테스트)
-cd ~/kimchi_labeler
+cd ~/group2_project/kimchi_labeler
 bash setup_wsl.sh
 ```
 
@@ -28,27 +26,24 @@ bash setup_wsl.sh
 ## 2. 실행
 
 ```bash
-cd ~/kimchi_labeler
+cd ~/group2_project/kimchi_labeler
 bash run.sh --raw data/dummy_raw     # 처음: 연습 데이터로 실행 (폴더는 기억됨)
 bash run.sh                          # 다음부터
 ```
 
 - 처음 실행하면 **작업자 이름**을 물어봅니다. 한 번 입력하면 기억합니다.
 - 실제 데이터로 바꿀 때: 메뉴 **파일 → RAW 폴더 열기** (Ctrl+O) 에서 `이물검출_학습데이터1`, `이물검출_학습데이터2` 가 **바로 안에 들어 있는 폴더**를 고르세요.
-- RAW 폴더는 프로그램 폴더(`kimchi_labeler`) **바깥**에 두세요. 예: `data/raw`. RAW 와 WORK 가 겹치면 프로그램이 실행을 거부합니다.
+- RAW 와 WORK 가 겹치면 프로그램이 실행을 거부합니다.
 
 ## 3. 새 버전으로 업데이트
 
-새 `kimchi_labeler.zip` 을 Windows 다운로드 폴더에 받은 뒤:
-
 ```bash
-cd ~/kimchi_labeler
-bash update.sh
+cd ~/group2_project
+git switch main && git pull origin main
 ```
 
-- 코드(`src`, `scripts`, `tests`, `configs` 등)는 새 버전으로 바뀝니다.
-- 내 작업(`data/`, `settings.json`, `.venv`)과 팀이 작성한 문서(`docs/`, `reports/`, `manifests/`)는 그대로 둡니다. 새 문서 파일만 추가됩니다.
-- README 가 다르면 `README.new.md` 로 따로 저장합니다.
+- 코드만 새 버전으로 바뀝니다. 내 작업(`data/`, `settings.json`, `.venv`)은 `.gitignore` 대상이라 그대로 남습니다.
+- 버전 기록은 GitHub 의 **Tags** (v2.1, v2.2 …) 에서 확인합니다.
 
 ## 4. 설정 파일 (settings.json)
 
