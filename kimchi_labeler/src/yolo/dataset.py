@@ -31,14 +31,20 @@ class ImageRecord:
     def label_name(self) -> str:
         return PurePosixPath(self.rel_label).name
 
+    def _raw_rel(self, rel: str, paths: Paths) -> str:
+        parts = PurePosixPath(rel).parts
+        if parts and parts[0] == paths.raw.name:
+            return str(PurePosixPath(*parts[1:]))
+        return rel
+
     def raw_image(self, paths: Paths) -> Path:
-        return paths.raw / self.rel_image
+        return paths.raw / self._raw_rel(self.rel_image, paths)
 
     def raw_label(self, paths: Paths) -> Path:
-        return paths.raw / self.rel_label
+        return paths.raw / self._raw_rel(self.rel_label, paths)
 
     def work_label(self, paths: Paths) -> Path:
-        return paths.work_labels / self.rel_label
+        return paths.work / self._raw_rel(self.rel_label, paths)
 
     def effective_label(self, paths: Paths) -> Path:
         """WORK 에 저장본이 있으면 그것, 없으면 RAW 원본."""
@@ -69,6 +75,8 @@ def scan_images(raw_root: Path) -> list[ImageRecord]:
     for p in sorted(raw_root.rglob("*")):
         if p.is_file() and p.suffix.lower() in IMAGE_EXTS and not p.name.startswith("."):
             rel = p.relative_to(raw_root).as_posix()
+            if raw_root.name.startswith("이물검출_학습데이터") and not rel.startswith(f"{raw_root.name}/"):
+                rel = f"{raw_root.name}/{rel}"
             rel_label, source, split = image_rel_to_label_rel(rel)
             records.append(ImageRecord(rel, rel_label, source, split))
     return records
@@ -80,6 +88,8 @@ def scan_orphan_labels(raw_root: Path, records: list[ImageRecord]) -> list[str]:
     orphans = []
     for p in sorted(raw_root.rglob("*.txt")):
         rel = p.relative_to(raw_root).as_posix()
+        if raw_root.name.startswith("이물검출_학습데이터") and not rel.startswith(f"{raw_root.name}/"):
+            rel = f"{raw_root.name}/{rel}"
         if rel not in expected and p.name.lower() not in {"classes.txt", "readme.txt"}:
             orphans.append(rel)
     return orphans

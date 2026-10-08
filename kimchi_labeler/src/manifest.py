@@ -14,11 +14,27 @@ from pathlib import Path
 from .yolo.yolo_io import atomic_write_text
 
 COLUMNS = [
-    "relative_path", "image_name", "label_name", "label_relative_path",
-    "source_dataset", "original_split", "scene_type",
-    "assignee", "reviewer", "status",
-    "original_bbox_count", "final_bbox_count",
-    "issue", "note", "pilot", "pass_sample", "updated_at", "updated_by",
+    "relative_path",
+    "image_name",
+    "label_name",
+    "label_relative_path",
+    "source_dataset",
+    "original_split",
+    "scene_type",
+    "assignee",
+    "reviewer",
+    "status",
+    "original_bbox_count",
+    "final_bbox_count",
+    "bbox_diff",
+    "original_class_count",
+    "final_class_count",
+    "class_diff",
+    "issue", "note",
+    "pilot",
+    "pass_sample",
+    "updated_at",
+    "updated_by",
 ]
 
 

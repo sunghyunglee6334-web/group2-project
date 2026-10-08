@@ -56,9 +56,9 @@ def main() -> None:
 
     copied = 0
     for key, r in rows.items():
-        src = origin[key].parent / "labels" / r["label_relative_path"]
+        src = origin[key].parent / r["label_relative_path"]
         if src.exists():
-            dst = out / "labels" / r["label_relative_path"]
+            dst = out / r["label_relative_path"]
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
             copied += 1
