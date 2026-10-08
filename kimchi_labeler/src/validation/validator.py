@@ -6,6 +6,8 @@
   CRITICAL : 반드시 0 이어야 FINAL 가능 (Pair, Parsing, Class 범위, 좌표 범위)
   REVIEW   : 사람이 판단 근거를 남겨야 함 (Class 4, 중복 의심, 아주 작은 BBox)
   INFO     : 확인용 (Empty Label 등)
+
+검사 항목(CHECKS)은 결과 창 위쪽 체크리스트에 그대로 쓰인다.
 """
 from __future__ import annotations
 
@@ -72,9 +74,39 @@ def check_label_text(rel: str, text: str, img_w: int, img_h: int) -> list[Issue]
     return issues
 
 
+# (화면 이름, 이 항목에 속하는 code 들). 순서대로 결과 창에 표시된다.
+CHECKS = [
+    ("TXT 형식", ("PARSE",)),
+    ("Class ID 범위", ("CLASS_RANGE",)),
+    ("좌표값 범위", ("COORD_RANGE",)),
+    ("너비/높이", ("WH_ZERO",)),
+    ("BBox 이미지 범위", ("BOX_OUTSIDE",)),
+    ("파일 짝 확인", ("PAIR_NO_TXT", "PAIR_NO_JPG", "IMAGE_READ")),
+    ("검수 상태", ("STATUS_REVIEW",)),
+    ("기타 확인 (Class 4 · 중복 · 작은 BBox · EXIF)", ("CLASS_4", "DUPLICATE", "TINY_BOX", "EXIF_ROTATE")),
+    ("빈 라벨 (BBox 없음)", ("EMPTY_LABEL",)),
+]
+
+SEVERITY_ORDER = {"CRITICAL": 0, "REVIEW": 1, "INFO": 2}
+
+
+def status_issues(manifest, records: list[ImageRecord]) -> list[Issue]:
+    """Manifest 에서 검수 상태가 REVIEW(확인 필요)인 이미지를 REVIEW 항목으로 만든다."""
+    issues: list[Issue] = []
+    for rec in records:
+        row = manifest.rows.get(rec.rel_image)
+        if not row or row["status"] != "REVIEW":
+            continue
+        reason = " / ".join(t for t in (row["issue"], row["note"]) if t.strip())
+        msg = "검수 상태 '확인 필요'" + (f" - {reason}" if reason else "")
+        issues.append(Issue("REVIEW", "STATUS_REVIEW", rec.rel_image, 0, msg))
+    return issues
+
+
 def validate(paths: Paths, use_work: bool = True,
-             records: list[ImageRecord] | None = None) -> list[Issue]:
-    """use_work=True 이면 WORK 저장본(없으면 RAW)을, False 이면 RAW 만 검사."""
+             records: list[ImageRecord] | None = None, manifest=None) -> list[Issue]:
+    """use_work=True 이면 WORK 저장본(없으면 RAW)을, False 이면 RAW 만 검사.
+    manifest 를 주면 검수 상태가 REVIEW 인 이미지도 결과에 넣는다."""
     records = records if records is not None else scan_images(paths.raw)
     issues: list[Issue] = []
     for rec in records:
@@ -95,6 +127,9 @@ def validate(paths: Paths, use_work: bool = True,
         issues.extend(check_label_text(rec.rel_image, text, w, h))
     for orphan in scan_orphan_labels(paths.raw, records):
         issues.append(Issue("CRITICAL", "PAIR_NO_JPG", orphan, 0, "TXT 는 있는데 JPG 없음"))
+    if manifest is not None:
+        issues.extend(status_issues(manifest, records))
+    issues.sort(key=lambda i: SEVERITY_ORDER.get(i.severity, 9))   # CRITICAL 이 맨 위
     return issues
 
 
