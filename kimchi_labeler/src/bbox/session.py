@@ -68,11 +68,11 @@ class LabelSession:
             raise SystemExit(f"RAW 폴더에 이미지가 없습니다: {paths.raw}")
         self.by_key = {r.rel_image: r for r in self.records}
         self.manifest = Manifest(paths.manifest)
-        missing = [r for r in self.records if r.rel_image not in self.manifest.rows]
-        if missing:
-            from ..manifest_builder import add_records   # 순환 import 방지
-            add_records(self.manifest, missing, paths)
-            self.manifest.save()
+        from ..manifest_builder import add_records
+        from ..yolo.dataset import migrate_legacy_work
+        migrate_legacy_work(self.records, paths)     # 예전 WORK/labels/ 저장본 자동 이전
+        add_records(self.manifest, self.records, paths)
+        self.manifest.save()
         self.filter_name = "전체"
         self.view_keys: list[str] = [r.rel_image for r in self.records]
         self.index = 0
@@ -216,7 +216,15 @@ class LabelSession:
             atomic_write_text(work_path, boxes_to_text(cur.boxes, cur.width, cur.height))
 
         row = self.manifest.get(rec.rel_image)
-        fields = dict(status=status, final_bbox_count=len(cur.boxes), note=note, issue=issue)
+        fields = dict(
+            status=status,
+            final_bbox_count=len(cur.boxes),
+            final_class_count=len({box.cls for box in cur.boxes}),
+            bbox_diff=len(cur.boxes) - int(row["original_bbox_count"] or 0),
+            class_diff=len({box.cls for box in cur.boxes}) - int(row["original_class_count"] or 0),
+            note=note,
+            issue=issue,
+        )
         if scene_type:
             fields["scene_type"] = scene_type
         if not row["assignee"]:
