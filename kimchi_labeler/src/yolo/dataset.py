@@ -31,19 +31,48 @@ class ImageRecord:
     def label_name(self) -> str:
         return PurePosixPath(self.rel_label).name
 
+    def _raw_rel(self, rel: str, paths: Paths) -> str:
+        parts = PurePosixPath(rel).parts
+        if parts and parts[0] == paths.raw.name:
+            return str(PurePosixPath(*parts[1:]))
+        return rel
+
     def raw_image(self, paths: Paths) -> Path:
-        return paths.raw / self.rel_image
+        return paths.raw / self._raw_rel(self.rel_image, paths)
 
     def raw_label(self, paths: Paths) -> Path:
-        return paths.raw / self.rel_label
+        return paths.raw / self._raw_rel(self.rel_label, paths)
 
     def work_label(self, paths: Paths) -> Path:
-        return paths.work_labels / self.rel_label
+        # RAW 를 상위폴더로 열든 데이터1/2 폴더로 열든 같은 위치 (manifest 의 label_relative_path 와 동일)
+        return paths.work / self.rel_label
+
+    def legacy_work_labels(self, paths: Paths) -> list[Path]:
+        """예전 버전(WORK/labels/...)에 저장된 위치 후보."""
+        return [paths.work_labels / self.rel_label,
+                paths.work_labels / self._raw_rel(self.rel_label, paths)]
 
     def effective_label(self, paths: Paths) -> Path:
         """WORK 에 저장본이 있으면 그것, 없으면 RAW 원본."""
         w = self.work_label(paths)
         return w if w.exists() else self.raw_label(paths)
+
+
+def migrate_legacy_work(records: list["ImageRecord"], paths: Paths) -> int:
+    """예전 WORK/labels/... 저장본을 새 위치로 복사한다 (원본은 지우지 않음, 새 위치에 이미 있으면 건드리지 않음)."""
+    import shutil
+    moved = 0
+    for rec in records:
+        new = rec.work_label(paths)
+        if new.exists():
+            continue
+        for old in rec.legacy_work_labels(paths):
+            if old.exists() and old != new:
+                new.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(old, new)
+                moved += 1
+                break
+    return moved
 
 
 def image_rel_to_label_rel(rel_image: str) -> tuple[str, str, str]:
@@ -69,6 +98,8 @@ def scan_images(raw_root: Path) -> list[ImageRecord]:
     for p in sorted(raw_root.rglob("*")):
         if p.is_file() and p.suffix.lower() in IMAGE_EXTS and not p.name.startswith("."):
             rel = p.relative_to(raw_root).as_posix()
+            if raw_root.name.startswith("이물검출_학습데이터") and not rel.startswith(f"{raw_root.name}/"):
+                rel = f"{raw_root.name}/{rel}"
             rel_label, source, split = image_rel_to_label_rel(rel)
             records.append(ImageRecord(rel, rel_label, source, split))
     return records
@@ -80,6 +111,8 @@ def scan_orphan_labels(raw_root: Path, records: list[ImageRecord]) -> list[str]:
     orphans = []
     for p in sorted(raw_root.rglob("*.txt")):
         rel = p.relative_to(raw_root).as_posix()
+        if raw_root.name.startswith("이물검출_학습데이터") and not rel.startswith(f"{raw_root.name}/"):
+            rel = f"{raw_root.name}/{rel}"
         if rel not in expected and p.name.lower() not in {"classes.txt", "readme.txt"}:
             orphans.append(rel)
     return orphans
