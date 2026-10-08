@@ -808,7 +808,7 @@ tick()
 
 ## 9. scripts - 운영 도구 00~10
 
-스크립트는 `.venv` 를 켠 뒤 프로젝트 폴더에서 실행합니다: `cd ~/kimchi_labeler && source .venv/bin/activate`
+스크립트는 `.venv` 를 켠 뒤 프로젝트 폴더에서 실행합니다: `cd ~/group2_project/kimchi_labeler && source .venv/bin/activate`
 
 | 스크립트 | 핵심 코드 아이디어 |
 |---|---|
