@@ -1,0 +1,36 @@
+# 조각김치 이물검출 Class 설정 (프로그램이 실행할 때 이 파일을 읽습니다)
+#
+# - Class 번호는 절대 다시 매기지 않습니다 (교과 8 학습과 맞아야 함).
+# - enabled: false  -> 새 BBox 에 쓸 수 없고, 기존 TXT 에서 발견되면 REVIEW 대상
+# - color            -> 화면에 BBox 를 그리는 색
+# - 상세한 판단 기준은 docs/class_guide.md
+
+classes:
+  0:
+    name: "나뭇잎·종이류"
+    enabled: true
+    color: "#2ecc71"
+  1:
+    name: "플라스틱·돌·금속"
+    enabled: true
+    color: "#3498db"
+  2:
+    name: "나뭇가지류"
+    enabled: true
+    color: "#e67e22"
+  3:
+    name: "벌레류"
+    enabled: true
+    color: "#e84393"
+  4:
+    name: "고무장갑(미사용)"
+    enabled: false
+    color: "#ff0000"
+  5:
+    name: "병해·갈변"
+    enabled: true
+    color: "#9b59b6"
+  6:
+    name: "파·고추"
+    enabled: true
+    color: "#f1c40f"
