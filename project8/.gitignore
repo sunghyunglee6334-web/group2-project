@@ -1,0 +1,20 @@
+# NDA: 기업 제공 / 파생 Dataset · 학습 결과는 Git 에 올리지 않습니다
+data/
+models/
+runs/
+demo/
+*.pt
+*.onnx
+*.engine
+*.jpg
+*.jpeg
+*.png
+*.txt
+*.zip
+!requirements.txt
+!docs/images/*.png
+
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
