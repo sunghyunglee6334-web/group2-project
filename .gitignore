@@ -9,3 +9,6 @@ settings.json
 __pycache__/
 *.pyc
 *:Zone.Identifier
+
+# 프로그램이 만드는 보고서 CSV 는 Git 제외 (강사님 확인 전)
+**/reports/*.csv
