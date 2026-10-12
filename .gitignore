@@ -1,11 +1,11 @@
-# 김치 이미지·라벨 데이터 (저작권·NDA) - GitHub 에 올리지 않음
+# 전체 공통 안전장치 (NDA) — 각 project 폴더에도 .gitignore 있음
 **/data/
-**/이물검출_학습데이터*/
 *.jpg
 *.jpeg
 *.zip
+*.pt
+settings.json
 .venv/
 __pycache__/
 *.pyc
-settings.json
 *:Zone.Identifier

@@ -16,7 +16,7 @@
 git clone https://github.com/sunghyunglee6334-web/group2-project.git ~/group2_project
 
 # 2) 설치 (패키지, 한글 글꼴, 가상환경, 연습 데이터, 자동 테스트)
-cd ~/group2_project/kimchi_labeler
+cd ~/group2_project
 bash setup_wsl.sh
 ```
 
@@ -26,7 +26,7 @@ bash setup_wsl.sh
 ## 2. 실행
 
 ```bash
-cd ~/group2_project/kimchi_labeler
+cd ~/group2_project
 bash run.sh --raw data/dummy_raw     # 처음: 연습 데이터로 실행 (폴더는 기억됨)
 bash run.sh                          # 다음부터
 ```
@@ -51,8 +51,8 @@ git switch main && git pull origin main
 
 ```json
 {
-  "raw_root":  "/home/<이름>/kimchi_labeler/data/raw",
-  "work_root": "/home/<이름>/kimchi_labeler/data/work",
+  "raw_root":  "/home/<이름>/group2_project/data/raw",
+  "work_root": "/home/<이름>/group2_project/data/work",
   "worker": "홍길동"
 }
 ```
@@ -175,7 +175,7 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 ## 6. 폴더 구조와 산출물 위치
 
 ```text
-kimchi_labeler/
+group2_project/
 ├── main.py                       실행 진입점
 ├── setup_wsl.sh                  WSL 처음 설치 (bash setup_wsl.sh)
 ├── run.sh                        실행 (bash run.sh)
