@@ -1,7 +1,0 @@
-{
-  "raw_root": "data/raw",
-  "work_root": "data/work",
-  "final_root": "data/final",
-  "worker": "",
-  "team": ["PM", "GUI", "COORD", "STORAGE", "QA", "DOC"]
-}
