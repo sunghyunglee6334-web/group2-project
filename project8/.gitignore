@@ -17,3 +17,16 @@ __pycache__/
 *.pyc
 .venv/
 .ipynb_checkpoints/
+
+.cache/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+*:Zone.Identifier
+
+# 가이드 22.2.1: 그래프는 허용 · 그 외 추가 제외
+!reports/figures/*.png
+*.pth
+venv/
+.idea/
