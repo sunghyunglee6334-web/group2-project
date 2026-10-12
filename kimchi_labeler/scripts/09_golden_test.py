@@ -10,7 +10,7 @@
 10.12 추가 사항)
 테스트 실행 유효성을 위해 대상이 0 장인 경우 -> 경고 문구 추가
 화면 변환 검사 시 박스 0 인 경우 -> 검사 생략 문구 추가
-입력 라벨 문제로 수행하지 못한 검사는 SKIP과 사유를 기록
+입력 라벨 문제로 수행하지 못한 검사는 PASS 가 아니라 SKIP과 사유를 기록
 
     python scripts/09_golden_test.py --n 20                 # 무작위 20장
     python scripts/09_golden_test.py --list golden.txt      # 지정 목록(relative_path 한 줄씩)
