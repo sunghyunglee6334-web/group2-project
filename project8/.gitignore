@@ -17,3 +17,10 @@ __pycache__/
 *.pyc
 .venv/
 .ipynb_checkpoints/
+
+.cache/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+*:Zone.Identifier
