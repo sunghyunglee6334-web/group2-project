@@ -1,0 +1,19 @@
+# NDA: 기업 제공 / 파생 Dataset · 학습 결과는 Git 에 올리지 않습니다 (교과 8 수행가이드 22.2)
+data/
+models/
+runs/
+demo/
+*.pt
+*.onnx
+*.engine
+*.jpg
+*.jpeg
+*.png
+*.txt
+*.zip
+!requirements.txt
+
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
