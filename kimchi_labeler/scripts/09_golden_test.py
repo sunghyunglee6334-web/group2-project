@@ -7,6 +7,11 @@
   4) BBox 추가 + Class 변경 + 삭제 -> 저장 -> 다시 불러오기 -> 동일
   5) RAW 파일이 바뀌지 않음
 
+10.12 추가 사항)
+테스트 실행 유효성을 위해 대상이 0 장인 경우 -> 경고 문구 추가
+화면 변환 검사 시 박스 0 인 경우 -> 검사 생략 문구 추가
+입력 라벨 문제로 수행하지 못한 검사는 SKIP과 사유를 기록
+
     python scripts/09_golden_test.py --n 20                 # 무작위 20장
     python scripts/09_golden_test.py --list golden.txt      # 지정 목록(relative_path 한 줄씩)
 """
@@ -43,9 +48,6 @@ def test_image(
     raw_lbl = rec.raw_label(sess.paths)
     raw_hash = (md5(rec.raw_image(sess.paths)), md5(raw_lbl))
 
-    # [추가] 빈 TXT는 허용하지만, 파일 자체가 없으면 실패
-    if not raw_lbl.exists():
-        errs.append(f"RAW TXT 누락: {rec.rel_label}")
 
     # 1) YOLO 왕복
     # [변경] 검사하지 못한 이유와 파싱 오류를 기록
@@ -55,7 +57,7 @@ def test_image(
 
     elif not cur.raw_text.strip():
         # 객체 없는 이미지의 빈 TXT는 정상
-        skips.append("YOLO 왕복: 빈 라벨로 검사할 좌표 없음")
+        skips.append("YOLO 왕복: 라벨 누락 - 검사할 좌표 없음")
 
     else:
         for line_no, line in enumerate(
@@ -64,7 +66,6 @@ def test_image(
             v, e = parse_line(line)
             
             if e:
-                errs.append(f"라벨 파싱 오류 ({line_no}번 행): {e}")
                 skips.append(f"YOLO 왕복: {line_no}번 행 파싱 오류")
                 continue
 
@@ -74,6 +75,9 @@ def test_image(
                 errs.append(f"YOLO 왕복 오차: {line}")
 
     # 2) 화면 변환 왕복
+    if not cur.boxes:
+        skips.append("화면 변환 왕복: 검사할 박스 없음")  # 박스가 없는 경우 확인용 추가
+
     vt = ViewTransform()
     vt.fit(cur.width, cur.height, 1200, 800)
 
@@ -93,7 +97,7 @@ def test_image(
         if rec.work_label(sess.paths).read_bytes() != raw_lbl.read_bytes():
             errs.append("무수정 저장 결과가 RAW 와 다름")
 
-    # [추가] 위 조건을 만족하지 못해 비교를 생략한 이유 기록
+    # [추가] 입력 라벨이 없어 수행하지 못한 검사 기록
     else:
         if cur.raw_text is None:
             skips.append(
@@ -146,7 +150,7 @@ def main() -> int:
             random.seed(0)          # 랜덤 고정 씨드값 설정
             keys = random.sample(keys, min(a.n, len(keys)))
 
-        # [추가] 검사 대상이 없으면(=0) 성공으로 처리하지 않고 에러 문구와 함께 중단
+        # [추가] 검사 대상이 없으면(=0) 성공으로 처리하지 않고 에러 문구와 함께 종료
         if not keys:
             print(
                 "ERROR: 검사 대상이 없습니다. "

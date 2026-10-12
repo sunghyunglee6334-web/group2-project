@@ -1,0 +1,20 @@
+PASS  이물검출_학습데이터2/images/train/2_train_0000.jpg  
+PASS  이물검출_학습데이터2/images/validation/2_validation_0006.jpg  SKIP — YOLO 왕복: 빈 라벨로 검사할 좌표 없음
+PASS  이물검출_학습데이터2/images/train/2_train_0002.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0002.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0016.jpg  
+PASS  이물검출_학습데이터2/images/train/2_train_0008.jpg  
+PASS  이물검출_학습데이터2/images/train/2_train_0007.jpg  
+PASS  이물검출_학습데이터2/images/train/2_train_0001.jpg  SKIP — YOLO 왕복: 빈 라벨로 검사할 좌표 없음
+FAIL  이물검출_학습데이터1/images/train/1_train_0019.jpg  라벨 파싱 오류 (2줄): 값 개수 3개 (5개여야 함); SKIP — YOLO 왕복: 2줄 파싱 오류; SKIP — 무수정 저장 비교: RAW 라벨 읽기·해석 오류로 생략
+PASS  이물검출_학습데이터2/images/train/2_train_0006.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0022.jpg  
+PASS  이물검출_학습데이터2/images/train/2_train_0013.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0013.jpg  
+PASS  이물검출_학습데이터2/images/validation/2_validation_0004.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0008.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0018.jpg  
+PASS  이물검출_학습데이터2/images/train/2_train_0016.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0006.jpg  
+PASS  이물검출_학습데이터2/images/validation/2_validation_0005.jpg  
+PASS  이물검출_학습데이터1/images/train/1_train_0009.jpg  
