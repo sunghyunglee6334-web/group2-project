@@ -2,7 +2,7 @@
 
 | 폴더 | 내용 |
 |---|---|
-| [project7](project7) | 교과 7 결과물 **고정본** (10/12 기준 · 더 이상 수정하지 않음) |
-| [project8](project8) | **작업 폴더** — project7 과 같은 내용에서 시작 · 이제부터 새 작업 · 교과 8 결과물은 모두 여기 |
+| [project7](project7) | **교과 7** 라벨링 프로그램(kimchi_labeler) · 검수 · FINAL · 산출물 11개 — 지금 작업 폴더 |
+| project8 | **교과 8** YOLO11n 객체검출 — 새로 만들 예정 |
 
 데이터(JPG · TXT · WORK · FINAL) · 학습 Weight 는 NDA 로 Git 에 올리지 않습니다.
