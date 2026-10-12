@@ -135,7 +135,7 @@ class LabelApp(CanvasEditor):
             SEPARATOR,
             command("다음 미완료 이미지로", self.goto_next_unfinished, "N"),
         ]
-        for name in ("내 담당-미완료", "내 검수 대상", "REVIEW", "PASS 표본검수"):
+        for name in ("내 담당-미완료", "내 검수 대상", "내 전체검수-남은 것", "REVIEW", "PASS 표본검수"):
             review_items.append(command(f"'{name}' 만 보기", lambda x=name: self.apply_filter(x)))
         stat_items = [
             command("진행현황", self.show_progress),
