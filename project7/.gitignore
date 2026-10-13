@@ -1,28 +1,27 @@
-# NDA: 실제 데이터(JPG·TXT·WORK·FINAL)는 절대 Git 에 올리지 않습니다
-data/
-**/data/
-**/이물검출_학습데이터*/
+# NDA (2026-10-13 강사님 확인): 원본 김치 사진(이미지)만 Git 금지 · 라벨 TXT · CSV 는 허용
+# ── 사진: 어느 폴더든 금지 ──
 *.jpg
 *.jpeg
 *.png
-*.txt
+*.bmp
+**/이물검출_학습데이터*/images/
+# 프로그램 화면 캡처 (문서용, PM 확인)
+!docs/images/*.png
+
+# ── 데이터: FINAL 라벨 · 장부만 올림 ──
+# RAW 원본 · 작업 중(work_*) · 백업 폴더는 NDA 가 아니라 용량 · 혼동 때문에 제외
+data/*
+!data/final/
+data/final/images/
+
+# ── 보고서: 실행마다 생기는 validation_날짜.csv 는 제외 · 최종본만 ──
+reports/validation_*.csv
+!reports/validation_final.csv
+
+# ── 용량 · 개인 설정 ──
 *.zip
-!requirements.txt
 settings.json
 *:Zone.Identifier
-
-# 보고서: 문서(md)와 Golden 결과는 올리고, 자동 생성 csv 는 제외
-reports/*.csv
-!reports/golden_test.txt
-
-# BBox 기준서 예시 이미지 (반드시 연습용 dummy 데이터 화면만 사용)
-!docs/images/*.png
-!docs/images/*.jpg
-
 __pycache__/
 *.pyc
 .venv/
-
-# ── 예외 (2026-10-13 PM): 최종 Validation 결과 1개만 Git 허용 ──
-# 실행할 때마다 생기는 validation_날짜.csv 는 계속 제외 → 최종본만 validation_final.csv 로 복사해서 올림
-!reports/validation_final.csv
