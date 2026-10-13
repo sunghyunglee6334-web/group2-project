@@ -21,6 +21,7 @@ FILTERS = {
     "내 담당-미완료": lambda row, me: row["assignee"] == me and row["status"] in ("PENDING", "WORKING"),
     "내 검수 대상": lambda row, me: row["reviewer"] == me and (
         row["status"] in ("EDITED", "REVIEW") or (row["status"] == "PASS" and row["pass_sample"] == "1")),
+    "내 전체검수-남은 것": lambda row, me: row["updated_by"] == f"final:{me}",
     "PENDING": lambda row, me: row["status"] == "PENDING",
     "EDITED": lambda row, me: row["status"] == "EDITED",
     "REVIEW": lambda row, me: row["status"] == "REVIEW",

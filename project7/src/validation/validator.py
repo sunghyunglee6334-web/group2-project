@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass
+from dataclasses import dataclass, field    ## , field 추가  / 10.13
 from pathlib import Path
 
 from PIL import Image
@@ -33,6 +33,35 @@ class Issue:
     line: int
     message: str
 
+###### 추가 ~   / 10.13
+# 파싱된 좌표가 있어야만 다음 검사를 진행
+LABEL_VALUE_CODES = (
+    "CLASS_RANGE",
+    "CLASS_4",
+    "COORD_RANGE",
+    "WH_ZERO",
+    "BOX_OUTSIDE",
+    "TINY_BOX",
+    "DUPLICATE",
+)
+
+LABEL_CODES = ("PARSE", "EMPTY_LABEL", *LABEL_VALUE_CODES)
+
+@dataclass
+class ValidationCoverage:
+    """검사별 수행 여부·생략·대상 없음 정보를 담는다."""
+
+    checked: set[str] = field(default_factory=set)
+    skipped: set[str] = field(default_factory=set)
+    not_applicable: set[str] = field(default_factory=set)
+
+    images_opened: int = 0
+    labels_read: int = 0
+
+    def mark(self, state: str, codes) -> None:
+        getattr(self, state).update(codes)
+#########   ~ 추가
+
 
 def image_size(path: Path) -> tuple[int, int, int]:
     """(w, h, exif_orientation). 이미지 전체를 디코딩하지 않아 빠르다."""
@@ -41,17 +70,42 @@ def image_size(path: Path) -> tuple[int, int, int]:
         return im.size[0], im.size[1], orient
 
 
-def check_label_text(rel: str, text: str, img_w: int, img_h: int) -> list[Issue]:
+def check_label_text(
+    rel: str, 
+    text: str, 
+    img_w: int, 
+    img_h: int,
+    coverage: ValidationCoverage | None = None,) -> list[Issue]:    # coverage: ValidationCoverage | None = None, 추가
     issues: list[Issue] = []
     boxes = []
+
+######   추가 ~ / 10.13
+    if coverage is not None:
+        coverage.mark("checked", ("PARSE", "EMPTY_LABEL"))
+
+        if not text.strip():
+            # 빈 TXT는 정상적인 입력이며, 좌표 검사 대상이 없다.
+            coverage.mark("not_applicable", LABEL_VALUE_CODES)
+######   ~ 추가
+
+
     for no, line in enumerate(text.splitlines(), start=1):
         if not line.strip():
             continue
         val, err = parse_line(line)
+
+
+######   수정   / 10.13
         if err:
             issues.append(Issue("CRITICAL", "PARSE", rel, no, err))
+            if coverage is not None:
+                coverage.mark("skipped", LABEL_VALUE_CODES)
             continue
+        if coverage is not None:
+            coverage.mark("checked", LABEL_VALUE_CODES)
         cls, cx, cy, w, h = val
+######   수정    정상 행과 잘못된 행이 섞인 TXT도 일부 수행·일부 생략으로 기록하기 위한 코드 수정
+
         if cls not in VALID_CLASS_IDS:
             issues.append(Issue("CRITICAL", "CLASS_RANGE", rel, no, f"Class {cls} 는 0~6 범위 밖"))
         elif cls in UNUSED_CLASS_IDS:
@@ -85,10 +139,11 @@ CHECKS = [
     ("검수 상태", ("STATUS_REVIEW",)),
     ("기타 확인 (Class 4 · 중복 · 작은 BBox · EXIF)", ("CLASS_4", "DUPLICATE", "TINY_BOX", "EXIF_ROTATE")),
     ("빈 라벨 (BBox 없음)", ("EMPTY_LABEL",)),
+    ("검사 대상", ("DATASET_EMPTY",)),              # 추가  / 10.13
+    ("TXT 읽기", ("LABEL_READ",)),                 # 추가
 ]
 
 SEVERITY_ORDER = {"CRITICAL": 0, "REVIEW": 1, "INFO": 2}
-
 
 def status_issues(manifest, records: list[ImageRecord]) -> list[Issue]:
     """Manifest 에서 검수 상태가 REVIEW(확인 필요)인 이미지를 REVIEW 항목으로 만든다."""
@@ -103,34 +158,120 @@ def status_issues(manifest, records: list[ImageRecord]) -> list[Issue]:
     return issues
 
 
-def validate(paths: Paths, use_work: bool = True,
-             records: list[ImageRecord] | None = None, manifest=None) -> list[Issue]:
+def validate(
+    paths: Paths, 
+    use_work: bool = True,
+    records: list[ImageRecord] | None = None, 
+    manifest=None,
+    coverage: ValidationCoverage | None = None,             # coverage 추가 / 10.13
+) -> list[Issue]:
     """use_work=True 이면 WORK 저장본(없으면 RAW)을, False 이면 RAW 만 검사.
     manifest 를 주면 검수 상태가 REVIEW 인 이미지도 결과에 넣는다."""
+    """ 수정 : 데이터 문제 목록을 반환하고, 선택적으로 검사 수행 정보를 기록한다."""
+
     records = records if records is not None else scan_images(paths.raw)
+    coverage = coverage if coverage is not None else ValidationCoverage()   # coverage 추가 / 10.13
     issues: list[Issue] = []
+
+# coverage 추가 ~
+    if not records:                 
+        issues.append(
+            Issue(
+                "CRITICAL",
+                "DATASET_EMPTY",
+                "",
+                0,
+                "검사할 이미지가 없습니다. RAW 경로를 확인하세요.",
+            )
+        )                           
+#######   ~ 추가
+
     for rec in records:
         img_path = rec.raw_image(paths)
-        label_path = rec.effective_label(paths) if use_work else rec.raw_label(paths)
+
+        label_path = (                      # 수정 ~    / 10.13
+            rec.effective_label(paths)
+            if use_work
+            else rec.raw_label(paths)
+        )       # ~ 수정        
+        coverage.mark("checked", ("IMAGE_READ",))   # 추가  / 10.13
+        
         try:
             w, h, orient = image_size(img_path)
         except Exception as e:
             issues.append(Issue("CRITICAL", "IMAGE_READ", rec.rel_image, 0, f"이미지 열기 실패: {e}"))
+            coverage.mark(              ##### coverage 관련 추가 ~~~    / 10.13
+                "skipped",
+                ("PAIR_NO_TXT", "EXIF_ROTATE", *LABEL_CODES),
+            )                           # ~~~~~ 추가 
             continue
+
+        coverage.images_opened += 1             # coverage 관련 추가    / 10.13
+        coverage.mark("checked", ("EXIF_ROTATE", "PAIR_NO_TXT"))
+
         if orient not in (0, 1):
             issues.append(Issue("REVIEW", "EXIF_ROTATE", rec.rel_image, 0,
                                 f"EXIF 회전값 {orient} - 화면 방향과 좌표가 다를 수 있음"))
         if not label_path.exists():
-            issues.append(Issue("CRITICAL", "PAIR_NO_TXT", rec.rel_image, 0, "JPG 는 있는데 TXT 없음"))
+            issues.append(Issue("CRITICAL", "PAIR_NO_TXT", rec.rel_image, 0, "이미지는 있는데 TXT 없음"))
+            coverage.mark("skipped", LABEL_CODES)           # coverage 관련 추가    / 10.13
             continue
-        text = label_path.read_text(encoding="utf-8-sig", errors="replace")
-        issues.extend(check_label_text(rec.rel_image, text, w, h))
+
+### coverage 관련 수정  ~~~   / 10.13
+        coverage.mark("checked", ("LABEL_READ",))            
+        try:
+            text = label_path.read_text(
+                encoding="utf-8-sig",
+                errors="replace",
+            )
+        except OSError as e:
+            issues.append(
+                Issue(
+                    "CRITICAL",
+                    "LABEL_READ",
+                    rec.rel_image,
+                    0,
+                    f"TXT 읽기 실패: {e}",
+                )
+            )
+            coverage.mark("skipped", LABEL_CODES)
+            continue
+
+        coverage.labels_read += 1
+        issues.extend(
+            check_label_text(
+                rec.rel_image,
+                text,
+                w,
+                h,
+                coverage=coverage,
+            )
+        )
+
     for orphan in scan_orphan_labels(paths.raw, records):
-        issues.append(Issue("CRITICAL", "PAIR_NO_JPG", orphan, 0, "TXT 는 있는데 JPG 없음"))
+        issues.append(
+            Issue(
+                "CRITICAL",
+                "PAIR_NO_JPG",
+                orphan,
+                0,
+                "TXT는 있는데 이미지 없음",
+            )
+        )
+    coverage.mark("checked", ("PAIR_NO_JPG", "DATASET_EMPTY"))
+
     if manifest is not None:
         issues.extend(status_issues(manifest, records))
-    issues.sort(key=lambda i: SEVERITY_ORDER.get(i.severity, 9))   # CRITICAL 이 맨 위
-    return issues
+        coverage.mark("checked", ("STATUS_REVIEW",))
+    else:
+        # Manifest가 없으면 검수 상태는 검사하지 않았다.
+        coverage.mark("skipped", ("STATUS_REVIEW",))
+
+    issues.sort(key=lambda i: SEVERITY_ORDER.get(i.severity, 9))
+    return issues                                                 
+###             ~~~~     수정 
+# 02_validate.py도 같은 validate()를 사용하므로, 
+# 이제 빈 이미지 폴더는 CRITICAL로 보고되고 종료코드가 1이 되도록 수정.
 
 
 def summarize(issues: list[Issue]) -> dict[str, dict[str, int]]:

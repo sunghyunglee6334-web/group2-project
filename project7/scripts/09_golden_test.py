@@ -40,7 +40,7 @@ def test_image(
 ) -> tuple[list[str], list[str]]:
     """이미지 한 장의 기능시험을 수행하고 (실패, 생략 사유)를 반환하는 tuple 추가."""
     errs = []
-    skips = []  # [추가] 검사 생략 사유
+    skips = []  # [추가] 검사 생략 사유 / 10.12
     
     sess.view_keys = [key]
     cur = sess.load(0)
@@ -57,7 +57,7 @@ def test_image(
 
     elif not cur.raw_text.strip():
         # 객체 없는 이미지의 빈 TXT는 정상
-        skips.append("YOLO 왕복: 라벨 누락 - 검사할 좌표 없음")
+        skips.append("YOLO 왕복: 빈 라벨 - 검사할 좌표 없음")
 
     else:
         for line_no, line in enumerate(
@@ -76,7 +76,7 @@ def test_image(
 
     # 2) 화면 변환 왕복
     if not cur.boxes:
-        skips.append("화면 변환 왕복: 검사할 박스 없음")  # 박스가 없는 경우 확인용 추가
+        skips.append("화면 변환 왕복: 검사할 박스 없음")  # 박스가 없는 경우 확인용 추가    / 10.12
 
     vt = ViewTransform()
     vt.fit(cur.width, cur.height, 1200, 800)
@@ -97,7 +97,7 @@ def test_image(
         if rec.work_label(sess.paths).read_bytes() != raw_lbl.read_bytes():
             errs.append("무수정 저장 결과가 RAW 와 다름")
 
-    # [추가] 입력 라벨이 없어 수행하지 못한 검사 기록
+    # [추가] 입력 라벨이 없어 수행하지 못한 검사 기록    / 10.12
     else:
         if cur.raw_text is None:
             skips.append(
@@ -150,7 +150,7 @@ def main() -> int:
             random.seed(0)          # 랜덤 고정 씨드값 설정
             keys = random.sample(keys, min(a.n, len(keys)))
 
-        # [추가] 검사 대상이 없으면(=0) 성공으로 처리하지 않고 에러 문구와 함께 종료
+        # [추가] 검사 대상이 없으면(=0) 성공으로 처리하지 않고 에러 문구와 함께 종료     / 10.12
         if not keys:
             print(
                 "ERROR: 검사 대상이 없습니다. "
@@ -161,11 +161,11 @@ def main() -> int:
 
         lines, fails = [], 0
         for k in keys:
-            # [변경] 두 목록을 각각 받음
+            # [일부 수정] 두 목록을 각각 받음     / 10.12
             errs, skips = test_image(sess, k)
             fails += bool(errs)
 
-            # [추가] 생략 사유를 출력 내용에 포함
+            # [추가] 생략 사유를 출력 내용에 포함    / 10.12
             status = "FAIL" if errs else "PASS"
             details = errs + [f"SKIP — {reason}" for reason in skips]
 
