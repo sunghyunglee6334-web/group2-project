@@ -5,7 +5,7 @@ from pathlib import Path
 
 VALID_SPLITS = ("val", "test")
 
-
+# 평가 전 입력 확인
 def check_inputs(model_path, data_yaml, split, allow_test=False):
     
     # (1) Weight 파일 존재 확인
@@ -17,14 +17,14 @@ def check_inputs(model_path, data_yaml, split, allow_test=False):
     # (3) split 값 확인   
     if split not in VALID_SPLITS:
         raise ValueError(f"split 은 {VALID_SPLITS} 중 하나여야 합니다. 받은 값: {split!r}")
-    # (4) test split 은 allow_test=False 시 막는다
+    # (4) test split이 allow_test=False 시 막는다
     if split == "test" and not allow_test:
         raise PermissionError(
             "Frozen Test 는 Final Model 을 정한 뒤에만 엽니다. "
             "정말 최종 평가라면 allow_test=True 를 넣어 주세요."
         )
 
-
+# 평가 실행
 def evaluate_detector(
     model_path: str,
     data_yaml: str,
@@ -32,7 +32,7 @@ def evaluate_detector(
     imgsz: int = 640,
     allow_test: bool = False,
 ):
-    """YOLO 모델을 한 split 에서 평가하고 Ultralytics metrics 객체를 돌려준다."""
+    # 평가 전 입력 확인
     check_inputs(model_path, data_yaml, split, allow_test)
 
     from ultralytics import YOLO  # 실제 평가할 때만 불러온다
@@ -44,17 +44,39 @@ def evaluate_detector(
         plots=True,
     )
 
+# 평가 결과 정리: 전체 성능 4개
+def summarize_overall(metrics, digits=4):
+    box = metrics.box
+    return {
+        "precision": round(float(box.mp), digits),
+        "recall":    round(float(box.mr), digits),
+        "map50":     round(float(box.map50), digits),
+        "map50_95":  round(float(box.map), digits),
+    }
 
-def summarize_overall(metrics):
-    """전체 성능 4개를 dict 로 정리한다."""
-    # TODO 3
-    pass
+# 평가 결과 정리: Class별 성능
+def summarize_per_class(metrics, digits=4):
+    box = metrics.box
+    names = metrics.names
 
+    # ① 안내표: {Class 번호: 성적표 안 위치}  예) {0:0, 1:1, 2:2, 3:3, 5:4, 6:5}
+    position = {int(class_id): i for i, class_id in enumerate(box.ap_class_index)}
 
-def summarize_per_class(metrics):
-    """Class 0~6 별 성능을 정리한다. 정답 0건인 Class 는 N/A."""
-    # TODO 4
-    pass
+    rows = []
+    for class_id in sorted(names):             # ② Class 0~6 을 순서대로
+        row = {"class_id": class_id, "class_name": names[class_id]}
+
+        if class_id in position:               # ③ 성적이 있으면 꺼내고
+            p, r, ap50, ap = box.class_result(position[class_id])
+            row["precision"] = round(float(p), digits)
+            row["recall"] = round(float(r), digits)
+            row["map50"] = round(float(ap50), digits)
+            row["map50_95"] = round(float(ap), digits)
+        else:                                  # ④ 없으면 N/A
+            row["precision"] = row["recall"] = row["map50"] = row["map50_95"] = "N/A"
+
+        rows.append(row)
+    return rows
 
 
 def save_metrics_csv(rows, out_path):
