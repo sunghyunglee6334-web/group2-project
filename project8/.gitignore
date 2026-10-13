@@ -1,32 +1,39 @@
-# NDA: 기업 제공 / 파생 Dataset · 학습 결과는 Git 에 올리지 않습니다 (교과 8 수행가이드 22.2)
-data/
-models/
-runs/
-demo/
-*.pt
-*.onnx
-*.engine
+# NDA (2026-10-13 강사님 확인): 원본 김치 사진 · 사진이 보이는 결과 이미지 · 영상만 Git 금지
+# 라벨 TXT · CSV · 문서는 허용 (교과 8 수행가이드 22.2 보다 강사님 확인이 우선)
+# ── 사진 · 영상: 어느 폴더든 금지 ──
 *.jpg
 *.jpeg
 *.png
-*.txt
-*.zip
-!requirements.txt
+*.bmp
+*.mp4
+*.avi
+# 학습 그래프 · Confusion Matrix 는 사진이 아니라 허용 (가이드 22.2.1)
+!reports/figures/*.png
 
+# ── 데이터: 교과 7 FINAL 복사본 · 학습용 폴더 → 용량 · 중복 때문에 제외 ──
+# (라벨 원본은 project7/data/final 에 Git 으로 있음)
+data/
+
+# ── 모델 Weight: 용량 때문에 제외 ──
+models/
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# runs/ · demo/ : 사진 · Weight 는 위 규칙으로 빠지고 results.csv · 라벨 후보 TXT 만 올라감
+
+# ── 기타 ──
+*.zip
 __pycache__/
 *.pyc
 .venv/
+venv/
 .ipynb_checkpoints/
-
 .cache/
 *.log
 .DS_Store
 Thumbs.db
 .vscode/
-*:Zone.Identifier
-
-# 가이드 22.2.1: 그래프는 허용 · 그 외 추가 제외
-!reports/figures/*.png
-*.pth
-venv/
 .idea/
+*:Zone.Identifier
