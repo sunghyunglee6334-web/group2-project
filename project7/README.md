@@ -3,7 +3,7 @@
 기존 YOLO TXT 를 불러와서 사람이 검수하고, 필요한 라벨만 보정한 뒤, 교과 8 에서 바로 학습할 수 있는 **FINAL 데이터**를 만드는 팀 프로젝트용 프로그램입니다.
 
 > 본 프로젝트는 AI캠퍼스 교육을 위해 실제 산업데이터와 유사한 분포 구조로 **100% 가상 생성된** 조각김치 이물검출 학습데이터를 활용하여 수행하였습니다.
-> 데이터는 **NDA 대상**입니다. JPG·TXT·WORK·FINAL 폴더를 Git, 메신저, 개인 클라우드에 올리지 않습니다.
+> 데이터는 **NDA 대상**입니다. **원본 김치 사진(JPG 등 이미지)은 Git · 메신저 · 개인 클라우드에 올리지 않습니다.** 라벨 TXT · CSV 는 Git 에 올려도 됩니다 (2026-10-13 강사님 확인).
 
 
 > 순서는 강사 README 기준 15항목을 따릅니다.
@@ -320,7 +320,7 @@ class_id x_center y_center width height
 
 ## 10. 데이터 저장 위치
 
-데이터는 **Git 제외 · NDA** 입니다.
+**사진은 Git 금지 (NDA)** · FINAL 라벨 · 장부(`data/final`)는 Git 에 올립니다 · RAW · 작업 중 폴더 · 백업은 용량 · 혼동 때문에 Git 에서 제외합니다.
 
 ```text
 data/raw/      원본 RAW: 이물검출_학습데이터1/images|labels/train, 이물검출_학습데이터2/images|labels/train|validation
@@ -337,7 +337,7 @@ data/dummy_raw/         연습용 가상 데이터
 
 | 파일 | 내용 | 만드는 방법 |
 |---|---|---|
-| `data/work/manifest.csv` | 작업 Manifest (프로그램이 저장할 때마다 갱신, Git 제외) | `01_build_manifest.py` → 작업 중 자동 |
+| `data/work/manifest.csv` | 작업 Manifest (프로그램이 저장할 때마다 갱신, 작업 중 파일이라 Git 제외) | `01_build_manifest.py` → 작업 중 자동 |
 | `manifests/dataset_manifest.csv` | 제출용 Dataset Manifest (산출물 7) | `python scripts/10_export_manifest.py` |
 | `data/final/manifest_final.csv` | FINAL 기준 Manifest | `07_build_final.py` |
 
@@ -364,7 +364,7 @@ data/dummy_raw/         연습용 가상 데이터
 
 ## 15. 주의사항
 
-- **NDA**: JPG · TXT · WORK · FINAL · manifest 데이터를 Git, Discord, 카카오톡, 개인 클라우드에 올리지 않습니다. 전달은 메일(작은 zip) 또는 USB · 공유폴더.
+- **NDA**: 원본 김치 사진(JPG 등 이미지)은 Git · Discord · 카카오톡 · 개인 클라우드에 올리지 않습니다. 사진이 든 데이터 전달은 메일(작은 zip) 또는 USB · 공유폴더. 라벨 TXT · CSV 는 Git 허용 (2026-10-13 강사님 확인).
 - RAW 는 절대 수정하지 않습니다. 매일 `00_raw_snapshot.py --verify` 로 확인합니다.
 - REVIEW 가 1건이라도 남으면 FINAL 을 만들 수 없습니다.
 - FINAL 폴더는 직접 고치지 않습니다. WORK 에서 고친 뒤 `07_build_final.py` 를 다시 실행합니다.

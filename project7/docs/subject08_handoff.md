@@ -22,7 +22,7 @@
 
 - Label Format: YOLO Detection TXT · 이미지와 TXT 는 **같은 파일명 Pair**
 
-FINAL 위치 (내부 저장 · Git 에 올리지 않음):
+FINAL 위치 (사진은 내부 저장 · Git 금지 / 라벨 · 장부는 Git):
 
 ```
 data/final/
@@ -98,7 +98,7 @@ Git (project7/)
 └── reports/qa_summary.md · reports/test_report.md
 ```
 
-- 실제 JPG · TXT 는 GitHub · 디스코드 · 카톡에 올리지 않습니다 (NDA). 전달은 USB · 공유폴더 · 메일(작은 zip)만.
+- 원본 김치 사진(JPG)은 GitHub · 디스코드 · 카톡에 올리지 않습니다 (NDA). 사진 전달은 USB · 공유폴더 · 메일(작은 zip)만 · 라벨 TXT · CSV 는 Git 허용.
 
 ## 9. 교과 8 에서 먼저 확인할 것 (1~2일차)
 
