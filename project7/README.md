@@ -5,9 +5,104 @@
 > 본 프로젝트는 AI캠퍼스 교육을 위해 실제 산업데이터와 유사한 분포 구조로 **100% 가상 생성된** 조각김치 이물검출 학습데이터를 활용하여 수행하였습니다.
 > 데이터는 **NDA 대상**입니다. JPG·TXT·WORK·FINAL 폴더를 Git, 메신저, 개인 클라우드에 올리지 않습니다.
 
+
+> 순서는 강사 README 기준 15항목을 따릅니다.
+
 ---
 
-## 1. 설치 (WSL, 처음 한 번)
+## 1. 프로젝트 소개
+
+- **목적**: 조각김치 이미지 900장의 기존 YOLO TXT 를 사람이 검수·보정하여, 교과 8 YOLO 학습에 바로 쓰는 **FINAL Dataset** 을 만듭니다.
+- **입력**: RAW (`이물검출_학습데이터1`, `이물검출_학습데이터2`) 4K JPG + YOLO TXT. RAW 는 읽기만 합니다.
+- **출력**: `data/final/` 의 images/labels 900쌍 + Manifest · QA Summary · Test Report · 교과 8 Handoff.
+- **팀**: 6인 (PM · GUI · Coord · Storage · QA · Manifest). 담당 배정 → 작업 → 교차검수 → 최종검수 → FINAL.
+
+## 2. 주요 기능
+
+- RAW 폴더 열기 → 이미지와 기존 YOLO BBox 를 함께 표시 (RAW 는 수정하지 않고 WORK 에만 저장)
+- BBox 추가 · 이동 · 크기 조절 · 삭제 · Class 변경 · 좌표 직접 입력 · Undo
+- 검수 상태 지정: PASS / EDITED(수정) / REVIEW(확인 필요) / REVIEWED(검수 완료)
+- 장면 유형 · 작업자 · 검수자 · 이슈 · 노트 기록 (내장 두벌식 한글 입력)
+- 목록 필터: 내 담당 · 내 검수 대상 · 내 전체검수-남은 것 · REVIEW · EDITED · Pilot · PASS 표본
+- Zoom · 미니맵 · 화면 이동 · 라벨 숨기기
+- 자동 Validation (좌표 범위, 짝 없는 파일, 사용 안 하는 Class 등) → 행 더블클릭으로 이동
+- 진행현황 · Class 별 BBox 통계 · QA Summary 생성
+- 운영 스크립트 00~10: RAW 해시, Manifest, 배정, 병합, QA, PASS 표본, FINAL, Handoff, Golden 시험
+
+## 3. 폴더 구조
+
+```text
+group2_project/project7/
+├── main.py                       실행 진입점
+├── setup_wsl.sh                  WSL 처음 설치 (bash setup_wsl.sh)
+├── run.sh                        실행 (bash run.sh)
+├── requirements.txt              실행 환경
+├── README.md                     ← 산출물 10
+├── settings.example.json         설정 예시 (settings.json 은 각자 PC 에만)
+├── configs/
+│   └── classes.yaml              ← 산출물 2  Class 0~6 이름·사용 여부·색 (프로그램이 읽음)
+├── src/                          ← 산출물 1·2
+│   ├── config.py                 경로·상태 기준, classes.yaml 읽기
+│   ├── manifest.py               작업 Manifest CSV 읽기/쓰기/병합
+│   ├── manifest_builder.py       RAW → Manifest 행 생성
+│   ├── ui/                       Tkinter 화면
+│   │   ├── app.py                메인 창: 메뉴·단축키·이미지 이동·저장
+│   │   ├── panels.py             위젯 배치 (토스 스타일 카드 레이아웃)
+│   │   ├── widgets.py            둥근 카드·버튼, 탭, 카드형 목록, 막대 그래프
+│   │   ├── overlay.py            이미지 위 Zoom 막대 · 미니맵 · 배율 표시
+│   │   ├── hangul.py             내장 두벌식 한글 입력기 (WSL 한글 입력)
+│   │   ├── menubar.py            메뉴 (WSLg 잔상 해결, 버튼 아래에 열림)
+│   │   ├── dialogs.py            Validation·진행현황·통계·도움말·이름 입력 창
+│   │   └── style.py              색·글꼴(한글 글꼴 자동 선택)
+│   ├── bbox/                     BBox 편집
+│   │   ├── canvas_editor.py      이미지·BBox 그리기, 마우스로 추가/이동/크기조절
+│   │   ├── view.py               화면↔원본 좌표 변환, Zoom/Pan
+│   │   └── session.py            BBox 편집·Undo·저장 핵심 로직 (GUI 없이 테스트 가능)
+│   ├── yolo/                     YOLO 데이터
+│   │   ├── yolo_io.py            YOLO TXT 읽기/쓰기, YOLO↔픽셀 변환, 안전저장
+│   │   ├── dataset.py            RAW 구조 조사 (Dataset/split 출처 보존)
+│   │   └── final_layout.py       FINAL images/ · labels/ 파일 이름 규칙
+│   └── validation/               검사
+│       ├── validator.py          자동 Validation
+│       └── stats.py              QA 통계 (추가/삭제/Class변경 계산)
+├── scripts/                      00~10 운영 스크립트
+├── tests/test_core.py            자동 테스트 (전체 작업 흐름 시뮬레이션)
+├── docs/
+│   ├── project_baseline.md       ← 산출물 4
+│   ├── class_guide.md            ← 산출물 5 (v1.7.1)
+│   ├── bbox_guide.md             ← 산출물 6 (v1.2 · 예시 이미지: docs/images/)
+│   ├── subject08_handoff.md      ← 산출물 11 (08_handoff.py 가 작성)
+│   ├── CODE_GUIDE.md             코드 설명 (역할별)
+│   ├── STUDY_GUIDE.md            코드 분석 공부 자료
+│   ├── code_review.md            코드 리뷰 (의사코드 · 처리흐름 · Mermaid)
+│   └── team/                     팀 실행 가이드·공부 자료·PM 계획 PDF
+├── manifests/
+│   └── dataset_manifest.csv      ← 산출물 7 (10_export_manifest.py 가 작성)
+└── reports/
+    ├── qa_summary.md             ← 산출물 8 (05_qa_summary.py 가 작성)
+    ├── test_report.md            ← 산출물 9
+    └── golden_test.txt           Golden 시험 결과 (09_golden_test.py)
+```
+
+산출물 위치 한눈에 보기
+
+| 산출물 | 위치 | 만드는 방법 |
+|---|---|---|
+| 1 라벨링 프로그램 | `main.py`, `src/` | `bash run.sh` |
+| 2 소스코드 | `src/`, `requirements.txt`, `configs/classes.yaml`, Git 이력 | `git log --oneline --graph --all > git_commit_history.txt` |
+| 3 FINAL YOLO 라벨 | `data/final/images`, `data/final/labels` | `python scripts/07_build_final.py` |
+| 4 Project Baseline | `docs/project_baseline.md` | 직접 작성 |
+| 5 Class 기준서 | `docs/class_guide.md` | 직접 작성 |
+| 6 BBox 기준서 | `docs/bbox_guide.md` | 직접 작성 |
+| 7 Dataset Manifest | `manifests/dataset_manifest.csv` | `python scripts/10_export_manifest.py` |
+| 8 QA Summary | `reports/qa_summary.md` | `python scripts/05_qa_summary.py` 후 다듬기 |
+| 9 Test Report | `reports/test_report.md` | Golden·Pilot·Acceptance 결과 기록 |
+| 10 README | `README.md` | 이 문서 |
+| 11 교과 8 Handoff | `docs/subject08_handoff.md` | `python scripts/08_handoff.py` 후 다듬기 |
+
+## 4. 설치 방법
+
+### 4-1. 처음 설치 (WSL, 한 번)
 
 전제: Windows 11 + WSL2(Ubuntu 22.04 이상). 아래는 모두 **WSL 터미널**에서 실행합니다.
 
@@ -23,19 +118,7 @@ bash setup_wsl.sh
 마지막에 `모든 테스트 통과 (4개)` 와 `설치 완료.` 가 나오면 준비 끝입니다.
 창 제목줄의 한글이 네모로 보이면 **Windows PowerShell** 에서 `wsl --shutdown` 을 한 번 실행하고 WSL 을 다시 여세요.
 
-## 2. 실행
-
-```bash
-cd ~/group2_project/project7
-bash run.sh --raw data/dummy_raw     # 처음: 연습 데이터로 실행 (폴더는 기억됨)
-bash run.sh                          # 다음부터
-```
-
-- 처음 실행하면 **작업자 이름**을 물어봅니다. 한 번 입력하면 기억합니다.
-- 실제 데이터로 바꿀 때: 메뉴 **파일 → RAW 폴더 열기** (Ctrl+O) 에서 `이물검출_학습데이터1`, `이물검출_학습데이터2` 가 **바로 안에 들어 있는 폴더**를 고르세요.
-- RAW 와 WORK 가 겹치면 프로그램이 실행을 거부합니다.
-
-## 3. 새 버전으로 업데이트
+### 4-2. 새 버전으로 업데이트
 
 ```bash
 cd ~/group2_project/project7
@@ -45,7 +128,7 @@ git switch main && git pull origin main
 - 코드만 새 버전으로 바뀝니다. 내 작업(`data/`, `settings.json`, `.venv`)은 `.gitignore` 대상이라 그대로 남습니다.
 - 버전 기록은 GitHub 의 **Tags** (v2.1, v2.2 …) 에서 확인합니다.
 
-## 4. 설정 파일 (settings.json)
+### 4-3. 설정 파일 (settings.json)
 
 프로그램이 자동으로 만들고 기억합니다. 직접 고칠 때만 참고하세요. (`settings.json` 은 Git 에 올리지 않습니다)
 
@@ -59,6 +142,48 @@ git switch main && git pull origin main
 
 - `raw_root` : 원본 폴더. **절대 수정하지 않습니다.**
 - `work_root` : 수정한 라벨(`labels/`)과 `manifest.csv` 가 저장되는 곳
+
+## 5. 실행 방법
+
+```bash
+cd ~/group2_project/project7
+bash run.sh --raw data/dummy_raw     # 처음: 연습 데이터로 실행 (폴더는 기억됨)
+bash run.sh                          # 다음부터
+```
+
+- 처음 실행하면 **작업자 이름**을 물어봅니다. 한 번 입력하면 기억합니다.
+- 실제 데이터로 바꿀 때: 메뉴 **파일 → RAW 폴더 열기** (Ctrl+O) 에서 `이물검출_학습데이터1`, `이물검출_학습데이터2` 가 **바로 안에 들어 있는 폴더**를 고르세요.
+- RAW 와 WORK 가 겹치면 프로그램이 실행을 거부합니다.
+
+### 운영 스크립트 (프로젝트 루트에서 실행)
+
+| 순서 | 명령 | 언제 / 누가 |
+|---|---|---|
+| 0 | `python scripts/00_raw_snapshot.py` | 처음 1번 (PM). RAW 해시 기록 |
+| 0 | `python scripts/00_raw_snapshot.py --verify` | 매일 마감 (QA). RAW 가 그대로인지 확인 |
+| 1 | `python scripts/01_build_manifest.py` | 처음 1번 (Data). Manifest + Data Inventory |
+| 2 | `python scripts/02_validate.py --target raw` | 처음 1번 (QA). 원본 위험 이미지 목록 |
+| 2 | `python scripts/02_validate.py` | 매일 마감 (QA). WORK 기준 검사 |
+| 3 | `python scripts/03_assign.py --workers A B C D E F --pilot 30` | 배분 (PM) |
+| 4 | `python scripts/04_merge.py --inputs ... --out ...` | 매일 마감 (Data). 팀원 WORK 병합 |
+| 5 | `python scripts/05_qa_summary.py` | 매일 마감 (Doc). `reports/qa_summary.md` |
+| 6 | `python scripts/06_pass_sample.py --ratio 0.25` | 4일차 (QA). PASS 표본 선정 |
+| 7 | `python scripts/07_build_final.py` | 마지막 날 (PM). 조건 통과 시에만 FINAL 생성 |
+| 8 | `python scripts/08_handoff.py` | 마지막 날 (Doc). `docs/subject08_handoff.md` |
+| 9 | `python scripts/09_golden_test.py --n 20` | 기능 바꿀 때마다 (QA). Golden Sample 시험 |
+| 10 | `python scripts/10_export_manifest.py` | 매일 마감·마지막 날 (Data). `manifests/dataset_manifest.csv` |
+| - | `python scripts/make_dummy_data.py` | 연습용 가짜 데이터 (NDA 데이터 없이 개발할 때) |
+
+## 6. 기본 사용 순서
+
+1. `bash run.sh` 실행 → 작업자 이름 입력 (처음 한 번)
+2. **폴더 열기** (Ctrl+O) → RAW 폴더 선택
+3. 왼쪽 목록에서 **내 담당** (최종검수 때는 ⋯ → 보기 → **내 전체검수-남은 것**) 선택
+4. 이미지와 기존 BBox 확인 → 필요하면 BBox 추가 · 수정 · 삭제 · Class 변경
+5. 검수 상태 지정 (`P` PASS / `E` EDITED / `R` REVIEW), 판단 이유는 노트에
+6. **저장하고 다음** (`Space` 또는 →)
+7. 하루 마감: Validation 확인 → WORK 폴더를 취합 담당(Storage)에게 전달 → `04_merge.py` 병합 → `05_qa_summary.py`
+8. 마지막 날: REVIEW 0건 확인 → `07_build_final.py` → `08_handoff.py`
 
 ### 화면 구성
 
@@ -138,7 +263,8 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 ### 메뉴 주요 기능
 
 - **파일**: 폴더 열기 (RAW 폴더), 파일 열기 (연습용 이미지 추가, 실제 RAW 에서는 막힘), 저장, 종료
-- **보기**: Fit/Zoom, 라벨 숨기기, 목록 필터 (내 담당, 내 검수 대상, REVIEW, EDITED, Pilot, PASS 표본검수 등)
+- **보기**: Fit/Zoom, 라벨 숨기기, 목록 필터 (내 담당, 내 검수 대상, **내 전체검수-남은 것**, REVIEW, EDITED, Pilot, PASS 표본검수 등)
+  - **내 전체검수-남은 것**: 최종검수(전체 900장)에서 나에게 배정된 사진 중 아직 저장 안 한 것만 보여 줌. 저장하면 목록에서 빠지고 0장이 되면 끝 (`--worker` 이름이 배정 이름과 같아야 함)
 - **도구**: 모드 전환, 삭제, Undo, **Validation** (결과 행을 더블클릭하면 그 이미지로 이동)
 - **검수**: 상태 지정, 다음 미완료 이미지, 검수용 필터 바로가기
 - **통계**: 진행현황 (상태·담당자·Scene Type·Dataset), Class 별 BBox 통계, QA Summary 생성
@@ -149,84 +275,52 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 - 라벨을 바꾸고 PASS 를 누르면 자동으로 **EDITED** 로 저장됩니다.
 - 라벨을 안 바꿨으면 RAW TXT 를 **바이트 그대로** WORK 에 복사합니다.
 - 저장하지 않고 이동하거나 창을 닫으면 (터미널 `Ctrl+C` 포함) 저장 여부를 묻습니다.
-- Class 4 가 남아 있으면 PASS 나 REVIEWED 대신 **REVIEW** 로 저장합니다.
+- Class 4 가 남아 있으면 PASS 나 REVIEWED 대신 **REVIEW** 로 저장합니다. (기준서 v1.7: 고무장갑 BBox 는 **지운 뒤** 저장 → EDITED / 검수 완료)
 - 자기 작업을 REVIEWED 로 바꾸려 하면 경고합니다. 교차검수는 다른 사람이 합니다.
 - TXT 는 임시파일에 쓴 뒤 교체하는 방식이라, 저장 도중 꺼져도 깨지지 않습니다.
 
-## 5. 스크립트 (프로젝트 루트에서 실행)
+## 7. YOLO Label 형식
 
-| 순서 | 명령 | 언제 / 누가 |
-|---|---|---|
-| 0 | `python scripts/00_raw_snapshot.py` | 처음 1번 (PM). RAW 해시 기록 |
-| 0 | `python scripts/00_raw_snapshot.py --verify` | 매일 마감 (QA). RAW 가 그대로인지 확인 |
-| 1 | `python scripts/01_build_manifest.py` | 처음 1번 (Data). Manifest + Data Inventory |
-| 2 | `python scripts/02_validate.py --target raw` | 처음 1번 (QA). 원본 위험 이미지 목록 |
-| 2 | `python scripts/02_validate.py` | 매일 마감 (QA). WORK 기준 검사 |
-| 3 | `python scripts/03_assign.py --workers A B C D E F --pilot 30` | 배분 (PM) |
-| 4 | `python scripts/04_merge.py --inputs ... --out ...` | 매일 마감 (Data). 팀원 WORK 병합 |
-| 5 | `python scripts/05_qa_summary.py` | 매일 마감 (Doc). `reports/qa_summary.md` |
-| 6 | `python scripts/06_pass_sample.py --ratio 0.25` | 4일차 (QA). PASS 표본 선정 |
-| 7 | `python scripts/07_build_final.py` | 마지막 날 (PM). 조건 통과 시에만 FINAL 생성 |
-| 8 | `python scripts/08_handoff.py` | 마지막 날 (Doc). `docs/subject08_handoff.md` |
-| 9 | `python scripts/09_golden_test.py --n 20` | 기능 바꿀 때마다 (QA). Golden Sample 시험 |
-| 10 | `python scripts/10_export_manifest.py` | 매일 마감·마지막 날 (Data). `manifests/dataset_manifest.csv` |
-| - | `python scripts/make_dummy_data.py` | 연습용 가짜 데이터 (NDA 데이터 없이 개발할 때) |
-
-## 6. 폴더 구조와 산출물 위치
+이미지 1장당 같은 이름의 TXT 1개, BBox 1개당 한 줄입니다.
 
 ```text
-group2_project/project7/
-├── main.py                       실행 진입점
-├── setup_wsl.sh                  WSL 처음 설치 (bash setup_wsl.sh)
-├── run.sh                        실행 (bash run.sh)
-├── requirements.txt              실행 환경
-├── README.md                     ← 산출물 10
-├── settings.example.json         설정 예시 (settings.json 은 각자 PC 에만)
-├── configs/
-│   └── classes.yaml              ← 산출물 2  Class 0~6 이름·사용 여부·색 (프로그램이 읽음)
-├── src/                          ← 산출물 1·2
-│   ├── config.py                 경로·상태 기준, classes.yaml 읽기
-│   ├── manifest.py               작업 Manifest CSV 읽기/쓰기/병합
-│   ├── manifest_builder.py       RAW → Manifest 행 생성
-│   ├── ui/                       Tkinter 화면
-│   │   ├── app.py                메인 창: 메뉴·단축키·이미지 이동·저장
-│   │   ├── panels.py             위젯 배치 (토스 스타일 카드 레이아웃)
-│   │   ├── widgets.py            둥근 카드·버튼, 탭, 카드형 목록, 막대 그래프
-│   │   ├── overlay.py            이미지 위 Zoom 막대 · 미니맵 · 배율 표시
-│   │   ├── hangul.py             내장 두벌식 한글 입력기 (WSL 한글 입력)
-│   │   ├── menubar.py            메뉴 (WSLg 잔상 해결, 버튼 아래에 열림)
-│   │   ├── dialogs.py            Validation·진행현황·통계·도움말·이름 입력 창
-│   │   └── style.py              색·글꼴(한글 글꼴 자동 선택)
-│   ├── bbox/                     BBox 편집
-│   │   ├── canvas_editor.py      이미지·BBox 그리기, 마우스로 추가/이동/크기조절
-│   │   ├── view.py               화면↔원본 좌표 변환, Zoom/Pan
-│   │   └── session.py            BBox 편집·Undo·저장 핵심 로직 (GUI 없이 테스트 가능)
-│   ├── yolo/                     YOLO 데이터
-│   │   ├── yolo_io.py            YOLO TXT 읽기/쓰기, YOLO↔픽셀 변환, 안전저장
-│   │   ├── dataset.py            RAW 구조 조사 (Dataset/split 출처 보존)
-│   │   └── final_layout.py       FINAL images/ · labels/ 파일 이름 규칙
-│   └── validation/               검사
-│       ├── validator.py          자동 Validation
-│       └── stats.py              QA 통계 (추가/삭제/Class변경 계산)
-├── scripts/                      00~10 운영 스크립트
-├── tests/test_core.py            자동 테스트 (전체 작업 흐름 시뮬레이션)
-├── docs/
-│   ├── project_baseline.md       ← 산출물 4
-│   ├── class_guide.md            ← 산출물 5
-│   ├── bbox_guide.md             ← 산출물 6 (예시 이미지: docs/images/)
-│   ├── subject08_handoff.md      ← 산출물 11 (08_handoff.py 가 작성)
-│   ├── CODE_GUIDE.md             코드 설명 (역할별)
-│   ├── STUDY_GUIDE.md            코드 분석 공부 자료
-│   └── team/                     팀 실행 가이드·공부 자료·PM 계획 PDF
-├── manifests/
-│   └── dataset_manifest.csv      ← 산출물 7 (10_export_manifest.py 가 작성)
-└── reports/
-    ├── qa_summary.md             ← 산출물 8 (05_qa_summary.py 가 작성)
-    ├── test_report.md            ← 산출물 9
-    └── golden_test.txt           Golden 시험 결과 (09_golden_test.py)
+class_id x_center y_center width height
+6 0.800620 0.623148 0.034091 0.053704
 ```
 
-데이터 (Git 제외, NDA)
+- 좌표는 이미지 너비·높이로 나눈 **0~1 비율** (소수점 6자리)
+- `class_id` 는 0~6 정수 (4 는 사용 안 함)
+- 이물이 없는 이미지는 **빈 TXT** (Negative) — 파일은 반드시 있어야 함
+- 저장 시 임시파일에 쓴 뒤 교체 (안전저장, `src/yolo/yolo_io.py`)
+
+## 8. Class 설정 위치
+
+- 설정 파일: **`configs/classes.yaml`** (이름 · 사용 여부 · 화면 색, 프로그램이 읽음)
+- 판단 기준서: **`docs/class_guide.md`** (v1.7.1)
+- Class ID 는 Freeze, 다시 번호 매기기 금지
+
+| ID | 이름 | 사용 |
+|---:|---|---|
+| 0 | 나뭇잎·종이류 | O |
+| 1 | 플라스틱·돌·금속 | O |
+| 2 | 나뭇가지류 | O |
+| 3 | 벌레류 | O |
+| 4 | 고무장갑 | **X (사용 안 함 · 고무장갑 = 배경 · BBox 그리지 않음 · 기존 BBox 는 삭제 → EDITED)** |
+| 5 | 병해·갈변 | O |
+| 6 | 파·고추 | O |
+
+- **배경 (Class 없음)**: 김치(잎 · 조각 · 양념)와 고무장갑에는 BBox 를 그리지 않습니다. 모델은 BBox 없는 부분을 "이물이 아닌 것"으로 배웁니다.
+- 작아도 이물이 확실하면 BBox 를 그리고 노트에 `small` 을 적습니다 (스티로폼 = Class 1).
+- 번호는 교과 8 `dataset.yaml` 과 같아야 하므로 Class 4 번호도 그대로 둡니다 (라벨 인스턴스만 0건).
+
+## 9. BBox 기준 문서 위치
+
+- **`docs/bbox_guide.md`** (v1.2) — 테두리 맞춤, 겹침, 잘림, 작은 이물(`small`), 배경(김치 · 고무장갑) 원칙
+- 예시 이미지 (GOOD / BAD): **`docs/images/`**
+
+## 10. 데이터 저장 위치
+
+데이터는 **Git 제외 · NDA** 입니다.
 
 ```text
 data/raw/      원본 RAW: 이물검출_학습데이터1/images|labels/train, 이물검출_학습데이터2/images|labels/train|validation
@@ -236,36 +330,45 @@ data/final/             ← 산출물 3: images/ 900장, labels/ 900개 (같은 
 data/dummy_raw/         연습용 가상 데이터
 ```
 
-| 산출물 | 위치 | 만드는 방법 |
+- RAW 는 열기만, 저장은 항상 `data/work/` 에만 합니다.
+- 경로는 `settings.json` 의 `raw_root` · `work_root` 에 기억됩니다.
+
+## 11. Manifest 위치
+
+| 파일 | 내용 | 만드는 방법 |
 |---|---|---|
-| 1 라벨링 프로그램 | `main.py`, `src/` | `bash run.sh` |
-| 2 소스코드 | `src/`, `requirements.txt`, `configs/classes.yaml`, Git 이력 | `git log --oneline --graph --all > git_commit_history.txt` |
-| 3 FINAL YOLO 라벨 | `data/final/images`, `data/final/labels` | `python scripts/07_build_final.py` |
-| 4 Project Baseline | `docs/project_baseline.md` | 직접 작성 |
-| 5 Class 기준서 | `docs/class_guide.md` | 직접 작성 |
-| 6 BBox 기준서 | `docs/bbox_guide.md` | 직접 작성 |
-| 7 Dataset Manifest | `manifests/dataset_manifest.csv` | `python scripts/10_export_manifest.py` |
-| 8 QA Summary | `reports/qa_summary.md` | `python scripts/05_qa_summary.py` 후 다듬기 |
-| 9 Test Report | `reports/test_report.md` | Golden·Pilot·Acceptance 결과 기록 |
-| 10 README | `README.md` | 이 문서 |
-| 11 교과 8 Handoff | `docs/subject08_handoff.md` | `python scripts/08_handoff.py` 후 다듬기 |
+| `data/work/manifest.csv` | 작업 Manifest (프로그램이 저장할 때마다 갱신, Git 제외) | `01_build_manifest.py` → 작업 중 자동 |
+| `manifests/dataset_manifest.csv` | 제출용 Dataset Manifest (산출물 7) | `python scripts/10_export_manifest.py` |
+| `data/final/manifest_final.csv` | FINAL 기준 Manifest | `07_build_final.py` |
 
-## 7. Class ID (Freeze, 다시 번호 매기기 금지)
+주요 열: `relative_path, assignee, reviewer, status, pass_sample, updated_at, updated_by, scene_type, note, issue`
 
-Class 이름·사용 여부·화면 색은 `configs/classes.yaml` 에서 관리합니다. 상세 판단 기준은 `docs/class_guide.md`.
+## 12. QA Summary 위치
 
-| ID | 이름 | 사용 |
-|---:|---|---|
-| 0 | 나뭇잎·종이류 | O |
-| 1 | 플라스틱·돌·금속 | O |
-| 2 | 나뭇가지류 | O |
-| 3 | 벌레류 | O |
-| 4 | 고무장갑 | **X (발견하면 삭제하지 말고 REVIEW)** |
-| 5 | 병해·갈변 | O |
-| 6 | 파·고추 | O |
+- **`reports/qa_summary.md`** (산출물 8)
+- 만드는 방법: `python scripts/05_qa_summary.py` (또는 메뉴 통계 → QA Summary 생성) 후 다듬기
+- 매일 마감 때 갱신
 
-## 8. 알려진 제한
+## 13. Test Report 위치
 
+- **`reports/test_report.md`** (산출물 9) — Golden · Pilot · Acceptance 결과 기록
+- **`reports/golden_test.txt`** — `python scripts/09_golden_test.py --n 20` 결과
+- 자동 테스트: `tests/test_core.py` (설치 때 `모든 테스트 통과 (4개)`)
+
+## 14. FINAL Dataset 위치
+
+- **`data/final/images/`** 900장, **`data/final/labels/`** 900개 (같은 파일명 Pair) — 산출물 3
+- `data/final/manifest_final.csv`, `final_file_map.csv` (원래 Dataset/split), `FINAL_INFO.json`
+- 만드는 방법: REVIEW 0건일 때만 `python scripts/07_build_final.py`
+- 교과 8 인계 문서: **`docs/subject08_handoff.md`** (`python scripts/08_handoff.py`)
+
+## 15. 주의사항
+
+- **NDA**: JPG · TXT · WORK · FINAL · manifest 데이터를 Git, Discord, 카카오톡, 개인 클라우드에 올리지 않습니다. 전달은 메일(작은 zip) 또는 USB · 공유폴더.
+- RAW 는 절대 수정하지 않습니다. 매일 `00_raw_snapshot.py --verify` 로 확인합니다.
+- REVIEW 가 1건이라도 남으면 FINAL 을 만들 수 없습니다.
+- FINAL 폴더는 직접 고치지 않습니다. WORK 에서 고친 뒤 `07_build_final.py` 를 다시 실행합니다.
+- `git add .` 금지 — 바꾼 파일만 add. main 은 PR 로만 반영합니다.
 - 여러 PC 에서 동시에 작업한 결과는 하루 마감 때 `04_merge.py` 로 합칩니다. 같은 이미지는 담당자만 수정합니다.
 - 짝 없는 TXT(PAIR_NO_JPG)는 프로그램에서 고칠 수 없으니 강사나 담당자에게 보고합니다.
 - 프로그램 실행 중에는 `manifest.csv` 를 엑셀로 열어 두지 마세요. Windows 에서 파일이 잠겨 저장이 실패합니다 (실패하면 프로그램이 알려주고 이동하지 않습니다).

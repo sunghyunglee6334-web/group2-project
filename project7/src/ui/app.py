@@ -22,7 +22,7 @@ from ..bbox.session import FILTERS, LabelSession
 from ..bbox.view import ViewTransform
 from ..config import (CLASS_COLORS, CLASS_NAMES, IMAGE_EXTS, PROJECT_ROOT, REPORT_DIR,
                       UNUSED_CLASS_IDS, Paths, load_settings, save_settings)
-from ..validation.validator import critical_count, validate, write_report
+from ..validation.validator import critical_count, validate, write_report, ValidationCoverage       # ValidationCoverage 추가
 from ..yolo.yolo_io import pixel_to_yolo, yolo_to_pixel
 from . import dialogs
 from .hangul import HangulIME
@@ -135,7 +135,7 @@ class LabelApp(CanvasEditor):
             SEPARATOR,
             command("다음 미완료 이미지로", self.goto_next_unfinished, "N"),
         ]
-        for name in ("내 담당-미완료", "내 검수 대상", "REVIEW", "PASS 표본검수"):
+        for name in ("내 담당-미완료", "내 검수 대상", "내 전체검수-남은 것", "REVIEW", "PASS 표본검수"):
             review_items.append(command(f"'{name}' 만 보기", lambda x=name: self.apply_filter(x)))
         stat_items = [
             command("진행현황", self.show_progress),
@@ -731,12 +731,25 @@ class LabelApp(CanvasEditor):
         self.status_bar.set("Validation 실행 중...")
         self.root.update_idletasks()
 
-        issues = validate(self.s.paths, use_work=True, records=self.s.records,
-                          manifest=self.s.manifest)
+        coverage = ValidationCoverage()         # coverage 관련 추가 / 10.13
+        issues = validate(
+            self.s.paths, 
+            use_work=True, 
+            records=self.s.records,
+            manifest=self.s.manifest,
+            coverage=coverage,                  # coverage 관련 추가 / 10.13
+            )
         out = REPORT_DIR / f"validation_{datetime.now():%Y%m%d_%H%M%S}.csv"
         write_report(issues, out)
 
-        dialogs.validation_window(self.root, issues, len(self.s.records), out, self.jump_to)
+        dialogs.validation_window(
+            self.root, 
+            issues, 
+            len(self.s.records), 
+            out, 
+            self.jump_to,
+            coverage=coverage,                  # coverage 관련 추가 / 10.13
+        )
         self.status_bar.set(f"Validation 완료 - CRITICAL {critical_count(issues)}건, 보고서 {out.name}")
 
     def jump_to(self, rel_image):
