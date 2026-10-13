@@ -1,19 +1,27 @@
 ﻿severity,code,relative_path,line,message
-CRITICAL,PARSE,이물검출_학습데이터1/images/train/1_train_0019.jpg,2,값 개수 3개 (5개여야 함)
-CRITICAL,PAIR_NO_TXT,이물검출_학습데이터2/images/train/2_train_0015.jpg,0,JPG 는 있는데 TXT 없음
-CRITICAL,COORD_RANGE,이물검출_학습데이터2/images/validation/2_validation_0004.jpg,3,"좌표가 0~1 밖 (1.2,0.5,0.1,0.1)"
-CRITICAL,BOX_OUTSIDE,이물검출_학습데이터2/images/validation/2_validation_0004.jpg,3,BBox 가 이미지 경계를 벗어남
-CRITICAL,CLASS_RANGE,이물검출_학습데이터2/images/validation/2_validation_0007.jpg,5,Class 9 는 0~6 범위 밖
-CRITICAL,PAIR_NO_JPG,이물검출_학습데이터1/labels/train/orphan_without_image.txt,0,TXT 는 있는데 JPG 없음
-REVIEW,DUPLICATE,이물검출_학습데이터1/images/train/1_train_0002.jpg,2,1번째 줄과 중복 의심 (IoU>=0.9)
-REVIEW,CLASS_4,이물검출_학습데이터1/images/train/1_train_0022.jpg,1,"Class 4(고무장갑, 미사용) 발견 -> REVIEW"
-INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/1_train_0003.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/1_train_0010.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/1_train_0011.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/1_train_0014.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/train/2_train_0001.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/train/2_train_0004.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/train/2_train_0014.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/train/2_train_0017.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/2_validation_0006.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
-INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/2_validation_0009.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155009160971.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155526034625.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155601084144.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155641957140.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155826598654.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_155901509386.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_160021775802.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_160112679219.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_165645848530.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_165759582289.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_165840226763.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_165918398621.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170124048539.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170204849002.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170257620893.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170345204621.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170436151500.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170523246924.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170605462218.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터1/images/train/250410_170658904840.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/train/250513_021424892102.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/250410_155734186034.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/250410_155943122243.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/250410_160155606350.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/250410_170005947995.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
+INFO,EMPTY_LABEL,이물검출_학습데이터2/images/validation/250410_170049726315.jpg,0,BBox 없음 - 정상 이미지인지 사람이 확인
