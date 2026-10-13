@@ -1,6 +1,6 @@
 """학습된 YOLO 모델을 같은 기준으로 평가하는 공통 모듈 (④ Evaluation 담당).
 Baseline · Improved · Final 모델 모두 이 파일로 평가한다."""
-
+import csv
 from pathlib import Path
 
 VALID_SPLITS = ("val", "test")
@@ -59,7 +59,7 @@ def summarize_per_class(metrics, digits=4):
     box = metrics.box
     names = metrics.names
 
-    # ① 안내표: {Class 번호: 성적표 안 위치}  예) {0:0, 1:1, 2:2, 3:3, 5:4, 6:5}
+    # 안내표: {Class 번호: 성적표 안 위치}  예) {0:0, 1:1, 2:2, 3:3, 5:4, 6:5}
     position = {int(class_id): i for i, class_id in enumerate(box.ap_class_index)}
 
     rows = []
@@ -80,6 +80,19 @@ def summarize_per_class(metrics, digits=4):
 
 
 def save_metrics_csv(rows, out_path):
-    """정리한 결과를 CSV 로 저장한다."""
-    # TODO 5
-    pass
+    if isinstance(rows, dict):
+        rows = [rows]
+    # 저장할 게 없으면 멈춤
+    if not rows:
+        raise ValueError("저장할 결과가 없습니다 (rows 가 비어 있음).")
+
+    # reports/ 폴더가 없으면 만든다
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True) 
+
+    columns = list(rows[0].keys())      # 첫 줄의 키 = 컬럼 이름
+    with open(out_path, "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writeheader()            # 컬럼 이름 줄
+        writer.writerows(rows)          # 내용 줄들
+    return out_path
