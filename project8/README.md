@@ -1,6 +1,6 @@
 # project8 — 교과 8 조각김치 이물검출 객체검출 (YOLO11n)
 
-> 데이터(JPG · TXT) · Weight(.pt) · runs 결과 이미지는 NDA 로 Git 에 올리지 않습니다.
+> **원본 김치 사진 · 사진이 보이는 결과 이미지 · 영상은 NDA 로 Git 에 올리지 않습니다.** 라벨 TXT · CSV 는 허용 (2026-10-13 강사님 확인) · Weight(.pt) 와 학습용 data/ 는 용량 때문에 제외합니다.
 
 ## 1. 프로젝트 목적
 교과 7 FINAL 900장으로 YOLO11n 을 학습 · 평가 · 실패분석 · 한 변수 개선 → Final Model · Frozen Test · Detection · Auto Label 까지 완성
