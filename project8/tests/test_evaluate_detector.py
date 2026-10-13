@@ -4,6 +4,8 @@ from src.evaluate_detector import check_inputs
 from types import SimpleNamespace
 from src.evaluate_detector import summarize_overall
 from src.evaluate_detector import summarize_per_class
+import csv
+from src.evaluate_detector import save_metrics_csv
 
 
 @pytest.fixture
@@ -95,3 +97,29 @@ def test_class5_gets_its_own_score():
     rows = summarize_per_class(fake_metrics_per_class())
     assert rows[5]["class_name"] == "disease_browning"
     assert rows[5]["precision"] == 0.9                  # 4번째 칸의 점수가 Class 5 에 붙어야 함
+
+
+
+def read_back(path):
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        return list(csv.DictReader(f))
+
+
+def test_save_one_row(tmp_path):
+    row = {"model_version": "baseline_v1", "split": "val", "precision": 0.75, "recall": 0.6}
+    out = save_metrics_csv(row, tmp_path / "reports" / "baseline_metrics.csv")  # 없는 폴더
+    data = read_back(out)
+    assert list(data[0].keys()) == ["model_version", "split", "precision", "recall"]
+    assert data[0]["precision"] == "0.75"
+
+
+def test_save_many_rows_with_na(tmp_path):
+    rows = [{"class_id": 0, "precision": 0.8}, {"class_id": 4, "precision": "N/A"}]
+    data = read_back(save_metrics_csv(rows, tmp_path / "final_metrics.csv"))
+    assert len(data) == 2
+    assert data[1]["precision"] == "N/A"
+
+
+def test_empty_rows(tmp_path):
+    with pytest.raises(ValueError):
+        save_metrics_csv([], tmp_path / "x.csv")
