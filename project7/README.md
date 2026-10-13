@@ -138,7 +138,8 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 ### 메뉴 주요 기능
 
 - **파일**: 폴더 열기 (RAW 폴더), 파일 열기 (연습용 이미지 추가, 실제 RAW 에서는 막힘), 저장, 종료
-- **보기**: Fit/Zoom, 라벨 숨기기, 목록 필터 (내 담당, 내 검수 대상, REVIEW, EDITED, Pilot, PASS 표본검수 등)
+- **보기**: Fit/Zoom, 라벨 숨기기, 목록 필터 (내 담당, 내 검수 대상, **내 전체검수-남은 것**, REVIEW, EDITED, Pilot, PASS 표본검수 등)
+  - **내 전체검수-남은 것**: 최종검수(전체 900장)에서 나에게 배정된 사진 중 아직 저장 안 한 것만 보여 줌. 저장하면 목록에서 빠지고 0장이 되면 끝 (`--worker` 이름이 배정 이름과 같아야 함)
 - **도구**: 모드 전환, 삭제, Undo, **Validation** (결과 행을 더블클릭하면 그 이미지로 이동)
 - **검수**: 상태 지정, 다음 미완료 이미지, 검수용 필터 바로가기
 - **통계**: 진행현황 (상태·담당자·Scene Type·Dataset), Class 별 BBox 통계, QA Summary 생성
@@ -149,7 +150,7 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 - 라벨을 바꾸고 PASS 를 누르면 자동으로 **EDITED** 로 저장됩니다.
 - 라벨을 안 바꿨으면 RAW TXT 를 **바이트 그대로** WORK 에 복사합니다.
 - 저장하지 않고 이동하거나 창을 닫으면 (터미널 `Ctrl+C` 포함) 저장 여부를 묻습니다.
-- Class 4 가 남아 있으면 PASS 나 REVIEWED 대신 **REVIEW** 로 저장합니다.
+- Class 4 가 남아 있으면 PASS 나 REVIEWED 대신 **REVIEW** 로 저장합니다. (기준서 v1.7: 고무장갑 BBox 는 **지운 뒤** 저장 → EDITED / 검수 완료)
 - 자기 작업을 REVIEWED 로 바꾸려 하면 경고합니다. 교차검수는 다른 사람이 합니다.
 - TXT 는 임시파일에 쓴 뒤 교체하는 방식이라, 저장 도중 꺼져도 깨지지 않습니다.
 
@@ -212,11 +213,12 @@ group2_project/project7/
 ├── tests/test_core.py            자동 테스트 (전체 작업 흐름 시뮬레이션)
 ├── docs/
 │   ├── project_baseline.md       ← 산출물 4
-│   ├── class_guide.md            ← 산출물 5
-│   ├── bbox_guide.md             ← 산출물 6 (예시 이미지: docs/images/)
+│   ├── class_guide.md            ← 산출물 5 (v1.7.1)
+│   ├── bbox_guide.md             ← 산출물 6 (v1.2 · 예시 이미지: docs/images/)
 │   ├── subject08_handoff.md      ← 산출물 11 (08_handoff.py 가 작성)
 │   ├── CODE_GUIDE.md             코드 설명 (역할별)
 │   ├── STUDY_GUIDE.md            코드 분석 공부 자료
+│   ├── code_review.md            코드 리뷰 (의사코드 · 처리흐름 · Mermaid)
 │   └── team/                     팀 실행 가이드·공부 자료·PM 계획 PDF
 ├── manifests/
 │   └── dataset_manifest.csv      ← 산출물 7 (10_export_manifest.py 가 작성)
@@ -260,9 +262,13 @@ Class 이름·사용 여부·화면 색은 `configs/classes.yaml` 에서 관리�
 | 1 | 플라스틱·돌·금속 | O |
 | 2 | 나뭇가지류 | O |
 | 3 | 벌레류 | O |
-| 4 | 고무장갑 | **X (발견하면 삭제하지 말고 REVIEW)** |
+| 4 | 고무장갑 | **X (사용 안 함 · 고무장갑 = 배경 · BBox 그리지 않음 · 기존 BBox 는 삭제 → EDITED)** |
 | 5 | 병해·갈변 | O |
 | 6 | 파·고추 | O |
+
+- **배경 (Class 없음)**: 김치(잎 · 조각 · 양념)와 고무장갑에는 BBox 를 그리지 않습니다. 모델은 BBox 없는 부분을 "이물이 아닌 것"으로 배웁니다.
+- 작아도 이물이 확실하면 BBox 를 그리고 노트에 `small` 을 적습니다 (스티로폼 = Class 1).
+- 번호는 교과 8 `dataset.yaml` 과 같아야 하므로 Class 4 번호도 그대로 둡니다 (라벨 인스턴스만 0건).
 
 ## 8. 알려진 제한
 
