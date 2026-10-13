@@ -124,10 +124,17 @@ def ask_text(root, title, message, hint="", ime=None, initial=""):
     return result["value"]
 
 
-def validation_window(root, issues, image_count, report_path, on_jump):
+def validation_window(
+    root, 
+    issues, 
+    image_count, 
+    report_path, 
+    on_jump,
+    coverage=None,):                # coverage 관련 추가    / 10.13
     """Validation 결과 창.
     위: 전체 몇 장 중 몇 건인지 + 검사 항목별 정상/오류 체크리스트
     아래: 문제 항목 표. 행을 더블클릭하면 on_jump(이미지 상대경로)."""
+
     win = tk.Toplevel(root, bg=SURFACE)
     win.title("Validation 결과")
     win.geometry("1020x680")
@@ -142,8 +149,19 @@ def validation_window(root, issues, image_count, report_path, on_jump):
         verdict, verdict_color = f"  CRITICAL {crit}건", "#D70015"
     elif counts["REVIEW"]:
         verdict, verdict_color = f"  CRITICAL 0건 · 확인 필요 {counts['REVIEW']}건", "#C93400"
+    
+    ### else:                수정 ~~~~    디테일 추가   / 10.13
+    #   verdict, verdict_color = "  CRITICAL 0건 · 통과", "#248A3D"
     else:
-        verdict, verdict_color = "  CRITICAL 0건 · 통과", "#248A3D"
+        if image_count == 0:
+            verdict, verdict_color = "  검사 대상 없음", "#6E6E73"
+        elif coverage is None:
+            verdict, verdict_color = "  보고된 오류 0건 · 수행 범위 미확인", "#6E6E73"
+        elif coverage.skipped:
+            verdict, verdict_color = "  오류 0건 · 일부 검사 미수행", "#9A6B32"
+        else:
+            verdict, verdict_color = "  수행한 검사에서 오류 0건", "#248A3D"
+#######################################            
 
     head = tk.Frame(win, bg=SURFACE, padx=20, pady=14)
     head.pack(fill=tk.X)
@@ -153,30 +171,107 @@ def validation_window(root, issues, image_count, report_path, on_jump):
              font=FONT_SMALL).pack(side=tk.RIGHT)
 
     # 요약: 전체 중 문제 이미지 수
-    parts = [f"검사 완료 {image_count}장", f"문제 이미지 {bad_images}장",
-             f"CRITICAL {counts['CRITICAL']}건", f"REVIEW {counts['REVIEW']}건",
-             f"INFO {counts['INFO']}건"]
-    tk.Label(win, text="   ·   ".join(parts), wraplength=980, justify=tk.LEFT, bg=SURFACE, fg=TEXT2,
-             font=FONT_SMALL, padx=20).pack(anchor="w")
+    # parts = [f"검사 완료 {image_count}장", f"문제 이미지 {bad_images}장",      # 수정 / 10.13
+    parts = [
+        f"검사 대상 {image_count}장", f"문제 경로 {bad_images}개",
+        f"CRITICAL {counts['CRITICAL']}건", f"REVIEW {counts['REVIEW']}건",
+        f"INFO {counts['INFO']}건"]
+
+    if coverage is not None:                                                # 추가 ~    / 10.13
+        parts += [
+            f"이미지 열기 성공 {coverage.images_opened}장",
+            f"TXT 읽기 성공 {coverage.labels_read}개",
+        ]                                                                   # ~ 추가
+
+    tk.Label(win, 
+    text="   ·   ".join(parts), 
+    wraplength=980, 
+    justify=tk.LEFT, 
+    bg=SURFACE, 
+    fg=TEXT2,
+    font=FONT_SMALL, padx=20
+    ).pack(anchor="w")
 
     # 검사 항목별 체크리스트
     checks = tk.Frame(win, bg=SURFACE, padx=20, pady=6)
     checks.pack(fill=tk.X)
+
+    # for name, codes in CHECKS:                # for 문 전체 수정 ~
     for name, codes in CHECKS:
         n = sum(by_code.get(c, 0) for c in codes)
-        severity = next((i.severity for i in issues if i.code in codes), "")
-        if n == 0:
-            text, color = f"✓ {name}: 정상", "#248A3D"
-        elif severity == "CRITICAL":
-            text, color = f"⚠ {name}: 오류 {n}건", SEVERITY_COLORS["CRITICAL"]
-        elif severity == "REVIEW":
-            text, color = f"⚠ {name}: 확인 필요 {n}건", SEVERITY_COLORS["REVIEW"]
-        else:
-            text, color = f"ⓘ {name}: {n}건", SEVERITY_COLORS["INFO"]
-        tk.Label(checks, text=text, bg=SURFACE, fg=color, font=FONT_SMALL, anchor="w").pack(anchor="w")
 
-    tk.Label(win, text=f"보고서  {report_path}", bg=SURFACE, fg=TEXT3, font=FONT_CAPTION,
-             padx=20).pack(anchor="w", pady=(2, 8))
+        # 중복되는 항목은 문제가 있을 때만 표시
+        if n == 0 and any(
+        c in ("DATASET_EMPTY", "LABEL_READ") for c in codes
+        ): continue  
+    
+        severity = next(
+            (i.severity for i in issues if i.code in codes),
+            "",
+        )
+
+        checked = (
+            coverage is not None
+            and any(c in coverage.checked for c in codes)
+        )
+        skipped = (
+            coverage is not None
+            and any(c in coverage.skipped for c in codes)
+        )
+        not_applicable = (
+            coverage is not None
+            and any(c in coverage.not_applicable for c in codes)
+        )
+
+        if n:
+            if severity == "CRITICAL":
+                text = f"⚠ {name}: 오류 {n}건"
+                color = SEVERITY_COLORS["CRITICAL"]
+            elif severity == "REVIEW":
+                text = f"⚠ {name}: 확인 필요 {n}건"
+                color = SEVERITY_COLORS["REVIEW"]
+            else:
+                text = f"ⓘ {name}: {n}건"
+                color = SEVERITY_COLORS["INFO"]
+            if skipped:
+                text += " · 미수행 결과 포함"
+
+        elif skipped:
+            state = " 일부 미수행 " if checked else " 미수행 "
+            text = f"ⓘ {name}: {state}"
+            color = "#9A6B32"
+        elif checked:
+            text = f"✓ {name}: 정상"
+            color = "#248A3D"
+            if not_applicable:
+                text += " ( BBox 없는 '.txt' 포함 )"
+        elif not_applicable:
+            text = f"ⓘ {name}: BBox 없어 검사할 좌표 없음"
+            color = "#6E6E73"
+        else:
+            text = f"ⓘ {name}: 수행 정보 없음"
+            color = "#6E6E73"
+
+        tk.Label(
+            checks,
+            text=text,
+            bg=SURFACE,
+            fg=color,
+            font=FONT_SMALL,
+            anchor="w",
+        ).pack(anchor="w", pady=(2, 8))
+
+# 체크리스트 아래에 보고서 저장 경로 표시
+    tk.Label(
+        win,
+        text=f"보고서  {report_path}",
+        bg=SURFACE,
+        fg=TEXT3,
+        font=FONT_CAPTION,
+        padx=20,
+        wraplength=980,
+        justify=tk.LEFT,
+    ).pack(anchor="w", pady=(2, 8))             # ~ 수정
 
     # 문제 항목이 0건이면 빈 표 대신 안내를 보여준다
     if not issues:
