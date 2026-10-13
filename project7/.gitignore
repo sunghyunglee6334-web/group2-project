@@ -22,3 +22,7 @@ reports/*.csv
 __pycache__/
 *.pyc
 .venv/
+
+# ── 예외 (2026-10-13 PM): 최종 Validation 결과 1개만 Git 허용 ──
+# 실행할 때마다 생기는 validation_날짜.csv 는 계속 제외 → 최종본만 validation_final.csv 로 복사해서 올림
+!reports/validation_final.csv
