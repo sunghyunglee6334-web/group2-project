@@ -35,9 +35,15 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
-    class_names = load_class_names(DATA_YAML)
+    # 3일차 Split 이 끝나야 생기는 것들을 먼저 확인
     image_dir = YOLO_DIR / "images" / args.split
     label_dir = YOLO_DIR / "labels" / args.split
+    for need in (DATA_YAML, image_dir, label_dir):
+        if not need.exists():
+            sys.exit(f"아직 없습니다: {need.relative_to(PROJECT_ROOT)}\n"
+                     "→ 3일차 Split(② Data/QA) 이 끝난 뒤 다시 실행하세요.")
+
+    class_names = load_class_names(DATA_YAML)
 
     images = sorted(p for p in image_dir.iterdir() if p.suffix.lower() in IMAGE_EXTS)
     random.Random(args.seed).shuffle(images)
@@ -54,7 +60,7 @@ def main():
         out = visualize(img, txt, OUT_DIR / args.split / f"{img.stem}_gt.jpg", class_names)
         print("  저장:", out.relative_to(PROJECT_ROOT))
     print(f"완료. 라벨 없는 이미지 {missing}장. 결과 폴더: {(OUT_DIR / args.split).relative_to(PROJECT_ROOT)}")
-
+    
 
 if __name__ == "__main__":
     main()
