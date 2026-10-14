@@ -14,6 +14,7 @@
   [1단계] 누수 방지 그룹 만들기   촬영 시각 정렬 → Δt > GAP_SECONDS면 새 그룹 → 해시 병합 → 크기 확인
   [2단계] 그룹 속성 계산          scene_type 최빈값, 클래스 다양성(0/1-2/3-4/5-6), 희소 클래스, 객체 수, 빈 라벨 비율
   [3단계] 그룹 단위 층화 배정     bridge_holdout 150 → test 75 → val 75 → train 600(나머지)
+                                  Val은 기존 original_split=validation 비율이 높은 묶음을 우선 (묶음 단위)
   [4단계] 검증                    그룹이 여러 split에 걸치지 않는지, split별 분포 비교
   [5단계] manifests 저장          산출물 1 (5개 CSV) 저장 후 다시 읽어 장수·겹침 확인
   [6단계] YOLO 폴더 복사 (선택)
@@ -45,6 +46,7 @@ POLICY = {
     # "score_weights": {"stratum": 0.5, "scene": 1.0, "class": 1.0, "background": 1.0},  # [3-3] 점수 가중치
     # "class_min_objects": {"val": 5, "test": 5},       # [3-3] Val·Test Class별 최소 객체 수
     # "train_min_background_share": 0.5,                # [3-3] 배경 이미지 중 Train 최소 비율
+    # "orig_val_preference": {"enabled": True, "weight": 2.0},  # [3-4] 기존 validation 비율 높은 묶음을 Val로 우선
 }
 
 SAVE_MANIFESTS = True   # [5단계] manifests/ 5개 CSV + reports/ 저장 (산출물 1)
