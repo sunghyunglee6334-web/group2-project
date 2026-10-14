@@ -15,6 +15,7 @@ split_builder.py — 교과 8 Split MVP (그룹 단위 층화 배정)
       3-3 조합 탐색: 장수를 정확히 맞추고, Bridge·Test·Val 점수 합이 가장 작은 배정 선택
           점수 = 층 + 장면(이미지 수) + Class 객체 비율 + 배경 비율 차이
           필수 = Train의 Class별 객체 수가 가장 많음 · 배경 절반 이상 Train · Val/Test Class 최소 개수
+      3-0 (기본) Val 먼저: original_split=validation 사진만으로 Val 75장 구성 → 그다음 Bridge·Test·Train
       → 같은 group_id는 반드시 같은 split
   [4단계] 검증
       4-1 그룹이 여러 split에 걸치지 않는지   4-2 split별 분포 비교표
@@ -57,7 +58,8 @@ DEFAULT_POLICY = {
     # [3단계]
     "sizes": {"bridge_holdout": 150, "test": 75, "val": 75},   # train = 나머지 (600)
     "size_tolerance": 0,                                 # 0 = 장수 정확히
-    "rare_protect_share": 0.4,                           # [3-2] 희소 클래스 이미지의 40% 이상 가진 그룹 → Train
+    "rare_protect_share": 0.4,
+    "object_only_pin_share": 0.5,                        # [3-2] 이물만 사진이 절반 이상인 묶음 → Train                           # [3-2] 희소 클래스 이미지의 40% 이상 가진 그룹 → Train
     "pinned_train": [],                                  # [3-2] 직접 고정할 group_id (예: ["G17"])
     "role_rules": {                                      # [3-3] 역할별 필수 조건
         "bridge_holdout": {"max_ambiguous": 1, "min_dates": 2, "source_band_pp": 10},
@@ -69,6 +71,20 @@ DEFAULT_POLICY = {
     "max_candidates_per_role": 300,                      # 역할마다 점수 좋은 후보 몇 개까지 볼지 (속도)
     # [3-3] 점수 = 전체 구성과의 차이 (작을수록 좋음)
     "score_weights": {"stratum": 0.5, "scene": 1.0, "class": 1.0, "background": 1.0},
+    # [3-4] 기존 original_split=validation 우선: Val을 고를 때, 기존 validation 비율이 높은 '묶음'에 가산점
+    #       (사진 단위로 가져오면 같은 묶음이 Train·Val로 갈라져 누수 → 묶음 단위로만 반영)
+    "orig_val_preference": {"enabled": False, "weight": 2.0},   # (val_first를 쓰면 필요 없음)
+    # [1-5] 기존 validation '연속 구간' → 따로 떼서 Val에 먼저 배정
+    #       (예: T17 이물만 150장 중 마지막 30장이 연속으로 validation)
+    #       min_run 장 이상 연속일 때만 떼고, take 장만 가져간다 (장수를 정확히 맞추기 위해 끝에서부터)
+    #       ※ 같은 촬영 묶음(같은 이물 세트)을 나누는 예외 → 해당 사진은 same_bundle_split=True 로 표시
+    "orig_val_block": {"enabled": False, "min_run": 20, "take": 25},   # (val_first를 쓰면 필요 없음)
+    # [3-0] Val 먼저: original_split=validation 사진만으로 Val을 만든다 (1차 기준)
+    #   - 묶음마다 기존 validation 사진을 'V 조각'으로 모으고, 조각 조합으로 Val 장수를 맞춘다
+    #   - 조각을 내준 묶음의 나머지는 Train에 둔다 (Test·Bridge가 Val과 같은 이물 세트를 갖지 않게)
+    #   - Bridge·Test는 손대지 않은 묶음에서 묶음째로 고른다
+    #   ※ 같은 묶음이 Train·Val로 나뉘므로 Val 점수는 실제보다 좋게 나올 수 있음 (same_bundle_split=True)
+    "val_first": {"enabled": True, "max_parts": 6, "top_k": 60, "touch_penalty": 0.05},
     # [3-3] 꼭 지킬 조건 (Class·배경)
     "class_min_objects": {"val": 5, "test": 5},          # TODO(기준선): Val·Test에 Class별 최소 객체 수
     "train_min_background_share": 0.5,                   # 배경(빈 라벨) 이미지의 50% 이상은 Train
@@ -213,6 +229,26 @@ def step1_make_groups(df, gap_seconds, policy, issues, log):
         members.setdefault(find(g), []).append(g)
     gid = {g: "+".join(ms) for ms in members.values() for g in ms}
     df["group_id"] = df["time_group"].map(gid)
+
+    # [1-5] 기존 validation 연속 구간 떼어내기 (Val 우선 후보)
+    df["orig_val_block"] = False
+    ob = policy["orig_val_block"]
+    if ob["enabled"] and "original_split" in df:
+        is_v = df["original_split"].astype(str).str.lower().isin(["val", "valid", "validation"])
+        run_id = (is_v != is_v.shift()).cumsum()
+        for _, idx in df[is_v].groupby(run_id[is_v]).groups.items():
+            idx = list(idx)
+            if len(idx) < ob["min_run"]:
+                continue
+            take = idx[-ob["take"]:] if ob.get("take") else idx
+            src = df.at[take[0], "group_id"]
+            df.loc[take, "group_id"] = f"{src}_V"
+            df.loc[take, "orig_val_block"] = True
+            log.append(f"[1-5] 기존 validation 연속 {len(idx)}장 발견 ({src}) → 끝의 {len(take)}장을 "
+                       f"'{src}_V' 그룹으로 떼어 Val 우선 배정")
+            issues.append(f"[1-5] {src}_V {len(take)}장은 {src}와 같은 촬영 묶음(같은 이물 세트) → "
+                          "Val 점수가 실제보다 좋게 나올 수 있음 (same_bundle_split=True로 표시)")
+    df["same_bundle_split"] = df["orig_val_block"]
     log.append(f"[1-3] group_id {df['group_id'].nunique()}개")
 
     # [1-4] 그룹 크기 분포 확인
@@ -251,9 +287,12 @@ def step2_group_attributes(df, policy, has_labels) -> pd.DataFrame:
             "bg_images": int(d["is_background"].sum()),                      # [2-4] 빈 라벨(배경) 이미지 수
             "empty_ratio": round(d["is_background"].mean(), 3),              # [2-4] 빈 라벨 비율
             "d1": int(d["_d1"].sum()),
+            "orig_val": int(d["original_split"].astype(str).str.lower()                # [2-5] 기존 validation 수
+                            .isin(["val", "valid", "validation"]).sum()) if "original_split" in d else 0,
             "ambiguous": int(d["label_ambiguous"].sum()),
             "dates": tuple(sorted(d["capture_date"].unique())),
             "first_time": d["capture_time"].min(),
+            "orig_block": bool(d["orig_val_block"].all()),
         }
         for s_ in scenes:                                                    # [2-1] 장면별 이미지 수 (최빈값만 보면
             row[f"scene_n:{s_}"] = int(sc.get(s_, 0))                        #  T03처럼 섞인 그룹의 배경을 놓침)
@@ -274,8 +313,13 @@ def _protected(gt, policy, log) -> set:
     for g in policy["pinned_train"]:
         if g in gt.index:
             prot[g] = "직접 고정"
-    counts = gt["stratum"].value_counts()
-    for g, s in gt["stratum"].items():
+    for g in gt.index:                                                       # 이물만 묶음 본체는 Train
+        if not gt.at[g, "orig_block"] and g not in prot and \
+                gt.at[g, "scene_n:object_only"] / gt.at[g, "n_images"] >= policy["object_only_pin_share"] \
+                if "scene_n:object_only" in gt else False:
+            prot[g] = "이물만(object_only) 묶음 → Train에도 이물만 사진이 있어야 함"
+    counts = gt.loc[~gt["orig_block"], "stratum"].value_counts()
+    for g, s in gt.loc[~gt["orig_block"], "stratum"].items():
         if counts[s] == 1 and g not in prot:
             prot[g] = f"층 '{s}'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)"
     for c in policy["rare_classes"]:
@@ -294,8 +338,9 @@ def _profile(sub, cols) -> pd.Series:
     return v / v.sum() if v.sum() else v * 0
 
 
-def _score(sub, ref, policy) -> dict:
-    """[3-3] 전체와 얼마나 다른가 (0 = 전체와 같음). 항목별 L1 거리 × 가중치"""
+def _score(sub, ref, policy, role=None) -> dict:
+    """[3-3] 전체와 얼마나 다른가 (0 = 전체와 같음). 항목별 L1 거리 × 가중치
+       role == "val" 이면 기존 validation 비율이 높은 묶음 조합에 가산점 (점수를 낮춤)"""
     w = policy["score_weights"]
     parts = {
         "stratum": float((sub.groupby("stratum")["n_images"].sum() / sub["n_images"].sum())
@@ -305,6 +350,12 @@ def _score(sub, ref, policy) -> dict:
         "background": abs(sub["bg_images"].sum() / sub["n_images"].sum() - ref["bg"]) * 10,
     }
     parts["total"] = sum(parts[k] * w[k] for k in w)
+    ov = policy["orig_val_preference"]
+    if role == "val" and ov["enabled"]:                                     # [3-4] 기존 validation 우선
+        share = sub["orig_val"].sum() / sub["n_images"].sum()
+        parts["orig_val_share"] = round(share, 3)
+        parts["total"] += ov["weight"] * (1 - share)                     # 비율이 높을수록 벌점이 작음
+                                                                        # (점수가 0 이상이어야 탐색의 가지치기가 맞음)
     return parts
 
 
@@ -351,17 +402,26 @@ def _train_majority(train, chosen, gt, policy) -> list:
     return out
 
 
-def _assign_once(gt, overall_d1, policy, log) -> dict:
-    prot = _protected(gt, policy, log)
+def _make_ref(gt, policy):
     tot = gt["n_images"].sum()
     scene_cols = [c for c in gt if c.startswith("scene_n:")]
     class_cols = [f"obj_{c}" for c in policy["eval_classes"] if f"obj_{c}" in gt and gt[f"obj_{c}"].sum()]
-    ref = {                                                                  # [3-1] 전체 구성 (기준)
-        "stratum": gt.groupby("stratum")["n_images"].sum() / tot,
-        "scene_cols": scene_cols, "scene": _profile(gt, scene_cols),
-        "class_cols": class_cols, "class": _profile(gt, class_cols) if class_cols else None,
-        "bg": gt["bg_images"].sum() / tot,
-    }
+    return {"stratum": gt.groupby("stratum")["n_images"].sum() / tot,
+            "scene_cols": scene_cols, "scene": _profile(gt, scene_cols),
+            "class_cols": class_cols, "class": _profile(gt, class_cols) if class_cols else None,
+            "bg": gt["bg_images"].sum() / tot}
+
+
+def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) -> dict:
+    """order : 배정할 역할 순서 (기본 bridge → test → val)
+       fixed : {"val": (group…), "train": {group…}} 처럼 미리 정해진 그룹 (val_first에서 사용)
+       ref   : 비교 기준(전체 구성). 주지 않으면 gt 전체로 계산"""
+    order = order or ASSIGN_ORDER
+    fixed = fixed or {}
+    fixed_val = tuple(fixed.get("val", ()))
+    prot = _protected(gt, policy, log) | set(fixed.get("train", ()))
+    ref = ref or _make_ref(gt, policy)                                       # [3-1] 전체 구성 (기준)
+    class_cols = ref["class_cols"]
     log.append("[3-1] 층: " + ", ".join(f"{s} {p:.0%}" for s, p in ref["stratum"].items()))
     log.append("[3-1] 장면(이미지 기준): " + ", ".join(f"{k.split(':')[1]} {v:.1%}" for k, v in ref["scene"].items()))
     if class_cols:
@@ -369,12 +429,19 @@ def _assign_once(gt, overall_d1, policy, log) -> dict:
     fail = Counter()          # 후보 단계에서 걸러진 조건 (장수 등, 많이 나오는 게 정상)
     block = Counter()         # 배정 전체를 막은 조건 (Train Class·배경·출처·층 누락) ← 진짜 원인
 
+    blocks = tuple(g for g in gt.index if gt.at[g, "orig_block"])           # [1-5] Val 우선 블록
+    if blocks:
+        log.append(f"[3-4] 기존 validation 블록 → Val 고정: {', '.join(blocks)}")
+
     def candidates(role, used):
-        pool = [g for g in gt.index if g not in prot and g not in used]
+        pool = [g for g in gt.index if g not in prot and g not in used and g not in blocks
+                and g not in fixed_val]
+        base = blocks if role == "val" else ()
         hi = policy["sizes"][role] + policy["size_tolerance"]
         out = []
-        for k in range(1, min(policy["max_groups_per_role"], len(pool)) + 1):
-            for combo in itertools.combinations(pool, k):
+        for k in range(0 if base else 1, min(policy["max_groups_per_role"], len(pool)) + 1):
+            for c in itertools.combinations(pool, k):
+                combo = base + c
                 if gt.loc[list(combo), "n_images"].sum() > hi:
                     continue
                 sub = gt.loc[list(combo)]
@@ -382,7 +449,7 @@ def _assign_once(gt, overall_d1, policy, log) -> dict:
                 if f:
                     fail.update(f)
                 else:
-                    out.append((_score(sub, ref, policy)["total"], combo))
+                    out.append((_score(sub, ref, policy, role)["total"], combo))
         out.sort()
         return out[:policy["max_candidates_per_role"]]                      # 전체와 비슷한 순
 
@@ -404,19 +471,21 @@ def _assign_once(gt, overall_d1, policy, log) -> dict:
             if pf:
                 block.update(pf)
                 return
-        if i == len(ASSIGN_ORDER):
-            f = _check("train", rest, overall_d1, policy, all_strata=ref["stratum"].index)
+        if i == len(order):
+            f = _check("train", rest, overall_d1, policy,
+                       all_strata=gt.loc[~gt["orig_block"] & ~gt.index.isin(fixed_val), "stratum"].unique())
             f += _train_majority(rest, chosen, gt, policy)
             block.update(f)
             if not f and acc < best["score"]:
                 best.update(score=acc, chosen=chosen)
             return
-        for sc, combo in cands(ASSIGN_ORDER[i], used):
+        for sc, combo in cands(order[i], used):
             if acc + sc >= best["score"]:                                   # 후보는 점수순 → 뒤는 더 나쁨
                 break
-            search(i + 1, used | set(combo), {**chosen, ASSIGN_ORDER[i]: combo}, acc + sc)
+            search(i + 1, used | set(combo), {**chosen, order[i]: combo}, acc + sc)
 
-    search(0, set(), {}, 0.0)
+    start = {"val": fixed_val} if fixed_val else {}
+    search(0, set(fixed_val), start, 0.0)
     chosen = best["chosen"]
     if chosen is None:
         why = ", ".join(f"{k} {v}회" for k, v in block.most_common(5))
@@ -424,13 +493,16 @@ def _assign_once(gt, overall_d1, policy, log) -> dict:
         raise SplitError(f"[3-3] 조건을 만족하는 배정이 없습니다. 막힌 조건: "
                          f"{why or '역할별 후보 조합이 부족'} | 후보 단계: {top}\n"
                          "→ POLICY의 class_min_objects / train_min_background_share / role_rules 를 완화해 보세요")
-    log.append(f"[3-3] 세 split 점수 합 {best['score']:.2f} (가장 작은 배정)")
+    log.append(f"[3-3] 점수 합 {best['score']:.2f} (가장 작은 배정)")
+    role_score = best["score"]
     role = {g: "train" for g in gt.index}
     for r, combo in chosen.items():
         role.update({g: r for g in combo})
-        sc = _score(gt.loc[list(combo)], ref, policy)
+        sc = _score(gt.loc[list(combo)], ref, policy, r)
+        extra = f" · 기존 validation {sc['orig_val_share']:.0%}" if "orig_val_share" in sc else ""
         log.append(f"[3-3] {r}: {', '.join(combo)} (차이 합 {sc['total']:.2f} · 층 {sc['stratum']:.2f} · "
-                   f"장면 {sc['scene']:.2f} · Class {sc['class']:.2f} · 배경 {sc['background']:.2f})")
+                   f"장면 {sc['scene']:.2f} · Class {sc['class']:.2f} · 배경 {sc['background']:.2f}{extra})")
+    role["__score__"] = role_score
     return role
 
 
@@ -447,6 +519,7 @@ def step3_assign(gt, overall_d1, policy, log, issues) -> dict:
             print(f"  … 조건을 만족하는 배정이 없어 완화: {label}", flush=True)
         try:
             role = _assign_once(gt, overall_d1, pol, log)
+            role.pop("__score__", None)
         except SplitError as e:
             errors.append(str(e).splitlines()[0])
             continue
@@ -459,6 +532,107 @@ def step3_assign(gt, overall_d1, policy, log, issues) -> dict:
                      "\n→ 장수(size_tolerance)·날짜(min_dates)·애매한 라벨·출처 비율(source_band_pp)을 검토하세요")
 
 
+
+# =====================================================================
+# [3-0] Val 먼저 — original_split=validation 사진으로 Val을 만들고, 나머지를 배정
+# =====================================================================
+def _val_first_once(df, overall_d1, policy, log, has_labels):
+    vf = policy["val_first"]
+    is_v = df["original_split"].astype(str).str.lower().isin(["val", "valid", "validation"])
+    if not is_v.any():
+        raise SplitError("[3-0] original_split=validation 사진이 없습니다 (val_first를 끄세요)")
+    gt_full = step2_group_attributes(df, policy, has_labels)
+    ref = _make_ref(gt_full, policy)                                          # 기준 = 전체 900장 구성
+
+    # [3-0-1] 묶음별 V 조각 (기존 validation 사진만)
+    dv = df[is_v].copy()
+    dv["group_id"] = dv["group_id"] + "_V"
+    vt = step2_group_attributes(dv, policy, has_labels)
+    want, tol = policy["sizes"]["val"], policy["size_tolerance"]
+
+    # [3-0-2] Val 후보: V 조각 조합 중 장수가 맞고 Val 조건을 통과하는 것, 구성이 고른 순
+    cand = []
+    parts = list(vt.index)
+    for k in range(1, min(vf["max_parts"], len(parts)) + 1):
+        for combo in itertools.combinations(parts, k):
+            n = vt.loc[list(combo), "n_images"].sum()
+            if abs(n - want) > tol:
+                continue
+            sub = vt.loc[list(combo)]
+            if _check("val", sub, overall_d1, policy):
+                continue
+            sc = _score(sub, ref, policy, "val")["total"] + vf["touch_penalty"] * k   # 조각 수가 적을수록 우대
+            cand.append((sc, combo))
+    cand.sort()
+    cand = cand[:vf["top_k"]]
+    if not cand:
+        raise SplitError("[3-0] 기존 validation 조각으로 Val 장수를 맞추는 조합이 없습니다 "
+                         "(size_tolerance나 role_rules.val을 완화해 보세요)")
+
+    # [3-0-3] Val 후보마다 Bridge·Test 배정 → 전체 점수가 가장 좋은 것
+    best = None
+    errors = Counter()
+    for vsc, combo in cand:
+        if best and vsc >= best[0]:
+            break                                                            # 나머지 점수는 0 이상
+        touched = {c[:-2] for c in combo}
+        d2 = df.copy()
+        in_val = d2["group_id"].isin(touched) & is_v & (d2["group_id"] + "_V").isin(combo)
+        d2.loc[in_val, "group_id"] = d2.loc[in_val, "group_id"] + "_V"
+        rest = d2["group_id"].isin(touched) & ~in_val
+        d2.loc[rest, "group_id"] = d2.loc[rest, "group_id"] + "_R"            # 조각을 내준 묶음의 나머지
+        gt2 = step2_group_attributes(d2, policy, has_labels)
+        tmp_log = []
+        try:
+            role = _assign_once(gt2, overall_d1, policy, tmp_log,
+                                order=["bridge_holdout", "test"],
+                                fixed={"val": tuple(combo), "train": {f"{t}_R" for t in touched} & set(gt2.index)},
+                                ref=ref)
+        except SplitError as e:
+            errors[str(e).split("막힌 조건: ")[-1].split(" | ")[0][:80]] += 1
+            continue
+        total = vsc + role.pop("__score__")
+        if best is None or total < best[0]:
+            best = (total, combo, d2, gt2, role, tmp_log, vsc)
+    if best is None:
+        raise SplitError("[3-0] Val 후보 " + str(len(cand)) + "개 모두 Bridge·Test 배정 실패. 막힌 조건: "
+                         + "; ".join(f"{k} ({v}회)" for k, v in errors.most_common(3)))
+    total, combo, d2, gt2, role, tmp_log, vsc = best
+    for g in combo:
+        role[g] = "val"
+    n_orig = int(is_v.sum())
+    log.append(f"[3-0] Val 먼저: 기존 validation {n_orig}장 → 묶음별 V 조각 {len(vt)}개 중 "
+               f"{', '.join(combo)} 선택 ({int(vt.loc[list(combo), 'n_images'].sum())}장)")
+    log.append(f"[3-0] 조각을 내준 묶음의 나머지 → Train: {', '.join(sorted(c[:-2] + '_R' for c in combo))}")
+    log.extend(tmp_log)
+    log.append(f"[3-3] val: {', '.join(combo)} (점수 {vsc:.2f})")
+    return role, d2, gt2
+
+
+def step3_val_first(df, overall_d1, policy, log, issues, has_labels):
+    """[3-0] 조건 완화 사다리를 적용해 Val 먼저 배정"""
+    pol = copy.deepcopy(policy)
+    errors = []
+    print("  … [3단계] Val 먼저(기존 validation) 배정 탐색 중 (보통 30초~2분)", flush=True)
+    for step in [None] + list(policy["relax_steps"]):
+        if step is not None:
+            key, value, label = step
+            pol[key] = value
+            log.append(f"[3-3] 조건 완화: {label}")
+            print(f"  … 조건을 만족하는 배정이 없어 완화: {label}", flush=True)
+        try:
+            role, d2, gt2 = _val_first_once(df, overall_d1, pol, log, has_labels)
+        except SplitError as e:
+            errors.append(str(e).splitlines()[0])
+            continue
+        if step is not None:
+            relaxed = [lbl for k, v, lbl in policy["relax_steps"][: policy["relax_steps"].index(step) + 1]]
+            issues.append("[3-3] 모든 조건을 만족하는 배정이 없어 완화한 조건: " + " / ".join(relaxed)
+                          + "  (완화 전: " + errors[0][:200] + ")")
+        return role, d2, gt2
+    raise SplitError("[3-0] 조건을 완화해도 배정이 없습니다.\n  " + "\n  ".join(errors))
+
+
 # =====================================================================
 # [4단계] 검증
 # =====================================================================
@@ -466,11 +640,12 @@ def step4_validate(df, policy, has_labels):
     col = policy["columns"]
     # [4-1] 그룹이 여러 split에 걸치지 않는지
     mixed = df.groupby("group_id")["split"].nunique()
-    mixed_t = df.groupby("time_group")["split"].nunique()
+    mixed_t = df[~df["same_bundle_split"]].groupby("time_group")["split"].nunique()   # 의도적 예외 제외
     results = [
         ("모든 이미지가 하나의 split에만 속함", bool(df["split"].isin(SPLITS).all()), ""),
         ("같은 group_id가 여러 split에 걸치지 않음", bool((mixed == 1).all()), f"{mixed[mixed > 1].index.tolist()}"),
-        ("같은 time_group이 여러 split에 걸치지 않음", bool((mixed_t == 1).all()), f"{mixed_t[mixed_t > 1].index.tolist()}"),
+        ("같은 time_group이 여러 split에 걸치지 않음 (Val 조각으로 나눈 묶음은 예외)", bool((mixed_t == 1).all()),
+         f"{mixed_t[mixed_t > 1].index.tolist()}"),
     ]
     if df["_md5"].notna().any():
         h = lambda rs: set(df.loc[df["split"].isin(rs), "_md5"].dropna())
@@ -515,7 +690,7 @@ def step4_validate(df, policy, has_labels):
 #   manifests/train.csv / val.csv / test.csv / bridge_holdout.csv  split별로 나눈 같은 형식의 표
 # =====================================================================
 KEY_COLS = ["image_name", "split", "group_id", "time_group", "capture_time", "delta_t",
-            "stratum", "eval_exclude", "label_ambiguous", "is_background",
+            "stratum", "eval_exclude", "same_bundle_split", "label_ambiguous", "is_background",
             "yolo_image_path", "yolo_label_path", "dataset_version", "policy_version"]
 
 
@@ -616,6 +791,40 @@ def step6_copy_yolo(df, data_root, project_root: Path, policy, issues) -> list:
     return res
 
 
+
+def _original_val_review(df) -> list:
+    """(기록) 기존 original_split=validation을 Val 후보로 검토한 근거.
+    배정에는 쓰지 않는다 — 사진 단위로 뽑혀 있어 그대로 쓰면 누수가 생기기 때문."""
+    if "original_split" not in df:
+        return []
+    is_val = df["original_split"].astype(str).str.lower().isin(["val", "valid", "validation"])
+    if not is_val.any():
+        return []
+    t_val = df.loc[is_val, "capture_time"].sort_values().values
+    t_tr = df.loc[~is_val, "capture_time"].sort_values().values
+    import numpy as np
+    idx = np.searchsorted(t_tr, t_val)
+    near = 0
+    for v, i in zip(t_val, idx):
+        gaps = [abs((v - t_tr[j]) / np.timedelta64(1, "s")) for j in (i - 1, i) if 0 <= j < len(t_tr)]
+        near += bool(gaps) and min(gaps) <= 60
+    g = (df.assign(_v=is_val).groupby("time_group")
+           .agg(장수=("_v", "size"), 기존_validation=("_v", "sum")))
+    g["비율(%)"] = (g["기존_validation"] / g["장수"] * 100).round(0).astype(int)
+    g["배정된 split"] = df.groupby("time_group")["split"].first()
+    return [
+        "## 기존 validation 검토", "",
+        f"- 기존 validation {int(is_val.sum())}장이 촬영 묶음 {int((g['기존_validation'] > 0).sum())}개에 "
+        f"{g.loc[g['기존_validation'] > 0, '비율(%)'].min()}~{g['비율(%)'].max()}%씩 흩어져 있음 "
+        "(사진 단위 무작위 추출로 보임)",
+        f"- 그중 {near}장은 60초 안에 기존 train 사진이 바로 옆에 있음 (같은 묶음 = 같은 이물 세트)",
+        "- 사진 단위로 Val에 넣으면 같은 묶음이 Train·Val로 갈라져 누수 → 사용하지 않음",
+        "- 대신 묶음 단위로 반영: Val을 고를 때 기존 validation 비율이 높은 묶음에 가산점 ([3-4] orig_val_preference)",
+        "  (모든 묶음 비율이 14~30%로 비슷해 효과는 크지 않을 수 있음)",
+        "", g.reset_index().to_markdown(index=False), "",
+    ]
+
+
 # =====================================================================
 # 기록 — reports/dataset_summary.csv, reports/split_report.md
 # =====================================================================
@@ -628,6 +837,7 @@ def write_reports(df, gt, dist, results, issues, log, meta, project_root: Path, 
                           "n_objects", "empty_ratio", "d1", "ambiguous", "stratum", "split"]]
     g.insert(2, "dates", gt["dates"].map(",".join).values)
     mark = lambda ok: "✅" if ok else "❌"
+    orig = _original_val_review(df)
     (rep / "split_report.md").write_text("\n".join([
         "# Split 기록 (MVP: 그룹 단위 층화 배정)", "",
         f"- Dataset Version: {meta['dataset_version']} · 정책: {policy['name']} · gap {meta['gap']}s · seed {meta['seed']}(기록용)",
@@ -636,6 +846,7 @@ def write_reports(df, gt, dist, results, issues, log, meta, project_root: Path, 
         "## [2단계] 그룹 속성 / [3단계] 배정", "", g.to_markdown(index=False), "",
         "## [4단계] split별 분포", "", dist.to_markdown(index=False), "",
         "## 검증", "", *[f"- {mark(ok)} {n}" + ("" if ok else f" — {d}") for n, ok, d in results], "",
+        *orig,
         "## 확인 필요", "", *([f"- {x}" for x in issues] or ["- 없음"]), "",
         "## 실행 로그", "", *[f"- {x}" for x in log]]) + "\n", encoding="utf-8")
 
@@ -664,9 +875,18 @@ def build_split(manifest_path, data_root=None, project_root=".", dataset_version
         issues.append("라벨 파일이 없어 클래스 다양성·희소 클래스를 계산하지 못함 (diversity=unknown)")
 
     df = step1_make_groups(df, gap_seconds, policy, issues, log)                   # [1단계]
-    gt = step2_group_attributes(df, policy, has_labels)                            # [2단계]
+    overall_d1 = df["_d1"].mean() * 100
+    if policy["val_first"]["enabled"] and "original_split" in df:                  # [3-0] Val 먼저
+        role, df, gt = step3_val_first(df, overall_d1, policy, log, issues, has_labels)
+        touched = {g[:-2] for g in gt.index if g.endswith(("_V", "_R"))}
+        df["same_bundle_split"] = df["group_id"].str[:-2].isin(touched) & df["group_id"].str.endswith(("_V", "_R"))
+        if df["same_bundle_split"].any():
+            issues.append(f"[3-0] Val은 기존 validation 사진으로 구성 → 같은 묶음({', '.join(sorted(touched))})의 "
+                          "나머지가 Train에 있어 Val 점수가 실제보다 좋게 나올 수 있음 (same_bundle_split=True)")
+    else:
+        gt = step2_group_attributes(df, policy, has_labels)                        # [2단계]
+        role = step3_assign(gt, overall_d1, policy, log, issues)                    # [3단계]
     df["stratum"] = df["group_id"].map(gt["stratum"])
-    role = step3_assign(gt, df["_d1"].mean() * 100, policy, log, issues)                    # [3단계]
     df["split"] = df["group_id"].map(role)
     gt["split"] = gt.index.map(role)
     df["eval_exclude"] = df["label_ambiguous"] & df["split"].isin(["test", "bridge_holdout"])
