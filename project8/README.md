@@ -11,7 +11,7 @@
 
 ## 3. Dataset
 - JPG 900 / YOLO TXT 900 · Dataset 1 (train) · Dataset 2 (train · validation)
-- scene_type: kimchi_with_target · normal_kimchi · object_only · other_review
+- scene_type: kimchi_with_target · normal_kimchi · object_only · none · other_review
 - Dataset Version: TBD
 
 ## 4. Class (교과 7 기준 유지 · 번호 변경 금지)
@@ -56,3 +56,4 @@ TBD
 
 ## 14. 교과 14 Handoff
 TBD — docs/handoff_subject14.md
+
