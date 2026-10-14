@@ -1,0 +1,15 @@
+# 전체 공통 안전장치 (NDA) — 각 project 폴더에도 .gitignore 있음
+# 2026-10-13 강사님 확인: Git 에 올리면 안 되는 것은 '원본 김치 사진' 뿐 · TXT · CSV 등은 허용
+# ── 사진 (어느 폴더든 금지) ──
+*.jpg
+*.jpeg
+**/data/**/*.png
+**/data/**/*.bmp
+# ── 용량 · 개인 설정 ──
+*.zip
+*.pt
+settings.json
+.venv/
+__pycache__/
+*.pyc
+*:Zone.Identifier
