@@ -6,9 +6,11 @@ split_builder.py — 교과 8 Split MVP (그룹 단위 층화 배정)
       1-2 인접 간격 Δt > 기준값이면 새 그룹 → time_group
       1-3 (선택) 해시 유사도가 높은 이미지가 있는 그룹끼리 병합 → group_id
       1-4 그룹 크기 분포 확인
+      1-5 같은 위치·다른 이물 체크: 박스 위치(IoU)는 같은데 Class가 다른 사진 쌍 → merge(묶음 합침) 또는 flag(표시)
   [2단계] 그룹 속성 계산 (이미지 한 장이 아니라 그룹 기준)
       2-1 scene_type 최빈값      2-2 클래스 합집합 → 다양성 구간 0 / 1-2 / 3-4 / 5-6
       2-3 희소 클래스 포함 여부   2-4 객체 수, 빈 라벨 비율 (+ 출처 비율, 애매한 라벨 수)
+      2-4a bbox 크기 집계 (학습 해상도 기준 small / medium / large)   2-4b 사진당 small 최대 개수
   [3단계] group_id 단위 층화 배정 (bridge_holdout → test → val → train)
       3-1 층(stratum) = scene_type 최빈값 × 클래스 다양성 구간
       3-2 Train 보호 그룹 (층에 그룹이 하나뿐 / 희소 클래스가 몰린 그룹)
@@ -50,9 +52,26 @@ DEFAULT_POLICY = {
     "use_md5": True,
     "use_phash": True, "phash_max_distance": 5,          # TODO(기준선)
     "max_group_share": 0.20,                             # [1-4] 한 그룹이 전체의 20% 넘으면 경고
+    # [1-5] 같은 위치·다른 이물: 다른 묶음인데 박스 위치는 같고 이물(Class)만 바뀐 사진 쌍
+    #   merge = 두 묶음을 합쳐 같은 split으로 (누수 차단) / flag = 합치지 않고 표시만 (4-7 점검용)
+    #   min_boxes      : 박스가 1개인 사진은 가운데 놓기만 해도 겹쳐서 증거가 약함 → 2개 이상만 비교
+    #   min_iou        : 박스 위치 평균 IoU 기준
+    #   min_pair_share : 쌍에 걸린 사진이 작은 묶음의 이 비율 이상일 때만 묶음을 합침 (우연한 겹침 무시)
+    "scene_pair": {"enabled": True, "mode": "merge", "min_boxes": 2, "min_iou": 0.8,
+                   "min_pair_share": 0.2},                               # TODO(기준선)
     # [2단계]
     "rare_classes": ["6"],                               # [2-3] 희소 클래스
     "eval_classes": ["0", "1", "2", "3", "5"],
+    # [2-4a] bbox 크기 구간: 학습 해상도(긴 변 train_px)로 줄였을 때 넓이(px²) 기준
+    #   mode="quantile": 우리 데이터 전체 bbox 넓이의 1/3·2/3 지점을 경계로 → small/medium/large가 1/3씩
+    #                    (COCO 32²/96²는 이 데이터엔 너무 커서 large 0%, Class 3은 100% small이 나옴)
+    #   mode="fixed"   : small·large 값(px, 한 변 기준) 그대로 사용 (COCO 기준 32 / 96)
+    #   mode="class_quantile": Class마다 따로 1/3·2/3 지점 (Class 5처럼 원래 작은 이물이 전부 small이 되는 문제 해결)
+    "size_bins": {"mode": "class_quantile", "q": [1 / 3, 2 / 3], "train_px": 640, "small": 32, "large": 96},
+    "size_check": True,                                  # [3-3a] Val·Test에서 Class별 크기 쏠림 금지
+    "size_max_bin_share": 0.9,                           # [3-3a] 한 크기 구간이 90% 넘으면 쏠림
+    "size_min_objects": 10,                              # [3-3a] 객체가 이보다 적은 Class는 쏠림 판정 안 함
+    "small_concentration": {"top_k": 5, "share": 0.5},   # [4-6] small 상위 5장이 split small의 50% 이상이면 경고
     "ambiguous_keywords": ["모호", "ambiguous", "불확실", "의심", "REVIEW"],
     "source_d1": "이물검출_학습데이터1",
     # [3단계]
@@ -61,6 +80,8 @@ DEFAULT_POLICY = {
     "rare_protect_share": 0.4,
     "object_only_pin_share": 0.5,                        # [3-2] 이물만 사진이 절반 이상인 묶음 → Train                           # [3-2] 희소 클래스 이미지의 40% 이상 가진 그룹 → Train
     "pinned_train": [],                                  # [3-2] 직접 고정할 group_id (예: ["G17"])
+    "pinned_val": ["scene:normal_kimchi"],               # "scene:장면" = 최빈 장면이 그 장면인 묶음 전부 (gap을 바꿔도 번호와 무관)
+    "_pinned_val_note": "",                               # [3-2] Val에 '묶음째' 고정 (T02 = 정상 김치 9 + 이물만 1) → 누수 없음
     "role_rules": {                                      # [3-3] 역할별 필수 조건
         "bridge_holdout": {"max_ambiguous": 1, "min_dates": 2, "source_band_pp": 10},
         "test":           {"max_ambiguous": 1, "min_dates": 2, "source_band_pp": 10},
@@ -70,21 +91,24 @@ DEFAULT_POLICY = {
     "max_groups_per_role": 6,
     "max_candidates_per_role": 300,                      # 역할마다 점수 좋은 후보 몇 개까지 볼지 (속도)
     # [3-3] 점수 = 전체 구성과의 차이 (작을수록 좋음)
-    "score_weights": {"stratum": 0.5, "scene": 1.0, "class": 1.0, "background": 1.0},
+    "score_weights": {"stratum": 0.5, "scene": 1.0, "class": 3.0, "background": 1.0, "size": 2.0},  # 크기 쏠림 해결 위해 2배
     # [3-4] 기존 original_split=validation 우선: Val을 고를 때, 기존 validation 비율이 높은 '묶음'에 가산점
     #       (사진 단위로 가져오면 같은 묶음이 Train·Val로 갈라져 누수 → 묶음 단위로만 반영)
-    "orig_val_preference": {"enabled": False, "weight": 2.0},   # (val_first를 쓰면 필요 없음)
+    "orig_val_preference": {"enabled": True, "weight": 2.0},    # 묶음 단위로만 반영 → 누수 없음
     # [1-5] 기존 validation '연속 구간' → 따로 떼서 Val에 먼저 배정
     #       (예: T17 이물만 150장 중 마지막 30장이 연속으로 validation)
     #       min_run 장 이상 연속일 때만 떼고, take 장만 가져간다 (장수를 정확히 맞추기 위해 끝에서부터)
     #       ※ 같은 촬영 묶음(같은 이물 세트)을 나누는 예외 → 해당 사진은 same_bundle_split=True 로 표시
-    "orig_val_block": {"enabled": False, "min_run": 20, "take": 25},   # (val_first를 쓰면 필요 없음)
+    #   take_range: 떼어 낼 장수를 이 범위에서 모두 시도해, Val 75장이 묶음째로 딱 맞는 것 중 점수가 가장 좋은 것 선택
+    #   (실데이터: T17 이물만 150장 중 마지막 30장이 연속 validation → 이물만 장면을 Val에 넣는 유일한 방법)
+    "orig_val_block": {"enabled": True, "min_run": 20, "take": None, "take_range": [15, 30],
+                       "take_step": 5},                     # 5장 단위로만 시도 (속도)
     # [3-0] Val 먼저: original_split=validation 사진만으로 Val을 만든다 (1차 기준)
     #   - 묶음마다 기존 validation 사진을 'V 조각'으로 모으고, 조각 조합으로 Val 장수를 맞춘다
     #   - 조각을 내준 묶음의 나머지는 Train에 둔다 (Test·Bridge가 Val과 같은 이물 세트를 갖지 않게)
     #   - Bridge·Test는 손대지 않은 묶음에서 묶음째로 고른다
     #   ※ 같은 묶음이 Train·Val로 나뉘므로 Val 점수는 실제보다 좋게 나올 수 있음 (same_bundle_split=True)
-    "val_first": {"enabled": True, "max_parts": 6, "top_k": 60, "touch_penalty": 0.05},
+    "val_first": {"enabled": False, "max_parts": 6, "top_k": 60, "touch_penalty": 0.05},   # 묶음을 쪼개므로 기본 끔 (누수)
     # [3-3] 꼭 지킬 조건 (Class·배경)
     "class_min_objects": {"val": 5, "test": 5},          # TODO(기준선): Val·Test에 Class별 최소 객체 수
     "train_min_background_share": 0.5,                   # 배경(빈 라벨) 이미지의 50% 이상은 Train
@@ -96,6 +120,7 @@ DEFAULT_POLICY = {
         ("train_min_background_share", 0.3, "배경 이미지 Train 비율 50% → 30%"),
         ("train_majority", False, "Train Class 객체 수가 가장 많아야 함"),
         ("train_min_background_share", 0.0, "배경 이미지 Train 비율 조건"),
+        ("size_check", False, "Val·Test Class별 bbox 크기 쏠림"),          # 크기 쏠림은 마지막에 완화
     ],
     # (저장)
     "export": {"yolo_dir": "data/yolo", "bridge_dir": "data/bridge_holdout",
@@ -137,6 +162,33 @@ def _file_index(root: Path | None) -> dict:
             if p.is_file() and p.suffix.lower() in {".jpg", ".jpeg", ".png", ".bmp", ".txt"}}
 
 
+SIZE_BINS = ["small", "medium", "large"]
+
+
+def _image_wh(p):
+    """이미지 (너비, 높이). 읽을 수 없으면 None (정사각형으로 가정)"""
+    if p is None:
+        return None
+    try:
+        from PIL import Image
+        with Image.open(p) as im:          # 헤더만 읽음 (빠름)
+            return im.size
+    except Exception:
+        return None
+
+
+def _box_area(w, h, wh, sb) -> float:
+    """[2-4a] YOLO 비율 w·h → 긴 변을 train_px로 줄였을 때 넓이(px²)"""
+    W, H = wh if wh else (1, 1)
+    scale = sb["train_px"] / max(W, H)
+    return (w * W * scale) * (h * H * scale)
+
+
+def _area_bin(area, sb) -> str:
+    """넓이 → small / medium / large (경계는 한 변 길이 px)"""
+    return "small" if area < sb["small"] ** 2 else "large" if area >= sb["large"] ** 2 else "medium"
+
+
 def load(manifest_path, data_root, policy, expected_total):
     col = policy["columns"]
     df = pd.read_csv(manifest_path, encoding="utf-8-sig")
@@ -155,9 +207,36 @@ def load(manifest_path, data_root, policy, expected_total):
                   for r, n in zip(df[col["label_path"]], df[col["label_name"]])]
 
     # 라벨 → 이미지별 클래스 목록
-    df["_classes"] = [[str(int(float(l.split()[0]))) for l in p.read_text(encoding="utf-8").splitlines()
-                       if len(l.split()) == 5] if p is not None else []
-                      for p in df["_lbl"]]
+    df["_boxes"] = [[(str(int(float(t[0]))), *map(float, t[1:5]))
+                     for t in (l.split() for l in p.read_text(encoding="utf-8").splitlines()) if len(t) == 5]
+                    if p is not None else [] for p in df["_lbl"]]
+    df["_classes"] = [[b[0] for b in bs] for bs in df["_boxes"]]
+
+    # [2-4a] bbox 크기 구간 (학습 해상도 기준) — 4K 원본 기준이면 모두 '큰' 객체가 되므로 줄인 크기로 계산
+    sb = dict(policy["size_bins"])
+    whs = list(map(_image_wh, df["_img"]))
+    areas = [[_box_area(b[3], b[4], wh, sb) for b in bs] for bs, wh in zip(df["_boxes"], whs)]
+    if sb.get("mode") == "class_quantile":           # Class마다 따로 경계
+        by_c = {}
+        for bs, aa in zip(df["_boxes"], areas):
+            for b, ar in zip(bs, aa):
+                by_c.setdefault(b[0], []).append(ar)
+        cut = {c: pd.Series(v).quantile(sb["q"]).tolist() for c, v in by_c.items()}
+        df.attrs["size_bins"] = {"mode": "class_quantile",
+                                 "small_px": {c: round(v[0] ** 0.5, 1) for c, v in sorted(cut.items())},
+                                 "large_px": {c: round(v[1] ** 0.5, 1) for c, v in sorted(cut.items())}}
+        df["_sizes"] = [[(b[0], "small" if ar < cut[b[0]][0] else "large" if ar >= cut[b[0]][1] else "medium")
+                         for b, ar in zip(bs, aa)] for bs, aa in zip(df["_boxes"], areas)]
+    elif sb.get("mode") == "quantile":                 # 우리 데이터 기준 경계 (넓이 → 한 변 길이로 기록)
+        flat = pd.Series([a for aa in areas for a in aa])
+        if len(flat):
+            lo, hi = flat.quantile(sb["q"]).tolist()
+            sb["small"], sb["large"] = lo ** 0.5, hi ** 0.5
+    if sb.get("mode") != "class_quantile":
+        df.attrs["size_bins"] = {"mode": sb.get("mode", "fixed"),
+                                 "small_px": round(sb["small"], 1), "large_px": round(sb["large"], 1)}
+        df["_sizes"] = [[(b[0], _area_bin(a, sb)) for b, a in zip(bs, aa)] for bs, aa in zip(df["_boxes"], areas)]
+    df["n_small"] = [sum(1 for _, z in zs if z == "small") for zs in df["_sizes"]]
     df["has_label_file"] = df["_lbl"].notna()
 
     text = df[col["issue"]].fillna("").astype(str) + " " + df[col["note"]].fillna("").astype(str)
@@ -224,6 +303,32 @@ def step1_make_groups(df, gap_seconds, policy, issues, log):
                 for (ga, ha), (gb, hb) in itertools.combinations(hs, 2):
                     if find(ga) != find(gb) and ha - hb <= policy["phash_max_distance"] and union(ga, gb):
                         issues.append(f"[1-3] 거의 같은 사진(pHash) → {ga} + {gb} 병합")
+    # [1-5] 같은 위치·다른 이물 체크 (장면을 외우는지)
+    pairs = _scene_pairs(df, find, policy) if policy["scene_pair"]["enabled"] else []
+    df["scene_pair"] = ""
+    if pairs:
+        name = policy["columns"]["image_id"]
+        for a, b, *_ in pairs:
+            for x, y in ((a, b), (b, a)):
+                cur = df.at[x, "scene_pair"]
+                df.at[x, "scene_pair"] = (cur + ";" if cur else "") + str(df.at[y, name])
+        tg_pairs = sorted({tuple(sorted((df.at[a, "time_group"], df.at[b, "time_group"]))) for a, b, *_ in pairs})
+        log.append(f"[1-5] 같은 위치·다른 이물 쌍 {len(pairs)}개 (묶음 쌍 {len(tg_pairs)}개)")
+        if policy["scene_pair"]["mode"] == "merge":
+            size = df["time_group"].value_counts()
+            hit = {}                                   # 묶음 쌍마다 쌍에 걸린 사진 수 (작은 묶음 기준)
+            for a, b, *_ in pairs:
+                k = tuple(sorted((df.at[a, "time_group"], df.at[b, "time_group"])))
+                hit.setdefault(k, (set(), set()))
+                hit[k][0].add(a); hit[k][1].add(b)
+            for (ga, gb), (sa, sb_) in hit.items():
+                share = max(len(sa), len(sb_)) / min(size[ga], size[gb])
+                if share >= policy["scene_pair"]["min_pair_share"] and union(ga, gb):
+                    issues.append(f"[1-5] 같은 위치·다른 이물 → {ga} + {gb} 병합 (작은 묶음의 {share:.0%})")
+        else:
+            issues.append(f"[1-5] 같은 위치·다른 이물 쌍 {len(pairs)}개 표시만 함 (flag) → 4-7에서 split별 점검")
+    df.attrs["scene_pairs"] = pairs
+
     members = {}
     for g in df["time_group"].unique():
         members.setdefault(find(g), []).append(g)
@@ -240,7 +345,7 @@ def step1_make_groups(df, gap_seconds, policy, issues, log):
             idx = list(idx)
             if len(idx) < ob["min_run"]:
                 continue
-            take = idx[-ob["take"]:] if ob.get("take") else idx
+            take = idx[-ob["take"]:] if ob.get("take") else idx    # 끝에서부터 take장 (나머지는 원래 묶음에 남음)
             src = df.at[take[0], "group_id"]
             df.loc[take, "group_id"] = f"{src}_V"
             df.loc[take, "orig_val_block"] = True
@@ -257,6 +362,56 @@ def step1_make_groups(df, gap_seconds, policy, issues, log):
     for g, n in size[size > len(df) * policy["max_group_share"]].items():
         issues.append(f"[1-4] 그룹 {g}가 너무 큼: {n}장 ({n / len(df):.0%})")
     return df
+
+
+def _box_iou(a, b):
+    """YOLO (xc, yc, w, h) 두 박스의 IoU"""
+    ax1, ay1, ax2, ay2 = a[0] - a[2] / 2, a[1] - a[3] / 2, a[0] + a[2] / 2, a[1] + a[3] / 2
+    bx1, by1, bx2, by2 = b[0] - b[2] / 2, b[1] - b[3] / 2, b[0] + b[2] / 2, b[1] + b[3] / 2
+    iw, ih = max(0.0, min(ax2, bx2) - max(ax1, bx1)), max(0.0, min(ay2, by2) - max(ay1, by1))
+    inter = iw * ih
+    union = a[2] * a[3] + b[2] * b[3] - inter
+    return inter / union if union > 0 else 0.0
+
+
+def _layout_iou(ba, bb):
+    """[1-5] 두 사진의 박스 위치가 얼마나 같은가 (Class 무시).
+    IoU가 큰 박스끼리 하나씩 짝지어 평균 IoU (짝 못 찾은 박스는 0)"""
+    cand = sorted(((_box_iou(x[1:], y[1:]), i, j) for i, x in enumerate(ba) for j, y in enumerate(bb)), reverse=True)
+    used_a, used_b, total = set(), set(), 0.0
+    for v, i, j in cand:
+        if v <= 0:
+            break
+        if i not in used_a and j not in used_b:
+            used_a.add(i); used_b.add(j); total += v
+    return total / max(len(ba), len(bb))
+
+
+def _scene_pairs(df, find, policy) -> list:
+    """[1-5] 다른 묶음 + 박스 수 같음 + 박스 위치 IoU ≥ min_iou + Class 구성이 다름 → 쌍
+    반환 [(행 a, 행 b, IoU, Class a, Class b), ...]"""
+    thr = policy["scene_pair"]["min_iou"]
+    rows = [(i, tg, bs) for i, tg, bs in zip(df.index, df["time_group"], df["_boxes"])
+            if len(bs) >= policy["scene_pair"]["min_boxes"]]
+    by_n = {}
+    for r in rows:
+        by_n.setdefault(len(r[2]), []).append(r)          # 박스 수가 같은 사진끼리만 비교 (속도)
+    out = []
+    for group in by_n.values():
+        for (ia, ta, ba), (ib, tb, bb) in itertools.combinations(group, 2):
+            if ta == tb or find(ta) == find(tb):
+                continue                                    # 이미 같은 묶음
+            ca, cb = sorted(b[0] for b in ba), sorted(b[0] for b in bb)
+            if ca == cb:
+                continue                                    # 이물이 같으면 1-3(pHash)이 맡음
+            # 빠른 거르기: 박스 중심 평균이 멀면 건너뜀
+            if abs(sum(b[1] for b in ba) - sum(b[1] for b in bb)) / len(ba) > 0.15 or \
+               abs(sum(b[2] for b in ba) - sum(b[2] for b in bb)) / len(ba) > 0.15:
+                continue
+            v = _layout_iou(ba, bb)
+            if v >= thr:
+                out.append((ia, ib, round(v, 3), " ".join(ca), " ".join(cb)))
+    return out
 
 
 # =====================================================================
@@ -298,6 +453,11 @@ def step2_group_attributes(df, policy, has_labels) -> pd.DataFrame:
             row[f"scene_n:{s_}"] = int(sc.get(s_, 0))                        #  T03처럼 섞인 그룹의 배경을 놓침)
         for c in sorted(set(obj) | set(policy["eval_classes"]) | set(policy["rare_classes"]), key=int):
             row[f"obj_{c}"], row[f"img_{c}"] = obj.get(c, 0), img.get(c, 0)
+        size = Counter(f"{c}_{z}" for zs in d["_sizes"] for c, z in zs)      # [2-4a] Class × 크기 구간
+        for c in policy["eval_classes"]:
+            for z in SIZE_BINS:
+                row[f"sz_{c}_{z}"] = size.get(f"{c}_{z}", 0)
+        row["max_small_img"] = int(d["n_small"].max()) if len(d) else 0     # [2-4b] 사진당 small 최대
         rows.append(row)
     gt = pd.DataFrame(rows).sort_values("first_time").set_index("group_id")
     gt["stratum"] = gt["scene_mode"] + "|" + gt["diversity"]                 # [3-1] 층 키
@@ -318,8 +478,9 @@ def _protected(gt, policy, log) -> set:
                 gt.at[g, "scene_n:object_only"] / gt.at[g, "n_images"] >= policy["object_only_pin_share"] \
                 if "scene_n:object_only" in gt else False:
             prot[g] = "이물만(object_only) 묶음 → Train에도 이물만 사진이 있어야 함"
-    counts = gt.loc[~gt["orig_block"], "stratum"].value_counts()
-    for g, s in gt.loc[~gt["orig_block"], "stratum"].items():
+    free = ~gt["orig_block"] & ~gt.index.isin(policy.get("pinned_val", []))   # Val 고정 묶음은 보호 대상 아님
+    counts = gt.loc[free, "stratum"].value_counts()
+    for g, s in gt.loc[free, "stratum"].items():
         if counts[s] == 1 and g not in prot:
             prot[g] = f"층 '{s}'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)"
     for c in policy["rare_classes"]:
@@ -348,6 +509,7 @@ def _score(sub, ref, policy, role=None) -> dict:
         "scene": float(_profile(sub, ref["scene_cols"]).sub(ref["scene"]).abs().sum()),
         "class": float(_profile(sub, ref["class_cols"]).sub(ref["class"]).abs().sum()) if ref["class_cols"] else 0.0,
         "background": abs(sub["bg_images"].sum() / sub["n_images"].sum() - ref["bg"]) * 10,
+        "size": _size_diff(sub, ref),                                     # [3-4] Class별 크기 분포 차이
     }
     parts["total"] = sum(parts[k] * w[k] for k in w)
     ov = policy["orig_val_preference"]
@@ -357,6 +519,23 @@ def _score(sub, ref, policy, role=None) -> dict:
         parts["total"] += ov["weight"] * (1 - share)                     # 비율이 높을수록 벌점이 작음
                                                                         # (점수가 0 이상이어야 탐색의 가지치기가 맞음)
     return parts
+
+
+def _size_profile(sub, c):
+    """Class c의 small / medium / large 비율. 객체가 없으면 None"""
+    v = pd.Series({z: sub[f"sz_{c}_{z}"].sum() for z in SIZE_BINS if f"sz_{c}_{z}" in sub})
+    return v / v.sum() if len(v) and v.sum() else None
+
+
+def _size_diff(sub, ref) -> float:
+    """[3-4] Class마다 (크기 구간 비율 L1 차이 × 그 Class 비중)의 합. 객체가 없는 Class는 건너뜀
+    (Class가 아예 없는 문제는 class 점수가 맡음)"""
+    tot = 0.0
+    for c, (prof, w) in ref.get("size", {}).items():
+        p = _size_profile(sub, c)
+        if p is not None:
+            tot += w * float(p.sub(prof).abs().sum())
+    return tot
 
 
 def _check(role, sub, overall_d1, policy, all_strata=None) -> list:
@@ -370,6 +549,13 @@ def _check(role, sub, overall_d1, policy, all_strata=None) -> list:
             out.append(f"{role}:애매한 라벨(≤{rule['max_ambiguous']})")
         if len(set().union(*sub["dates"])) < rule["min_dates"]:
             out.append(f"{role}:날짜 수(≥{rule['min_dates']})")
+        if policy["size_check"] and role in ("val", "test"):               # [3-3a] 크기 쏠림 금지
+            for c in policy["eval_classes"]:
+                cols = [f"sz_{c}_{z}" for z in SIZE_BINS if f"sz_{c}_{z}" in sub]
+                n_c = sub[cols].sum().sum() if cols else 0
+                if n_c >= policy["size_min_objects"] and \
+                        sub[cols].sum().max() / n_c > policy["size_max_bin_share"]:
+                    out.append(f"{role}:Class {c} 크기 쏠림(>{policy['size_max_bin_share']:.0%})")
         need = policy["class_min_objects"].get(role, 0)                     # [3-3] 평가할 Class가 최소한은 있어야
         for c in policy["eval_classes"]:
             if need and f"obj_{c}" in sub and sub[f"obj_{c}"].sum() < need:
@@ -409,7 +595,11 @@ def _make_ref(gt, policy):
     return {"stratum": gt.groupby("stratum")["n_images"].sum() / tot,
             "scene_cols": scene_cols, "scene": _profile(gt, scene_cols),
             "class_cols": class_cols, "class": _profile(gt, class_cols) if class_cols else None,
-            "bg": gt["bg_images"].sum() / tot}
+            "bg": gt["bg_images"].sum() / tot,
+            "size": {c: (_size_profile(gt, c), w)                            # [3-1] Class별 크기 분포 (기준)
+                     for c, w in ((k[4:], v) for k, v in
+                                  (_profile(gt, class_cols).items() if class_cols else []))
+                     if _size_profile(gt, c) is not None}}
 
 
 def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) -> dict:
@@ -430,6 +620,7 @@ def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) 
     block = Counter()         # 배정 전체를 막은 조건 (Train Class·배경·출처·층 누락) ← 진짜 원인
 
     blocks = tuple(g for g in gt.index if gt.at[g, "orig_block"])           # [1-5] Val 우선 블록
+    blocks += tuple(g for g in policy.get("pinned_val", []) if g in gt.index and g not in blocks)  # Val 묶음째 고정
     if blocks:
         log.append(f"[3-4] 기존 validation 블록 → Val 고정: {', '.join(blocks)}")
 
@@ -438,18 +629,35 @@ def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) 
                 and g not in fixed_val]
         base = blocks if role == "val" else ()
         hi = policy["sizes"][role] + policy["size_tolerance"]
+        lo = policy["sizes"][role] - policy["size_tolerance"]
         out = []
-        for k in range(0 if base else 1, min(policy["max_groups_per_role"], len(pool)) + 1):
-            for c in itertools.combinations(pool, k):
-                combo = base + c
-                if gt.loc[list(combo), "n_images"].sum() > hi:
-                    continue
-                sub = gt.loc[list(combo)]
-                f = _check(role, sub, overall_d1, policy)
-                if f:
-                    fail.update(f)
-                else:
-                    out.append((_score(sub, ref, policy, role)["total"], combo))
+        # 장수 합이 lo~hi인 조합만 만든다 (깊이 우선 + 넘치면 중단) — 묶음이 많아져도 빠르게
+        n_of = gt["n_images"].to_dict()
+        pool = sorted(pool, key=lambda g: n_of[g])
+        start = sum(n_of[g] for g in base)
+        kmax = min(policy["max_groups_per_role"], len(pool))
+
+        def dfs(i, chosen, total):
+            if lo <= total <= hi and (chosen or base):
+                yield tuple(chosen)
+            if len(chosen) == kmax:
+                return
+            for j in range(i, len(pool)):
+                n = n_of[pool[j]]
+                if total + n > hi:
+                    break                                           # 정렬돼 있으므로 뒤는 더 큼
+                chosen.append(pool[j])
+                yield from dfs(j + 1, chosen, total + n)
+                chosen.pop()
+
+        for c in dfs(0, [], start):
+            combo = base + c
+            sub = gt.loc[list(combo)]
+            f = _check(role, sub, overall_d1, policy)
+            if f:
+                fail.update(f)
+            else:
+                out.append((_score(sub, ref, policy, role)["total"], combo))
         out.sort()
         return out[:policy["max_candidates_per_role"]]                      # 전체와 비슷한 순
 
@@ -473,7 +681,8 @@ def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) 
                 return
         if i == len(order):
             f = _check("train", rest, overall_d1, policy,
-                       all_strata=gt.loc[~gt["orig_block"] & ~gt.index.isin(fixed_val), "stratum"].unique())
+                       all_strata=gt.loc[~gt["orig_block"] & ~gt.index.isin(fixed_val)
+                                         & ~gt.index.isin(policy.get("pinned_val", [])), "stratum"].unique())
             f += _train_majority(rest, chosen, gt, policy)
             block.update(f)
             if not f and acc < best["score"]:
@@ -506,7 +715,7 @@ def _assign_once(gt, overall_d1, policy, log, order=None, fixed=None, ref=None) 
     return role
 
 
-def step3_assign(gt, overall_d1, policy, log, issues) -> dict:
+def step3_assign(gt, overall_d1, policy, log, issues, info=None) -> dict:
     """[3-3] 모든 조건으로 먼저 시도 → 안 되면 relax_steps 순서로 조건을 하나씩 풀어 다시 시도"""
     pol = copy.deepcopy(policy)
     errors = []
@@ -519,12 +728,15 @@ def step3_assign(gt, overall_d1, policy, log, issues) -> dict:
             print(f"  … 조건을 만족하는 배정이 없어 완화: {label}", flush=True)
         try:
             role = _assign_once(gt, overall_d1, pol, log)
-            role.pop("__score__", None)
+            score = role.pop("__score__", 0.0)
         except SplitError as e:
             errors.append(str(e).splitlines()[0])
             continue
+        n_relax = 0 if step is None else policy["relax_steps"].index(step) + 1
+        if info is not None:
+            info.update(score=score, relaxed=n_relax)
         if step is not None:
-            relaxed = [lbl for k, v, lbl in policy["relax_steps"][: policy["relax_steps"].index(step) + 1]]
+            relaxed = [lbl for k, v, lbl in policy["relax_steps"][:n_relax]]
             issues.append("[3-3] 모든 조건을 만족하는 배정이 없어 완화한 조건: " + " / ".join(relaxed)
                           + "  (완화 전 막힌 조건: " + errors[0].split("막힌 조건: ")[-1] + ")")
         return role
@@ -681,7 +893,60 @@ def step4_validate(df, policy, has_labels):
         for s in ("val", "test"):
             r = dist.set_index("split").loc[s]
             warn += [f"[4-2] Class {c}가 {s}에 없음" for c in policy["eval_classes"] if r.get(f"class:{c}", 0) == 0]
-    return results, dist, warn
+    size_dist = pd.DataFrame()
+    if has_labels:
+        size_dist, w2 = _size_report(df, policy)                            # [4-5] [4-6]
+        warn += w2
+        warn += _scene_pair_report(df, policy)                              # [4-7]
+    return results, dist, warn, size_dist
+
+
+def _size_report(df, policy):
+    """[4-5] split × Class × 크기 표 + 전체와 차이 큰 칸 경고
+       [4-6] 작은 객체가 몇 장에 몰렸는지 경고"""
+    rows, warn = [], []
+    long = [(s, c, z) for s, zs in zip(df["split"], df["_sizes"]) for c, z in zs if c in policy["eval_classes"]]
+    t = pd.DataFrame(long, columns=["split", "class", "size"])
+    if t.empty:
+        return pd.DataFrame(), warn
+    for (s, c), g in list(t.groupby(["split", "class"])) + [(("all", c), g) for c, g in t.groupby("class")]:
+        n = len(g)
+        row = {"split": s, "class": c, "objects": n}
+        for z in SIZE_BINS:
+            k = int((g["size"] == z).sum())
+            row[z], row[f"{z}_pct"] = k, round(k / n * 100, 1)
+        rows.append(row)
+    sd = pd.DataFrame(rows).sort_values(["class", "split"]).reset_index(drop=True)
+    allp = sd[sd["split"] == "all"].set_index("class")
+    for _, r in sd[sd["split"].isin(["val", "test", "bridge_holdout"])].iterrows():
+        if r["objects"] < policy["size_min_objects"]:
+            continue
+        diff = max(abs(r[f"{z}_pct"] - allp.at[r["class"], f"{z}_pct"]) for z in SIZE_BINS)
+        if diff >= 30:
+            warn.append(f"[4-5] {r['split']} Class {r['class']} 크기 분포가 전체와 {diff:.0f}%p 다름 "
+                        f"(small {r['small_pct']}% / medium {r['medium_pct']}% / large {r['large_pct']}%)")
+    sc = policy["small_concentration"]
+    for s in SPLITS:
+        ns = df.loc[df["split"] == s, "n_small"]
+        if ns.sum() >= 10:
+            top = ns.nlargest(sc["top_k"]).sum() / ns.sum()
+            if top >= sc["share"]:
+                warn.append(f"[4-6] {s}: 작은 객체 {int(ns.sum())}개 중 {top:.0%}가 사진 {sc['top_k']}장에 몰림")
+    return sd, warn
+
+
+def _scene_pair_report(df, policy) -> list:
+    """[4-7] 같은 위치·다른 이물 쌍이 split을 넘나드는지 (flag 모드에서 의미 있음)"""
+    pairs = df.attrs.get("scene_pairs", [])
+    if not pairs:
+        return []
+    sp = df["split"]
+    cross = Counter(tuple(sorted((sp[a], sp[b]))) for a, b, *_ in pairs if sp[a] != sp[b])
+    if not cross:
+        return []
+    return ["[4-7] 같은 위치·다른 이물 쌍이 split을 넘나듦: "
+            + ", ".join(f"{a}↔{b} {n}쌍" for (a, b), n in cross.most_common())
+            + " → 평가 때 이 사진만 따로 점수를 내 '장면 외우기' 점검"]
 
 
 # =====================================================================
@@ -821,8 +1086,16 @@ def _original_val_review(df) -> list:
         "- 사진 단위로 Val에 넣으면 같은 묶음이 Train·Val로 갈라져 누수 → 사용하지 않음",
         "- 대신 묶음 단위로 반영: Val을 고를 때 기존 validation 비율이 높은 묶음에 가산점 ([3-4] orig_val_preference)",
         "  (모든 묶음 비율이 14~30%로 비슷해 효과는 크지 않을 수 있음)",
-        "", g.reset_index().to_markdown(index=False), "",
+        "", g.reset_index().pipe(_md), "",
     ]
+
+
+def _md(t) -> str:
+    """표 → Markdown. tabulate가 없으면 고정폭 글자 표로 대신 (실행이 멈추지 않게)"""
+    try:
+        return t.to_markdown(index=False)
+    except ImportError:
+        return "```\n" + t.to_string(index=False) + "\n```"
 
 
 # =====================================================================
@@ -832,6 +1105,15 @@ def write_reports(df, gt, dist, results, issues, log, meta, project_root: Path, 
     rep = project_root / "reports"
     rep.mkdir(parents=True, exist_ok=True)
     dist.to_csv(rep / "dataset_summary.csv", index=False, encoding="utf-8-sig")
+    size_dist = df.attrs.get("size_distribution", pd.DataFrame())
+    if not size_dist.empty:
+        size_dist.to_csv(rep / "size_distribution.csv", index=False, encoding="utf-8-sig")   # [4-5]
+    name = policy["columns"]["image_id"]
+    pd.DataFrame([{"image_a": df.at[a, name], "image_b": df.at[b, name], "iou": v,
+                   "class_a": ca, "class_b": cb, "split_a": df.at[a, "split"], "split_b": df.at[b, "split"]}
+                  for a, b, v, ca, cb in df.attrs.get("scene_pairs", [])],
+                 columns=["image_a", "image_b", "iou", "class_a", "class_b", "split_a", "split_b"]
+                 ).to_csv(rep / "scene_pairs.csv", index=False, encoding="utf-8-sig")              # [1-5]
     sha = hashlib.sha256((project_root / "manifests" / "split_manifest.csv").read_bytes()).hexdigest()
     g = gt.reset_index()[["group_id", "n_images", "scene_mode", "diversity", "has_rare",
                           "n_objects", "empty_ratio", "d1", "ambiguous", "stratum", "split"]]
@@ -843,12 +1125,77 @@ def write_reports(df, gt, dist, results, issues, log, meta, project_root: Path, 
         f"- Dataset Version: {meta['dataset_version']} · 정책: {policy['name']} · gap {meta['gap']}s · seed {meta['seed']}(기록용)",
         f"- 산출물 1: manifests/split_manifest.csv, train.csv, val.csv, test.csv, bridge_holdout.csv",
         f"- split_manifest.csv SHA256: `{sha}`", "",
-        "## [2단계] 그룹 속성 / [3단계] 배정", "", g.to_markdown(index=False), "",
-        "## [4단계] split별 분포", "", dist.to_markdown(index=False), "",
+        "## [2단계] 그룹 속성 / [3단계] 배정", "", g.pipe(_md), "",
+        "## [4단계] split별 분포", "", dist.pipe(_md), "",
+        "## [4-5] split × Class × bbox 크기", "",
+        (size_dist.pipe(_md) if not size_dist.empty else "- 라벨 없음"), "",
+        f"- 같은 위치·다른 이물 쌍: {len(df.attrs.get('scene_pairs', []))}개 (reports/scene_pairs.csv)", "",
         "## 검증", "", *[f"- {mark(ok)} {n}" + ("" if ok else f" — {d}") for n, ok, d in results], "",
         *orig,
         "## 확인 필요", "", *([f"- {x}" for x in issues] or ["- 없음"]), "",
         "## 실행 로그", "", *[f"- {x}" for x in log]]) + "\n", encoding="utf-8")
+
+
+def _resolve_pinned_val(df, policy):
+    """pinned_val의 "scene:장면" 항목을 실제 묶음 이름으로 바꾼다 (원래 묶음 = time_group 기준)"""
+    out = []
+    col = policy["columns"]["scene"]
+    mode = df[~df["orig_val_block"]].groupby("group_id")[col].agg(lambda x: x.mode().iat[0])
+    for g in policy["pinned_val"]:
+        out += list(mode[mode == g[6:]].index) if g.startswith("scene:") else [g]
+    return list(dict.fromkeys(out))
+
+
+def _try_block_sizes(df0, gap_seconds, policy, issues, log, has_labels):
+    """[1-5]+[3단계] 기존 validation 연속 구간(T17 끝 30장)에서 떼어 낼 장수를 take_range 안에서 모두 시도.
+    Val = 고정 묶음(pinned_val) + 떼어 낸 블록 + 다른 묶음 '통째로' → 장수가 정확히 맞는 경우만 배정을 돌린다.
+    완화한 조건 수가 적고, 점수가 작은 배정을 고른다."""
+    lo, hi = policy["orig_val_block"]["take_range"]
+    # 1) 미리 거르기: 묶음 크기 합으로 Val 75장을 맞출 수 있는 take만 (부분합)
+    probe = step1_make_groups(df0.copy(), gap_seconds, _merge(policy, {"orig_val_block": {"take": hi}}), [], [])
+    size = probe[~probe["orig_val_block"]].groupby("group_id").size()
+    policy = _merge(policy, {})
+    policy["pinned_val"] = _resolve_pinned_val(probe, policy)
+    pinned = [g for g in policy["pinned_val"] if g in size]
+    log.append(f"[3-2] Val 묶음째 고정: {', '.join(pinned) or '없음'}")
+    blocked_src = {g[:-2] for g in probe.loc[probe["orig_val_block"], "group_id"].unique()}
+    free = [n for g, n in size.items() if g not in pinned and g not in blocked_src and g not in policy["pinned_train"]]
+    sums = {0}
+    for n in free:
+        sums |= {x + n for x in sums if x + n <= policy["sizes"]["val"]}
+    need = policy["sizes"]["val"] - int(size[pinned].sum())
+    step = policy["orig_val_block"].get("take_step", 1)
+    takes = [t for t in range(lo, hi + 1) if need - t in sums]
+    stepped = [t for t in takes if (t - lo) % step == 0]
+    takes = stepped or takes[:3]
+    log.append(f"[1-5] 기존 validation 블록 장수 후보 {lo}~{hi} 중 Val 75장이 묶음째로 맞는 값: {takes}")
+    if not takes:
+        raise SplitError("[1-5] take_range 안에서 Val 장수를 묶음째로 맞출 수 없습니다 (take_range 또는 pinned_val 조정)")
+    best = None
+    for t in takes:
+        pol = _merge(policy, {"orig_val_block": {"take": t}})
+        iss, lg, info = [], [], {}
+        df = step1_make_groups(df0.copy(), gap_seconds, pol, iss, lg)
+        gt = step2_group_attributes(df, pol, has_labels)
+        print(f"  … [1-5] T17 블록 {t}장으로 시도", flush=True)
+        try:
+            role = step3_assign(gt, df["_d1"].mean() * 100, pol, lg, iss, info)
+        except SplitError as e:
+            log.append(f"[1-5] 블록 {t}장: 배정 실패 ({str(e).splitlines()[0][:80]})")
+            continue
+        key = (info["relaxed"], info["score"])
+        log.append(f"[1-5] 블록 {t}장: 완화 {info['relaxed']}개 · 점수 {info['score']:.2f}")
+        if best is None or key < best[0]:
+            best = (key, t, df, gt, role, iss, lg)
+        if best[0][0] == 0:
+            break                                   # 완화 없는 배정을 이미 찾음 → 더 볼 필요 적음 (속도)
+    if best is None:
+        raise SplitError("[1-5] 모든 블록 장수에서 배정 실패")
+    _, t, df, gt, role, iss, lg = best
+    log.append(f"[1-5] 선택: 기존 validation 블록 {t}장")
+    log.extend(lg)
+    issues.extend(iss)
+    return df, gt, role
 
 
 # =====================================================================
@@ -871,12 +1218,24 @@ def build_split(manifest_path, data_root=None, project_root=".", dataset_version
 
     df = load(Path(manifest_path), data_root, policy, expected_total)
     has_labels = bool(df["has_label_file"].any())
+    if has_labels:
+        b = df.attrs.get("size_bins", {})
+        log.append(f"[2-4a] bbox 크기 경계({b.get('mode')}, 학습 {policy['size_bins']['train_px']}px 기준 √넓이): "
+                   f"small < {b.get('small_px')}px ≤ medium < {b.get('large_px')}px ≤ large")
     if not has_labels:
         issues.append("라벨 파일이 없어 클래스 다양성·희소 클래스를 계산하지 못함 (diversity=unknown)")
 
-    df = step1_make_groups(df, gap_seconds, policy, issues, log)                   # [1단계]
-    overall_d1 = df["_d1"].mean() * 100
-    if policy["val_first"]["enabled"] and "original_split" in df:                  # [3-0] Val 먼저
+    ob = policy["orig_val_block"]
+    if ob["enabled"] and ob.get("take_range") and not ob.get("take") and not policy["val_first"]["enabled"]:
+        df, gt, role = _try_block_sizes(df, gap_seconds, policy, issues, log, has_labels)   # [1-5]+[3단계]
+        overall_d1 = df["_d1"].mean() * 100
+    else:
+        df = step1_make_groups(df, gap_seconds, policy, issues, log)               # [1단계]
+        overall_d1 = df["_d1"].mean() * 100
+        gt = role = None
+    if role is not None:
+        pass
+    elif policy["val_first"]["enabled"] and "original_split" in df:                # [3-0] Val 먼저
         role, df, gt = step3_val_first(df, overall_d1, policy, log, issues, has_labels)
         touched = {g[:-2] for g in gt.index if g.endswith(("_V", "_R"))}
         df["same_bundle_split"] = df["group_id"].str[:-2].isin(touched) & df["group_id"].str.endswith(("_V", "_R"))
@@ -893,7 +1252,9 @@ def build_split(manifest_path, data_root=None, project_root=".", dataset_version
     if df["eval_exclude"].any():
         issues.append("Test·Bridge의 애매한 라벨 → eval_exclude=True: "
                       + ", ".join(df.loc[df["eval_exclude"], policy["columns"]["image_id"]]))
-    results, dist, warn = step4_validate(df, policy, has_labels)                    # [4단계]
+    pairs = df.attrs.get("scene_pairs", [])
+    results, dist, warn, size_dist = step4_validate(df, policy, has_labels)        # [4단계]
+    df.attrs["size_distribution"] = size_dist
     issues += warn
     df["dataset_version"], df["policy_version"] = dataset_version, policy["name"]
     _yolo_paths(df, project_root, policy)                                          # [5-1]
@@ -908,5 +1269,6 @@ def build_split(manifest_path, data_root=None, project_root=".", dataset_version
                       {"dataset_version": dataset_version, "gap": gap_seconds, "seed": seed},
                       project_root, policy)
     issues += [f"검증 실패: {n} — {d}" for n, ok, d in results if not ok]
-    df.attrs.update(groups=gt, distribution=dist, results=results, log=log)
+    df.attrs.update(groups=gt, distribution=dist, results=results, log=log,
+                    size_distribution=size_dist, scene_pairs=pairs)
     return df, issues
