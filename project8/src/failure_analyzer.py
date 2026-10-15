@@ -12,8 +12,22 @@ CONF_MIN = 0.25      # 이보다 확신도가 낮은 예측은 버린다
 
 def box_iou(a, b):
     """비율 좌표 박스 두 개(xc, yc, w, h)의 IoU 를 0~1 로 돌려준다."""
-    # TODO A
-    pass
+    # 1 중심·크기 → 꼭짓점
+    ax1, ay1, ax2, ay2 = a[0] - a[2] / 2, a[1] - a[3] / 2, a[0] + a[2] / 2, a[1] + a[3] / 2
+    bx1, by1, bx2, by2 = b[0] - b[2] / 2, b[1] - b[3] / 2, b[0] + b[2] / 2, b[1] + b[3] / 2
+
+    # 2·3 겹친 부분 (안 겹치면 너비나 높이가 0)
+    inter_w = max(0.0, min(ax2, bx2) - max(ax1, bx1))
+    inter_h = max(0.0, min(ay2, by2) - max(ay1, by1))
+    inter = inter_w * inter_h
+
+    # 4 합친 넓이
+    union = a[2] * a[3] + b[2] * b[3] - inter
+    if union <= 0:                 # 크기 0 짜리 박스가 들어와도 0 으로 나누지 않게
+        return 0.0
+
+    # 5
+    return inter / union
 
 
 def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
