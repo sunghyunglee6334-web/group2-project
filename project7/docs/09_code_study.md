@@ -1,4 +1,15 @@
-# 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램
+# 09 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램
+
+> 📍 [README](../README.md) › docs › **09 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램** · ← [08 코드 리뷰](08_code_review.md) · → [10 교과 8 Handoff](10_subject08_handoff.md)
+> 작성 PM · 2026-10-12
+
+## 한눈에 (개요)
+
+- 프로그램 코드를 **파일 순서대로 읽으며 해석**하는 공부 자료 (12장 · 장마다 확인 질문)
+- 먼저 «0. 먼저 큰 그림» → 1 config → 2 yolo_io → … → 6 session(저장 규칙) 순서로
+- 코드 리뷰(08)가 요약이라면 이 문서는 자세한 해설 · 발표 예상 질문은 마지막 장
+
+---
 
 > 이 자료는 우리 팀 최종 프로그램(`kimchi_labeler`)의 코드를 **파일 순서대로 읽으면서 해석**하는 공부용 자료입니다.
 > VS Code 에서 이 파일을 열고 `Ctrl+Shift+V` 를 누르면 보기 좋게 표시됩니다. 왼쪽에 해당 코드 파일을 같이 열어 두고 읽으세요.
@@ -817,10 +828,10 @@ tick()
 | `02_validate.py` | `validate()` 결과를 CSV 로 저장, CRITICAL 이 있으면 **종료코드 1** (다른 스크립트·CI 가 실패를 알 수 있게) |
 | `03_assign.py` | Dataset/split 그룹마다 "지금 가장 적게 받은 사람"에게 한 장씩 → 모두 골고루. 검수자 = 다음 사람 `workers[(i+1) % n]` |
 | `04_merge.py` | `merge_manifests` + 행을 가져온 폴더에서 라벨 복사 + 담당·검수자 외 수정 / REVIEWED 후 재수정 감지 |
-| `05_qa_summary.py` | `stats.collect` 로 수량·Class·보정 내역·상태·Validation 을 Markdown 표로 → `reports/qa_summary.md` |
+| `05_qa_summary.py` | `stats.collect` 로 수량·Class·보정 내역·상태·Validation 을 Markdown 표로 → `reports/01_qa_summary.md` |
 | `06_pass_sample.py` | PASS 중 절반은 위험도 순(작은 BBox, 많은 BBox, 희소 Class), 절반은 무작위 |
 | `07_build_final.py` | 조건 3개(상태·CRITICAL·RAW 해시) 중 하나라도 실패하면 **만들지 않음**. `final/images`, `final/labels` 에 같은 파일명으로 복사하고 원래 Dataset/split 은 `final_file_map.csv` 에 남김. 기존 FINAL 은 `_old_날짜` 로 보관 |
-| `08_handoff.py` | `05` 의 build 함수를 재사용해 FINAL 기준 Handoff 문서 생성 → `docs/subject08_handoff.md` |
+| `08_handoff.py` | `05` 의 build 함수를 재사용해 FINAL 기준 Handoff 문서 생성 → `docs/10_subject08_handoff.md` |
 | `09_golden_test.py` | 임시 WORK 에서 왕복 오차, 무수정 저장=RAW, 편집 후 재로드, RAW 보존을 이미지마다 확인 |
 | `10_export_manifest.py` | 작업 manifest 를 제출 형식(`manifests/dataset_manifest.csv`)으로. 라벨이 RAW 와 같으면 DONE, 다르면 EDITED |
 
