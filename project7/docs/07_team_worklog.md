@@ -8,6 +8,19 @@ name: 2조
 updated: 2026-10-15
 ---
 
+# 07 팀 작업 기록 (교과 7)
+
+> 📍 [README](../README.md) › docs › **07 팀 작업 기록** · ← [06 버전 기록](06_version_history.md) · → [08 코드 리뷰](08_code_review.md)
+> 담당 Manifest (서기) · 2026-10-15
+
+## 한눈에 (개요)
+
+- 10/01 – 10/14 날짜별 팀 작업 기록 (교과 8 기록은 `project8/docs/` 에 이어서 씀)
+- 10/02 레이아웃 v01 → 10/06 배포 · 라벨링 시작 → 10/07 디자인 v02 → 10/08 v2.1 · 교차검수 → 10/12 최종검수 3명 × 300장 → 10/13 FINAL · 교과 8 전달 → 10/14 none 2장 정리
+- 문제와 해결은 [05 이슈 → 개선](05_issue_improvement.md) 에 정리했습니다
+
+---
+
 # 10-01
 
 > [!info] 10-01 한 줄 요약
@@ -25,7 +38,7 @@ updated: 2026-10-15
 
 ### 프로그램 v01 레이아웃
 
-![[v01.png]]
+![프로그램 v01 레이아웃](images/gui_v01.png)
 
 
 
@@ -66,7 +79,7 @@ QA 반영 및 디자인 변경하여 v02 업데이트
 
 ### 프로그램 v02 레이아웃
 
-![[v02.png]]
+![프로그램 v02 레이아웃](images/gui_v02.png)
 
 
 
@@ -122,4 +135,4 @@ Manifest 문제 확인
 
 Final Data
 - Images/Labels : 각 900장
-   - 세부사항은 project7/reports/qa_summary.md 확인
+   - 세부사항은 project7/reports/01_qa_summary.md 확인
