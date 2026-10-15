@@ -32,6 +32,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import itertools
+import os
 import re
 import shutil
 from collections import Counter
@@ -41,6 +42,10 @@ import pandas as pd
 
 SPLITS = ["train", "val", "test", "bridge_holdout"]
 ASSIGN_ORDER = ["bridge_holdout", "test", "val"]       # train = 나머지
+
+# 교과 7 Class 번호·이름 (README 4장 · 번호 변경 금지) — dataset.yaml names
+CLASS_NAMES = {0: "leaf_paper", 1: "plastic_stone_metal", 2: "branch", 3: "insect",
+               4: "rubber_glove_unused", 5: "disease_browning", 6: "green_onion_pepper"}
 
 DEFAULT_POLICY = {
     "name": "group_stratified_mvp",
@@ -125,7 +130,7 @@ DEFAULT_POLICY = {
     # (저장)
     "export": {"yolo_dir": "data/yolo", "bridge_dir": "data/bridge_holdout",
                "dataset_yaml": "configs/dataset.yaml",
-               "class_names": {i: f"class_{i}" for i in range(7)}},   # TODO(기준선): 클래스 이름
+               "class_names": CLASS_NAMES},
 }
 
 
@@ -1048,12 +1053,22 @@ def step6_copy_yolo(df, data_root, project_root: Path, policy, issues) -> list:
         ni = sum(p.is_file() for p in img_dir.iterdir())
         nl = sum(p.is_file() for p in lbl_dir.iterdir())
         res.append((f"{s} 폴더 복사 ({want}장)", ni == want and nl == want, f"이미지 {ni} / 라벨 {nl}"))
-    y = project_root / ex["dataset_yaml"]            # [6-4] dataset.yaml (Bridge 제외)
-    y.parent.mkdir(parents=True, exist_ok=True)
-    names = "\n".join(f"  {k}: {v}" for k, v in sorted(ex["class_names"].items()))
-    y.write_text(f"# {policy['name']} · Bridge Holdout 제외\npath: {yolo.resolve().as_posix()}\n"
-                 f"train: images/train\nval: images/val\ntest: images/test\nnames:\n{names}\n", encoding="utf-8")
+    write_dataset_yaml(project_root, policy)          # [6-4] dataset.yaml (Bridge 제외)
     return res
+
+
+def write_dataset_yaml(project_root: Path, policy) -> Path:
+    """[6-4] dataset.yaml — path 줄 없이 yaml 위치 기준 상대경로 (누구 PC에서든 같은 파일로 학습)"""
+    ex = policy["export"]
+    y = Path(project_root) / ex["dataset_yaml"]
+    y.parent.mkdir(parents=True, exist_ok=True)
+    rel = Path(os.path.relpath(Path(project_root) / ex["yolo_dir"], y.parent)).as_posix()
+    names = "\n".join(f"  {k}: {v}" for k, v in sorted(ex["class_names"].items()))
+    y.write_text(f"# {policy['name']} · 03_build_split.py가 생성\n"
+                 "# Bridge Holdout(data/bridge_holdout)은 교과 8 개발에 사용하지 않으므로 넣지 않음\n"
+                 f"train: {rel}/images/train\nval: {rel}/images/val\ntest: {rel}/images/test\n"
+                 f"names:\n{names}\n", encoding="utf-8")
+    return y
 
 
 
