@@ -14,9 +14,6 @@
 # (라벨 원본은 project7/data/final 에 Git 으로 있음)
 data/
 
-# Smoke YAML: 06_make_smoke_dataset 이 PC 마다 절대경로로 다시 만듦
-configs/smoke_dataset.yaml
-
 # ── 모델 Weight: 용량 때문에 제외 ──
 models/
 *.pt
