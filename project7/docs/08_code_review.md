@@ -1,9 +1,9 @@
-# 08 코드 리뷰 — 라벨링 프로그램 (교과 7)
+# 08 코드 리뷰 — 교과 7 라벨링 프로그램
 
 > 📍 [README](../README.md) › docs › **08 코드 리뷰** · ← [07 팀 작업 기록](07_team_worklog.md) · → [09 코드 공부](09_code_study.md)
 > 작성 PM · 2026-10-12 · 2026-10-15 역할별 코드 설명(구 CODE_GUIDE)과 합침
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 프로그램은 **4층**으로 나뉩니다: 화면(`src/ui`) → 규칙(`src/bbox/session.py`) → 데이터(`src/yolo` · `manifest`) → 파일(`data/work`)
 - 가장 중요한 함수는 **`session.save`** — 원본 보호 · 상태 결정 · 안전 저장(임시 파일 → 교체)을 모두 여기서 합니다
@@ -97,7 +97,7 @@ save(status):
     실제 적용된 status 를 돌려줌
 ```
 
-### 처리흐름 (데이터가 어떻게 바뀌나)
+### 처리흐름
 ```text
 화면 박스 (원본 픽셀 좌표)
   → RAW 와 비교 (changed?)
@@ -472,7 +472,7 @@ write(tmp) -> os.replace(tmp, path)            # 한 번에 교체 -> 중간에 
 
 ---
 
-## B7. 하루 마감 루틴 (모든 PC 공통)
+## B7. 하루 마감 루틴
 
 ```text
 각자: 프로그램 종료(저장 확인) → 자기 data/work 폴더를 공유폴더 work_<이름> 으로 복사
@@ -483,7 +483,7 @@ Doc : python scripts/05_qa_summary.py --work work_merged_1014
 PM  : QA_Summary 확인 → 다음 날 아침 work_merged 를 모두에게 배포 (각자 data/work 로 교체)
 ```
 
-## B8. 직접 고쳐보며 공부할 과제 (역할별 추천)
+## B8. 직접 고쳐보며 공부할 과제
 
 | 역할 | 과제 |
 |---|---|

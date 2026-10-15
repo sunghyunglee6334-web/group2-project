@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › reports › **02 Labeling Tool Test Report** · ← [01 QA Summary](01_qa_summary.md) · → [03 검사 결과 CSV](03_validation_final.csv)
 > 담당 QA · 2026-10-12
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 순서: 기능 확인 → Golden Test → Pilot Test → 전체 Validation → Acceptance Test
 - 개발 단계 오류 **8개(DEV-01 ~ 08) 모두 고치고 재시험 PASS** — 메뉴 잔상 · 단축키 · 빈 화면 · 깨진 이미지 · 경로

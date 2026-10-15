@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › docs › **01 Project Baseline** · → [02 Class 기준서](02_class_guide.md)
 > 담당 PM · Manifest · 마지막 수정 2026-10-15
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - **대상**: 조각김치 4K JPG **900장** + YOLO TXT 900개 (BBox 4,399개) · Class **0~6** (4번 고무장갑은 사용 안 함)
 - **방법**: 6명이 우리 프로그램으로 1차 라벨링 → 교차검수 → 최종검수 → FINAL
@@ -57,7 +57,7 @@
 - main 은 PR 로만 · `git add .` 금지 · Merge 후 Delete branch 누르지 않기
 - **Feature Freeze 10/13** 이후에는 버그 수정과 산출물 보완만
 
-## 5. 완료 기준 (결과)
+## 5. 완료 기준과 결과
 
 | 기준 | 결과 |
 |---|---|

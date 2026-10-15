@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › docs › **10 Subject 07 → Subject 08 Handoff** · ← [09 코드 공부](09_code_study.md) · → [reports/01 QA Summary](../reports/01_qa_summary.md)
 > 담당 Manifest · 2026-10-14
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 교과 7 FINAL **900쌍 (BBox 4,405)** 을 교과 8 YOLO11n 학습 입력으로 넘깁니다
 - 빈 TXT 26 = 정상 김치 24 + 김치 · 이물 없음(none) 2 · Class 4 라벨 0 · 미처리 REVIEW 0
