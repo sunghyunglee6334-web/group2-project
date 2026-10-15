@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › reports › **01 QA Summary** · ← [docs/10 교과 8 Handoff](../docs/10_subject08_handoff.md) · → [02 Test Report](02_test_report.md)
 > 담당 Manifest · QA · 2026-10-14 (`scripts/05_qa_summary.py` 로 생성 · 다시 생성하면 이 머리말과 5장 Human QA 를 다시 붙이기)
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 이미지 **900** · TXT **900** · BBox 원본 **4,399 → 최종 4,405**
 - 원본 대비: 그대로 2,016 · 위치 · 크기 수정 2,014 · Class 변경 25 · 추가 350 · 삭제 344

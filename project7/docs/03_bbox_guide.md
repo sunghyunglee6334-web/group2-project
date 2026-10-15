@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › docs › **03 Bounding Box Labeling Guide** · ← [02 Class 기준서](02_class_guide.md) · → [04 사용설명서](04_user_manual.md)
 > 담당 Coord · v1.2 · 2026-10-13
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 박스는 **이물 외곽에 딱 붙게** (여백 3px 이내) — 잘리는 것이 넉넉한 것보다 더 나쁨
 - **한 객체 = 박스 1개** · 겹치면 각각 · 이미지 경계에 걸리면 보이는 부분만
