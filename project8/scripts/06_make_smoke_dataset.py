@@ -3,7 +3,7 @@
 data/yolo 의 train · val 에서 이름순 앞쪽 일부만 data/smoke 로 복사하고
 configs/smoke_dataset.yaml 을 만든다. test · bridge 는 읽지 않는다.
 
-    python scripts/05_make_smoke_dataset.py
+    python scripts/06_make_smoke_dataset.py
 """
 import shutil
 import sys
