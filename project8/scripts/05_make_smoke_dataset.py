@@ -1,9 +1,9 @@
-"""Smoke Dataset 만들기 (02_prepare_dataset.py 다음에 실행)
+"""Smoke Dataset 만들기 (03_build_split.py 를 COPY_IMAGES = True 로 실행한 다음)
 
 data/yolo 의 train · val 에서 이름순 앞쪽 일부만 data/smoke 로 복사하고
 configs/smoke_dataset.yaml 을 만든다. test · bridge 는 읽지 않는다.
 
-    python scripts/03_make_smoke_dataset.py
+    python scripts/05_make_smoke_dataset.py
 """
 import shutil
 import sys
@@ -25,7 +25,7 @@ def copy_split(split, n):
     img_dir = YOLO_DIR / "images" / split
     lbl_dir = YOLO_DIR / "labels" / split
     if not img_dir.is_dir() or not lbl_dir.is_dir():
-        print(f"{img_dir} 가 없습니다. scripts/02_prepare_dataset.py 를 먼저 실행하세요.")
+        print(f"{img_dir} 가 없습니다. scripts/03_build_split.py 를 COPY_IMAGES = True 로 먼저 실행하세요.")
         raise SystemExit(1)
 
     images = list_images(img_dir)[:n]
