@@ -1,6 +1,6 @@
 # 03 Bounding Box Labeling Guide
 
-> 📍 [README](../README.md) › docs › **03 Bounding Box Labeling Guide** · ← [02 Class 기준서](02_class_guide.md) · → [04 사용설명서](04_user_manual.md)
+> [README](../README.md) › docs › **03 Bounding Box Labeling Guide** · ← [02 Class 기준서](02_class_guide.md) · → [04 사용설명서](04_user_manual.md)
 > 담당 Coord · v1.2 · 2026-10-13
 
 ## 한눈에 보기

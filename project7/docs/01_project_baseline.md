@@ -1,6 +1,6 @@
 # 01 Project Baseline — 2조 공통 기준
 
-> 📍 [README](../README.md) › docs › **01 Project Baseline** · → [02 Class 기준서](02_class_guide.md)
+> [README](../README.md) › docs › **01 Project Baseline** · → [02 Class 기준서](02_class_guide.md)
 > 담당 PM · Manifest · 마지막 수정 2026-10-15
 
 ## 한눈에 보기
@@ -61,9 +61,9 @@
 
 | 기준 | 결과 |
 |---|---|
-| 900장 전체 검수 (대기 0) | ✅ 900 REVIEWED |
-| 미처리 REVIEW 0 · 교차검수 안 된 EDITED 0 | ✅ 0 · 0 |
-| Validation CRITICAL 0 | ✅ 0 ([reports/03_validation_final.csv](../reports/03_validation_final.csv)) |
-| 이미지 · TXT Pair | ✅ 900쌍 |
-| FINAL 생성 (`07_build_final.py`) | ✅ 900쌍 |
-| RAW 변경 0 (해시 확인) | ⏳ `00_raw_snapshot.py --verify` 결과 기록 예정 |
+| 900장 전체 검수 (대기 0) | 완료 · 900 REVIEWED |
+| 미처리 REVIEW 0 · 교차검수 안 된 EDITED 0 | 완료 · 0 · 0 |
+| Validation CRITICAL 0 | 완료 · 0 ([reports/03_validation_final.csv](../reports/03_validation_final.csv)) |
+| 이미지 · TXT Pair | 완료 · 900쌍 |
+| FINAL 생성 (`07_build_final.py`) | 완료 · 900쌍 |
+| RAW 변경 0 (해시 확인) | 예정 · `00_raw_snapshot.py --verify` 결과 기록 예정 |

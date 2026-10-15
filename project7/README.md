@@ -21,15 +21,15 @@
 
 ## 1. 프로젝트 소개
 
-#### 개요
+### 개요
 
 제공된 조각김치 이물검출 데이터(4K JPG 900장 + YOLO TXT 900개)에는 오표기 · 누락 라벨이 포함되어 있었습니다. 이를 그대로 학습하면 모델 성능이 저하되므로, **이미지 단위 확인 · 수정이 가능한 라벨링 프로그램**을 자체 개발하고 6명이 공통 기준서에 따라 검수했습니다.
 
-#### 작업 결과
+### 작업 결과
 
 900장 중 **778장(86%)** 의 라벨을 수정했습니다. BBox 2,014개 위치 · 크기 보정(그중 1,857개는 10px 이내 미세 조정), Class 변경 25개, 오표기 삭제 344개(고무장갑 등), 누락 이물 추가 350개입니다.
 
-#### 개선 효과
+### 개선 효과
 
 누락되었던 **병해 · 갈변(Class 5)** 이 313 → **465개(+49%)** 로 보완되었고, 이물이 아닌 대상에 표기된 **플라스틱 · 돌 · 금속(Class 1)** 오표기가 1,831 → **1,665개(−166)** 로 정리되었습니다.
 
@@ -41,7 +41,7 @@
 | 사람 검수 완료 (REVIEWED) | **900 / 900** |
 | 자동 검사 CRITICAL · 남은 REVIEW | **0 · 0** |
 
-#### Architecture
+### Architecture
 
 > 준비 중 — 여기에 Architecture 그림과 설명이 들어갑니다 (`docs/00_architecture.md`).
 
@@ -69,7 +69,7 @@
 
 ## 3. 프로젝트 폴더 구조
 
-#### 폴더 · 파일
+### 폴더 · 파일
 
 | 위치 | 무엇 | 담당 | 수정일 |
 |---|---|---|---|
@@ -89,7 +89,7 @@
 | `reports/01~03` | QA 결과 · 테스트 결과 · 자동 검사 결과 | Manifest · QA | 10/14 |
 | `scripts/00~10` · `tests/` | 운영 스크립트 · 자동 테스트 4개 | PM · QA · Storage · Manifest | 10/15 |
 
-#### 문서 지도
+### 문서 지도
 
 문서 번호는 읽는 순서입니다.
 
@@ -110,12 +110,12 @@
 
 ## 4. 설치 · 실행
 
-#### 설치
+### 설치
 
 - WSL(Ubuntu) 에서 GitHub 저장소를 받은 뒤, `project7` 폴더의 **설치 스크립트** `setup_wsl.sh` 를 한 번 실행합니다.
 - 패키지 · 한글 글꼴 · 가상환경 · 연습 데이터 · 자동 테스트까지 한 번에 끝나고, **"모든 테스트 통과 (4개)"** 가 나오면 준비 완료입니다.
 
-#### 실행
+### 실행
 
 - `project7` 폴더에서 **실행 스크립트** `run.sh` 를 실행합니다.
 - 처음 한 번 **작업자 이름**을 입력하면 기억합니다.
@@ -155,7 +155,7 @@
 - **김치 · 고무장갑 = 배경** — 박스를 그리지 않습니다. Class 4 번호는 교과 8 과 맞추려고 비워 둡니다.
 - 작아도 이물이 확실하면 박스 + 노트 `small`
 
-#### Class 별 BBox 분석
+### Class 별 BBox 분석
 
 | Class | 이름 | 원본 BBox | 최종 BBox | 변화 |
 |---:|---|---:|---:|---:|
@@ -204,7 +204,7 @@
 | 확인 필요 REVIEW | 판단이 애매함 → PM + QA 가 결정 |
 | 검수 완료 REVIEWED | 교차 · 최종검수까지 끝 → FINAL 대상 |
 
-#### 검수 단계
+### 검수 단계
 
 1차 라벨링 900장 → 교차검수 710장, 수정 · 확인 필요 사진을 다른 사람이 → 최종검수 3명 × 300장, 본인이 본 사진 제외 → **900장 REVIEWED**
 
@@ -212,18 +212,18 @@
 
 ## 11. QA · 테스트 결과
 
-#### QA 결과
+### QA 결과
 
 - 자세히 [reports/01_qa_summary.md](reports/01_qa_summary.md) · 검사 결과 파일 `reports/03_validation_final.csv`
 - 전체 이미지 **900** · TXT **900** · Validation CRITICAL **0** · 최종 REVIEW **0**
 - 사람이 찾은 오류: 빈 라벨 26건 중 2건이 고무장갑만 있는 사진 → 장면 유형 `none` 추가로 해결
 
-#### 프로그램 테스트 결과
+### 프로그램 테스트 결과
 
 - 자세히 [reports/02_test_report.md](reports/02_test_report.md)
 - 개발 단계 오류 **8개** — 메뉴 잔상 · 단축키 · 빈 화면 · 깨진 이미지 · 경로 — 모두 고치고 재시험 PASS
 - 자동 테스트 **4개 통과** — 좌표 왕복 · 화면 배율 · 저장 규칙 · 전체 작업 흐름
-- 테스트 단계 Golden → Pilot → Final Acceptance · ⏳ Golden · Pilot 결과 칸 채우는 중
+- 테스트 단계 Golden → Pilot → Final Acceptance · Golden · Pilot 결과 작성 중
 
 <br>
 
@@ -237,7 +237,7 @@
 
 ## 13. 팀 운영
 
-#### 역할표
+### 역할표
 
 | 직책 | 브랜치 | 맡은 일 | 주요 산출물 |
 |---|---|---|---|
@@ -248,7 +248,7 @@
 | QA · Validation | feature/qa | 자동 검사 · RAW 보호 · 테스트 | Validation · Test Report |
 | Manifest · 서기 | feature/manifest | 작업 장부 · 기록 · 인계 | Manifest · QA Summary · Handoff |
 
-#### WBS 일정
+### WBS 일정
 
 | 단계 | 기간 | 결과 |
 |---|---|---|
@@ -267,23 +267,23 @@ Feature Freeze 10/13 — 이후 버그 수정 · 문서만
 
 ## 14. 산출물 · 버전 관리
 
-#### 필수 산출물
+### 필수 산출물
 
 | 번호 | 강사님 필수 11개 | 위치 | 상태 |
 |---:|---|---|---|
-| 1 | 라벨링 프로그램 | `main.py` · `src/` | ✅ v2.2 |
-| 2 | 소스코드 · 실행 환경 | `src/` · `requirements.txt` · `configs/` | ✅ |
-| 3 | FINAL YOLO 라벨 | `data/final/` | ✅ 900쌍 |
-| 4 | Project Baseline | [docs/01](docs/01_project_baseline.md) | ✅ |
-| 5 | Class 기준서 | [docs/02](docs/02_class_guide.md) | ✅ v1.7.2 |
-| 6 | BBox 기준서 | [docs/03](docs/03_bbox_guide.md) | ✅ v1.2 |
-| 7 | Dataset Manifest | `manifests/dataset_manifest.csv` | ⏳ FINAL 후 생성 |
-| 8 | QA Summary | [reports/01](reports/01_qa_summary.md) | ✅ |
-| 9 | Test Report | [reports/02](reports/02_test_report.md) | ⏳ Golden 결과 칸 |
-| 10 | README | 이 문서 | ✅ |
-| 11 | 교과 8 Handoff | [docs/10](docs/10_subject08_handoff.md) | ✅ |
+| 1 | 라벨링 프로그램 | `main.py` · `src/` | 완료 · v2.2 |
+| 2 | 소스코드 · 실행 환경 | `src/` · `requirements.txt` · `configs/` | 완료 |
+| 3 | FINAL YOLO 라벨 | `data/final/` | 완료 · 900쌍 |
+| 4 | Project Baseline | [docs/01](docs/01_project_baseline.md) | 완료 |
+| 5 | Class 기준서 | [docs/02](docs/02_class_guide.md) | 완료 · v1.7.2 |
+| 6 | BBox 기준서 | [docs/03](docs/03_bbox_guide.md) | 완료 · v1.2 |
+| 7 | Dataset Manifest | `manifests/dataset_manifest.csv` | 예정 · FINAL 후 생성 |
+| 8 | QA Summary | [reports/01](reports/01_qa_summary.md) | 완료 |
+| 9 | Test Report | [reports/02](reports/02_test_report.md) | 예정 · Golden 결과 칸 |
+| 10 | README | 이 문서 | 완료 |
+| 11 | 교과 8 Handoff | [docs/10](docs/10_subject08_handoff.md) | 완료 |
 
-#### 추가 산출물
+### 추가 산출물
 
 | 추가 산출물 | 위치 | 추가 사유 |
 |---|---|---|
@@ -294,7 +294,7 @@ Feature Freeze 10/13 — 이후 버그 수정 · 문서만
 | 코드 리뷰 · 코드 공부 | [docs/08](docs/08_code_review.md) · [docs/09](docs/09_code_study.md) | 팀원 모두가 코드를 설명할 수 있게 |
 | 자동 검사 결과 · 작업 장부 사본 | `reports/03` · `manifests/manifest_final.csv` | CRITICAL 0 · 900장 상태를 파일로 증명 |
 
-#### 버전 · 이슈
+### 버전 · 이슈
 
 - 지금 버전: 프로그램 **v2.2** · Class 기준서 **v1.7.2** · BBox 기준서 **v1.2** · 데이터 **FINAL 900** → [06 버전 기록](docs/06_version_history.md)
 - 이슈 **11개 모두 해결** + 고도화 4개 → [05 이슈 → 개선](docs/05_issue_improvement.md)
@@ -312,7 +312,7 @@ Feature Freeze 10/13 — 이후 버그 수정 · 문서만
 - 수정 후 저장 · Reload 를 확인하고, 제출 전 Validation 을 실행합니다.
 - main 은 PR 로만 바꿉니다 · `git add .` 금지
 
-#### 오류가 나면
+### 오류가 나면
 
 | 증상 | 확인 문서 |
 |---|---|

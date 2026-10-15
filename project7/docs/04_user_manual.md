@@ -1,6 +1,6 @@
 # 04 사용설명서 — 설치 · 실행 · 사용법
 
-> 📍 [README](../README.md) › docs › **04 사용설명서** · ← [03 BBox 기준서](03_bbox_guide.md) · → [05 이슈 → 개선](05_issue_improvement.md)
+> [README](../README.md) › docs › **04 사용설명서** · ← [03 BBox 기준서](03_bbox_guide.md) · → [05 이슈 → 개선](05_issue_improvement.md)
 > 작성 PM · 2026-10-15 (README 에 있던 설치 · 실행 · 단축키를 옮겨 왔습니다)
 
 ## 한눈에 보기
