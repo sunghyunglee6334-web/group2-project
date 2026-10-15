@@ -2,6 +2,7 @@ import pytest
 
 from src.failure_analyzer import box_iou
 from src.failure_analyzer import box_iou, match_boxes
+from src.failure_analyzer import analyze_image, box_iou, count_types, match_boxes
 
 def test_iou_same_box():
     """완전히 같은 박스 → 1"""
@@ -79,3 +80,41 @@ def test_mixed():
     r = match_boxes([gt(1, .2, .2, .1, .1), gt(2, .8, .8, .1, .1)],
                     [pred(1, .2, .2, .1, .1, .8), pred(0, .5, .1, .1, .1, .4)])
     assert types(r) == ["FN", "FP", "TP"]
+
+
+def write(path, text):
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def test_analyze_basic(tmp_path):
+    """정답 1개를 맞히고, 확신도 0.1 짜리 헛박스는 버려진다"""
+    gt = write(tmp_path / "gt.txt", "1 0.5 0.5 0.2 0.2\n")
+    pr = write(tmp_path / "pred.txt", "1 0.5 0.5 0.2 0.2 0.9\n0 0.1 0.1 0.1 0.1 0.1\n")
+    assert count_types(analyze_image(gt, pr)) == {"TP": 1, "FP": 0, "FN": 0, "CLASS": 0, "BBOX": 0}
+
+
+def test_analyze_conf_min(tmp_path):
+    """기준을 0.05 로 낮추면 헛박스가 FP 로 잡힌다"""
+    gt = write(tmp_path / "gt.txt", "1 0.5 0.5 0.2 0.2\n")
+    pr = write(tmp_path / "pred.txt", "1 0.5 0.5 0.2 0.2 0.9\n0 0.1 0.1 0.1 0.1 0.1\n")
+    assert count_types(analyze_image(gt, pr, conf_min=0.05))["FP"] == 1
+
+
+def test_analyze_no_pred_file(tmp_path):
+    """예측 TXT 가 없으면 예측 0개 → 정답은 모두 FN"""
+    gt = write(tmp_path / "gt.txt", "2 0.5 0.5 0.1 0.1\n3 0.2 0.2 0.1 0.1\n")
+    assert count_types(analyze_image(gt, tmp_path / "none.txt"))["FN"] == 2
+
+
+def test_analyze_normal_kimchi(tmp_path):
+    """정상 김치: 빈 정답 TXT + 예측 1개 → FP 1"""
+    gt = write(tmp_path / "gt.txt", "")
+    pr = write(tmp_path / "pred.txt", "0 0.3 0.3 0.1 0.1 0.7\n")
+    assert count_types(analyze_image(gt, pr))["FP"] == 1
+
+
+def test_analyze_gt_missing(tmp_path):
+    """정답 TXT 자체가 없으면 멈춘다"""
+    with pytest.raises(FileNotFoundError):
+        analyze_image(tmp_path / "no_gt.txt", tmp_path / "pred.txt")

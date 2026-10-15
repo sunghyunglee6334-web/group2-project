@@ -8,6 +8,7 @@ from src.label_visualizer import read_yolo_labels
 IOU_MATCH = 0.5      # 이 이상 겹치면 "같은 물체를 가리킨다"고 본다
 IOU_LOW = 0.1        # 이 이상 ~ IOU_MATCH 미만이면 BBOX 오류 후보
 CONF_MIN = 0.25      # 이보다 확신도가 낮은 예측은 버린다
+FAILURE_TYPES = ("TP", "FP", "FN", "CLASS", "BBOX")
 
 
 def box_iou(a, b):
@@ -77,11 +78,25 @@ def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
 
 def analyze_image(gt_txt, pred_txt, conf_min=CONF_MIN):
     """TXT 두 개를 읽어 match_boxes 를 돌린다. 예측 TXT 가 없으면 예측 0개로 본다."""
-    # TODO C
-    pass
+    gt_txt, pred_txt = Path(gt_txt), Path(pred_txt)
+
+    # 1 정답 TXT 는 반드시 있어야 한다 (정상 김치는 "빈 파일"로 있음)
+    if not gt_txt.is_file():
+        raise FileNotFoundError(f"정답 TXT 가 없습니다: {gt_txt}")
+    gts = read_yolo_labels(gt_txt)
+
+    # 2 예측 TXT 는 없을 수 있다 (YOLO 는 박스가 0개면 파일을 만들지 않음)
+    preds = read_yolo_labels(pred_txt) if pred_txt.is_file() else []
+
+    # 3 확신도가 낮은 예측은 버린다
+    preds = [p for p in preds if p[5] is None or p[5] >= conf_min]
+
+    return match_boxes(gts, preds)
 
 
 def count_types(results):
     """판정 결과를 유형별로 센다. 예: {"TP": 3, "FP": 1, "FN": 0, "CLASS": 0, "BBOX": 1}"""
-    # TODO D
-    pass
+    counts = {t: 0 for t in FAILURE_TYPES}      # 0건인 유형도 0 으로 보이게
+    for r in results:
+        counts[r["failure_type"]] += 1
+    return counts
