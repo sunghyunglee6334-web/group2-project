@@ -44,7 +44,8 @@ def copy_figure(src, dst):
 def main():
     # 1단계: 평가
     metrics = evaluate_detector(str(WEIGHT), str(DATA_YAML),
-                                split=CONFIG["split"], imgsz=CONFIG["imgsz"])
+                                split=CONFIG["split"], imgsz=CONFIG["imgsz"],
+                                project=PROJECT_ROOT / "runs" / "val", name=CONFIG["model_version"])
 
     # 2단계: CSV 저장
     row = {**CONFIG, **summarize_overall(metrics)}

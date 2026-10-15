@@ -5,6 +5,7 @@ configs/smoke_dataset.yaml 을 만든다. test · bridge 는 읽지 않는다.
 
     python scripts/06_make_smoke_dataset.py
 """
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -49,10 +50,10 @@ def copy_split(split, n):
 
 
 def write_yaml():
+    rel = Path(os.path.relpath(SMOKE_DIR, SMOKE_YAML.parent)).as_posix()   # ../data/smoke
     data = {
-        "path": str(SMOKE_DIR),
-        "train": "images/train",
-        "val": "images/val",
+        "train": f"{rel}/images/train",
+        "val": f"{rel}/images/val",
         "names": CLASS_NAMES,
     }
     SMOKE_YAML.parent.mkdir(parents=True, exist_ok=True)
