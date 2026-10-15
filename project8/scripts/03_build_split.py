@@ -44,7 +44,7 @@ POLICY = {
     # ── 팀 결정 (2026-10-15): Val = T02 + T04 통째 + T17 뒤 15장 ──
     "pinned_val": ["T02"],                               # [3-2] 정상 김치(T02) + 김치·이물(T04) 묶음째
     "orig_val_block": {"enabled": True, "take": 15},            # [1-6] T17 끝 기존 validation 중 뒤 15장 (이물만)
-    "use_phash": False,                                         # 배정은 그대로 두고 pHash는 05_check_phash.py로 따로 확인
+    "use_phash": False,                                         # 배정은 그대로 두고 pHash는 03b_check_phash.py로 따로 확인
     # "size_tolerance": 0,                    # 0 = 장수 정확히
     # "rare_classes": ["6"],                  # [2-3] 희소 클래스
     # "pinned_train": [],                     # [3-2] Train에 직접 고정할 group_id
