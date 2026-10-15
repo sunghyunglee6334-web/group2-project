@@ -788,7 +788,7 @@ class LabelApp(CanvasEditor):
         self.root.update_idletasks()
 
         text = qa.build(self.s.paths)
-        out = REPORT_DIR / "qa_summary.md"
+        out = REPORT_DIR / "01_qa_summary.md"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(text, encoding="utf-8")
 
