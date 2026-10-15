@@ -1,4 +1,16 @@
-# QA Summary
+# 01 QA Summary
+
+> 📍 [README](../README.md) › reports › **01 QA Summary** · ← [docs/10 교과 8 Handoff](../docs/10_subject08_handoff.md) · → [02 Test Report](02_test_report.md)
+> 담당 Manifest · QA · 2026-10-14 (`scripts/05_qa_summary.py` 로 생성 · 다시 생성하면 이 머리말과 5장 Human QA 를 다시 붙이기)
+
+## 한눈에 (개요)
+
+- 이미지 **900** · TXT **900** · BBox 원본 **4,399 → 최종 4,405**
+- 원본 대비: 그대로 2,016 · 위치 · 크기 수정 2,014 · Class 변경 25 · 추가 350 · 삭제 344
+- 가장 큰 변화: Class 5 병해 · 갈변 **+152** · Class 1 플라스틱 · 돌 · 금속 **−166**
+- 900장 모두 REVIEWED · 자동 검사 CRITICAL **0** · 빈 TXT 26 (정상 김치 24 + none 2)
+
+---
 
 - 생성: 2026-10-14 11:08; 수동 QA 보완: 2026-10-14 11:59
 - 데이터: AI캠퍼스 교육용 **100% 가상 생성** 조각김치 이물검출 데이터 (NDA, 외부 유출 금지)
