@@ -1,6 +1,6 @@
 """Smoke 학습: 3 epoch 로 학습 → best.pt 확인 → Val 1장 예측
 
-    python scripts/05_smoke_train.py
+    python scripts/07_smoke_train.py
 """
 import sys
 from pathlib import Path

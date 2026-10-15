@@ -4,8 +4,8 @@
 
 학습 조건 문서용 정보는 reports/baseline_run_info.json 에 남긴다.
 
-    python scripts/06_train_baseline.py
-    python scripts/06_train_baseline.py --epochs 2   # 동작 확인용
+    python scripts/08_train_baseline.py
+    python scripts/08_train_baseline.py --epochs 2   # 동작 확인용
 """
 import argparse
 import hashlib
