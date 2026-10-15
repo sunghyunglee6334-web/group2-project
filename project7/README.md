@@ -3,7 +3,7 @@
 기존 YOLO TXT 를 불러와서 사람이 검수하고, 필요한 라벨만 보정한 뒤, 교과 8 에서 바로 학습할 수 있는 **FINAL 데이터**를 만드는 팀 프로젝트용 프로그램입니다.
 
 > 본 프로젝트는 AI캠퍼스 교육을 위해 실제 산업데이터와 유사한 분포 구조로 **100% 가상 생성된** 조각김치 이물검출 학습데이터를 활용하여 수행하였습니다.
-> 데이터는 **NDA 대상**입니다. JPG·TXT·WORK·FINAL 폴더를 Git, 메신저, 개인 클라우드에 올리지 않습니다.
+> 데이터는 **NDA 대상**입니다. **원본 김치 사진(JPG 등 이미지)은 Git · 메신저 · 개인 클라우드에 올리지 않습니다.** 라벨 TXT · CSV 는 Git 에 올려도 됩니다 (2026-10-13 강사님 확인).
 
 
 > 순서는 강사 README 기준 15항목을 따릅니다.
@@ -275,7 +275,7 @@ WSL 로 띄운 창에는 Windows 한글 입력기가 전달되지 않아서, 프
 - 라벨을 바꾸고 PASS 를 누르면 자동으로 **EDITED** 로 저장됩니다.
 - 라벨을 안 바꿨으면 RAW TXT 를 **바이트 그대로** WORK 에 복사합니다.
 - 저장하지 않고 이동하거나 창을 닫으면 (터미널 `Ctrl+C` 포함) 저장 여부를 묻습니다.
-- Class 4 가 남아 있으면 PASS 나 REVIEWED 대신 **REVIEW** 로 저장합니다. (기준서 v1.7: 고무장갑 BBox 는 **지운 뒤** 저장 → EDITED / 검수 완료)
+- Class 4(고무장갑) BBox 는 기준서 v1.7에 따라 삭제한 뒤 EDITED로 저장합니다. 장면 유형은 김치와 대상 객체가 모두 없을 때 `none`(해당 없음)을 선택합니다.
 - 자기 작업을 REVIEWED 로 바꾸려 하면 경고합니다. 교차검수는 다른 사람이 합니다.
 - TXT 는 임시파일에 쓴 뒤 교체하는 방식이라, 저장 도중 꺼져도 깨지지 않습니다.
 
@@ -320,7 +320,7 @@ class_id x_center y_center width height
 
 ## 10. 데이터 저장 위치
 
-데이터는 **Git 제외 · NDA** 입니다.
+**사진은 Git 금지 (NDA)** · FINAL 라벨 · 장부(`data/final`)는 Git 에 올립니다 · RAW · 작업 중 폴더 · 백업은 용량 · 혼동 때문에 Git 에서 제외합니다.
 
 ```text
 data/raw/      원본 RAW: 이물검출_학습데이터1/images|labels/train, 이물검출_학습데이터2/images|labels/train|validation
@@ -337,7 +337,7 @@ data/dummy_raw/         연습용 가상 데이터
 
 | 파일 | 내용 | 만드는 방법 |
 |---|---|---|
-| `data/work/manifest.csv` | 작업 Manifest (프로그램이 저장할 때마다 갱신, Git 제외) | `01_build_manifest.py` → 작업 중 자동 |
+| `data/work/manifest.csv` | 작업 Manifest (프로그램이 저장할 때마다 갱신, 작업 중 파일이라 Git 제외) | `01_build_manifest.py` → 작업 중 자동 |
 | `manifests/dataset_manifest.csv` | 제출용 Dataset Manifest (산출물 7) | `python scripts/10_export_manifest.py` |
 | `data/final/manifest_final.csv` | FINAL 기준 Manifest | `07_build_final.py` |
 
@@ -364,7 +364,7 @@ data/dummy_raw/         연습용 가상 데이터
 
 ## 15. 주의사항
 
-- **NDA**: JPG · TXT · WORK · FINAL · manifest 데이터를 Git, Discord, 카카오톡, 개인 클라우드에 올리지 않습니다. 전달은 메일(작은 zip) 또는 USB · 공유폴더.
+- **NDA**: 원본 김치 사진(JPG 등 이미지)은 Git · Discord · 카카오톡 · 개인 클라우드에 올리지 않습니다. 사진이 든 데이터 전달은 메일(작은 zip) 또는 USB · 공유폴더. 라벨 TXT · CSV 는 Git 허용 (2026-10-13 강사님 확인).
 - RAW 는 절대 수정하지 않습니다. 매일 `00_raw_snapshot.py --verify` 로 확인합니다.
 - REVIEW 가 1건이라도 남으면 FINAL 을 만들 수 없습니다.
 - FINAL 폴더는 직접 고치지 않습니다. WORK 에서 고친 뒤 `07_build_final.py` 를 다시 실행합니다.
@@ -372,3 +372,4 @@ data/dummy_raw/         연습용 가상 데이터
 - 여러 PC 에서 동시에 작업한 결과는 하루 마감 때 `04_merge.py` 로 합칩니다. 같은 이미지는 담당자만 수정합니다.
 - 짝 없는 TXT(PAIR_NO_JPG)는 프로그램에서 고칠 수 없으니 강사나 담당자에게 보고합니다.
 - 프로그램 실행 중에는 `manifest.csv` 를 엑셀로 열어 두지 마세요. Windows 에서 파일이 잠겨 저장이 실패합니다 (실패하면 프로그램이 알려주고 이동하지 않습니다).
+
