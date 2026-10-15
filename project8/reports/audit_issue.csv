@@ -1,0 +1,27 @@
+﻿level,code,image_name,relative_path,line_no,detail
+INFO,EMPTY_NEGATIVE,250410_155009160971.jpg,이물검출_학습데이터1/images/train/250410_155009160971.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155526034625.jpg,이물검출_학습데이터1/images/train/250410_155526034625.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155601084144.jpg,이물검출_학습데이터1/images/train/250410_155601084144.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155641957140.jpg,이물검출_학습데이터1/images/train/250410_155641957140.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155826598654.jpg,이물검출_학습데이터1/images/train/250410_155826598654.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155901509386.jpg,이물검출_학습데이터1/images/train/250410_155901509386.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_160021775802.jpg,이물검출_학습데이터1/images/train/250410_160021775802.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_160112679219.jpg,이물검출_학습데이터1/images/train/250410_160112679219.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_165645848530.jpg,이물검출_학습데이터1/images/train/250410_165645848530.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_165759582289.jpg,이물검출_학습데이터1/images/train/250410_165759582289.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_165840226763.jpg,이물검출_학습데이터1/images/train/250410_165840226763.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_165918398621.jpg,이물검출_학습데이터1/images/train/250410_165918398621.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170124048539.jpg,이물검출_학습데이터1/images/train/250410_170124048539.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170204849002.jpg,이물검출_학습데이터1/images/train/250410_170204849002.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170257620893.jpg,이물검출_학습데이터1/images/train/250410_170257620893.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170345204621.jpg,이물검출_학습데이터1/images/train/250410_170345204621.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170436151500.jpg,이물검출_학습데이터1/images/train/250410_170436151500.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170523246924.jpg,이물검출_학습데이터1/images/train/250410_170523246924.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170605462218.jpg,이물검출_학습데이터1/images/train/250410_170605462218.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170658904840.jpg,이물검출_학습데이터1/images/train/250410_170658904840.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_GLOVE_ONLY,250513_021424892102.jpg,이물검출_학습데이터2/images/train/250513_021424892102.jpg,,"확인된 예외(glove_only_background) — 김치 없이 고무장갑만, 빈 TXT 정상"
+INFO,EMPTY_NEGATIVE,250410_155734186034.jpg,이물검출_학습데이터2/images/validation/250410_155734186034.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_155943122243.jpg,이물검출_학습데이터2/images/validation/250410_155943122243.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_GLOVE_ONLY,250410_160155606350.jpg,이물검출_학습데이터2/images/validation/250410_160155606350.jpg,,"확인된 예외(glove_only_background) — 김치 없이 고무장갑만, 빈 TXT 정상"
+INFO,EMPTY_NEGATIVE,250410_170005947995.jpg,이물검출_학습데이터2/images/validation/250410_170005947995.jpg,,정상 김치 Negative Sample
+INFO,EMPTY_NEGATIVE,250410_170049726315.jpg,이물검출_학습데이터2/images/validation/250410_170049726315.jpg,,정상 김치 Negative Sample
