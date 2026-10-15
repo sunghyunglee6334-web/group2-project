@@ -11,7 +11,7 @@ CONF_MIN = 0.25      # 이보다 확신도가 낮은 예측은 버린다
 
 
 def box_iou(a, b):
-    """비율 좌표 박스 두 개(xc, yc, w, h)의 IoU 를 0~1 로 돌려준다."""
+    """두 박스 a, b 의 IoU 를 계산한다. a, b 는 (x_center, y_center, width, height)"""
     # 1 중심·크기 → 꼭짓점
     ax1, ay1, ax2, ay2 = a[0] - a[2] / 2, a[1] - a[3] / 2, a[0] + a[2] / 2, a[1] + a[3] / 2
     bx1, by1, bx2, by2 = b[0] - b[2] / 2, b[1] - b[3] / 2, b[0] + b[2] / 2, b[1] + b[3] / 2
@@ -32,9 +32,47 @@ def box_iou(a, b):
 
 def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
     """한 이미지의 정답·예측 박스를 짝지어 박스마다 판정 결과를 돌려준다.
+    gts, preds: [(class_id, xc, yc, w, h, conf), ...]  (정답의 conf 는 None)
     결과: [{"failure_type", "gt_class", "pred_class", "confidence", "iou"}, ...]"""
-    # TODO B
-    pass
+    results = []
+    used = set()                                   # 이미 짝이 정해진 정답 번호
+
+    # 1 확신도가 높은 예측부터
+    for pred in sorted(preds, key=lambda p: p[5] or 0, reverse=True):
+        p_cls, p_box, conf = pred[0], pred[1:5], pred[5]
+
+        # 2 아직 짝이 없는 정답 중 가장 많이 겹치는 것 찾기
+        best_i, best_iou = None, 0.0
+        for i, gt in enumerate(gts):
+            if i in used:
+                continue
+            iou = box_iou(p_box, gt[1:5])
+            if iou > best_iou:
+                best_i, best_iou = i, iou
+
+        # 3 판정
+        g_cls = gts[best_i][0] if best_i is not None else None
+        if best_iou >= iou_match:
+            kind = "TP" if p_cls == g_cls else "CLASS"
+        elif best_iou >= iou_low and p_cls == g_cls:
+            kind = "BBOX"
+        else:
+            kind = "FP"
+
+        if kind == "FP":
+            g_cls = None                           # FP 는 짝지은 정답이 없다
+        else:
+            used.add(best_i)                       # 이 정답은 짝이 생겼다
+
+        results.append({"failure_type": kind, "gt_class": g_cls, "pred_class": p_cls,
+                        "confidence": conf, "iou": round(best_iou, 3)})
+
+    # 4 끝까지 짝이 없는 정답 → FN
+    for i, gt in enumerate(gts):
+        if i not in used:
+            results.append({"failure_type": "FN", "gt_class": gt[0], "pred_class": None,
+                            "confidence": None, "iou": 0.0})
+    return results
 
 
 def analyze_image(gt_txt, pred_txt, conf_min=CONF_MIN):
