@@ -2,73 +2,70 @@
 
 - Dataset Version: kimchi_v1 · 정책: group_stratified_mvp · gap 300s · seed 42(기록용)
 - 산출물 1: manifests/split_manifest.csv, train.csv, val.csv, test.csv, bridge_holdout.csv
-- split_manifest.csv SHA256: `147bb32e1ceca5f771ce08994b2404771c799a29753aac622d665fe7a81ff8d9`
+- split_manifest.csv SHA256: `b3fb8fc1400416fa64966d323ad3ee7d22785bad1555dadc98c3faffc49f494f`
 
 ## [2단계] 그룹 속성 / [3단계] 배정
 
-```
-group_id  n_images dates         scene_mode diversity  has_rare  n_objects  empty_ratio  d1  ambiguous                stratum          split
-     T00        50 04-10 kimchi_with_target       1-2      True        252        0.000  40          0 kimchi_with_target|1-2          train
-     T01         1 04-10      normal_kimchi         0     False          0        1.000   1          0        normal_kimchi|0          train
-     T02        10 04-10      normal_kimchi         0     False          0        1.000   7          0        normal_kimchi|0            val
-     T03        39 04-10 kimchi_with_target       5-6      True         87        0.359  32          0 kimchi_with_target|5-6          train
-     T04        50 04-10 kimchi_with_target       5-6     False        269        0.000  35          1 kimchi_with_target|5-6            val
-     T05        48 04-11 kimchi_with_target       5-6     False        247        0.000  37          3 kimchi_with_target|5-6          train
-     T06        76 04-11 kimchi_with_target       5-6     False        435        0.000  62          1 kimchi_with_target|5-6          train
-     T07        26 04-11 kimchi_with_target       5-6     False        169        0.000  22          0 kimchi_with_target|5-6          train
-     T08        25 04-11 kimchi_with_target       1-2     False        147        0.000  21          1 kimchi_with_target|1-2           test
-     T09        75 04-11 kimchi_with_target       5-6     False        398        0.000  61          0 kimchi_with_target|5-6 bridge_holdout
-     T10        50 04-24 kimchi_with_target       5-6     False        317        0.000  39          0 kimchi_with_target|5-6          train
-     T11        25 04-24 kimchi_with_target       1-2     False        141        0.000  21          0 kimchi_with_target|1-2 bridge_holdout
-     T12        75 04-24 kimchi_with_target       5-6     False        419        0.000  59         21 kimchi_with_target|5-6          train
-     T13        50 04-24 kimchi_with_target       5-6     False        288        0.000  43          0 kimchi_with_target|5-6          train
-     T14        50 04-24 kimchi_with_target       5-6      True        281        0.000  20          0 kimchi_with_target|5-6           test
-     T15        50 04-24 kimchi_with_target       5-6     False        240        0.000   0          1 kimchi_with_target|5-6          train
-     T16        50 04-24 kimchi_with_target       5-6     False        266        0.000   0          0 kimchi_with_target|5-6 bridge_holdout
-     T17       135 05-13        object_only       3-4     False        400        0.007   0          0        object_only|3-4          train
-   T17_V        15 05-13        object_only       3-4     False         49        0.000   0          0        object_only|3-4            val
-```
+| group_id   |   n_images | dates   | scene_mode         | diversity   | has_rare   |   n_objects |   empty_ratio |   d1 |   ambiguous | stratum                | split          |
+|:-----------|-----------:|:--------|:-------------------|:------------|:-----------|------------:|--------------:|-----:|------------:|:-----------------------|:---------------|
+| T00        |         50 | 04-10   | kimchi_with_target | 1-2         | True       |         252 |         0     |   40 |           0 | kimchi_with_target|1-2 | train          |
+| T01        |          1 | 04-10   | normal_kimchi      | 0           | False      |           0 |         1     |    1 |           0 | normal_kimchi|0        | train          |
+| T02        |         10 | 04-10   | normal_kimchi      | 0           | False      |           0 |         1     |    7 |           0 | normal_kimchi|0        | val            |
+| T03        |         39 | 04-10   | kimchi_with_target | 5-6         | True       |          87 |         0.359 |   32 |           0 | kimchi_with_target|5-6 | train          |
+| T04        |         50 | 04-10   | kimchi_with_target | 5-6         | False      |         269 |         0     |   35 |           1 | kimchi_with_target|5-6 | val            |
+| T05        |         48 | 04-11   | kimchi_with_target | 5-6         | False      |         247 |         0     |   37 |           3 | kimchi_with_target|5-6 | train          |
+| T06        |         76 | 04-11   | kimchi_with_target | 5-6         | False      |         435 |         0     |   62 |           1 | kimchi_with_target|5-6 | train          |
+| T07        |         26 | 04-11   | kimchi_with_target | 5-6         | False      |         169 |         0     |   22 |           0 | kimchi_with_target|5-6 | train          |
+| T08        |         25 | 04-11   | kimchi_with_target | 1-2         | False      |         147 |         0     |   21 |           1 | kimchi_with_target|1-2 | test           |
+| T09        |         75 | 04-11   | kimchi_with_target | 5-6         | False      |         398 |         0     |   61 |           0 | kimchi_with_target|5-6 | bridge_holdout |
+| T10        |         50 | 04-24   | kimchi_with_target | 5-6         | False      |         317 |         0     |   39 |           0 | kimchi_with_target|5-6 | train          |
+| T11        |         25 | 04-24   | kimchi_with_target | 1-2         | False      |         141 |         0     |   21 |           0 | kimchi_with_target|1-2 | bridge_holdout |
+| T12        |         75 | 04-24   | kimchi_with_target | 5-6         | False      |         419 |         0     |   59 |          21 | kimchi_with_target|5-6 | train          |
+| T13        |         50 | 04-24   | kimchi_with_target | 5-6         | False      |         288 |         0     |   43 |           0 | kimchi_with_target|5-6 | train          |
+| T14        |         50 | 04-24   | kimchi_with_target | 5-6         | True       |         281 |         0     |   20 |           0 | kimchi_with_target|5-6 | test           |
+| T15        |         50 | 04-24   | kimchi_with_target | 5-6         | False      |         240 |         0     |    0 |           1 | kimchi_with_target|5-6 | train          |
+| T16        |         50 | 04-24   | kimchi_with_target | 5-6         | False      |         266 |         0     |    0 |           0 | kimchi_with_target|5-6 | bridge_holdout |
+| T17        |        135 | 05-13   | object_only        | 3-4         | False      |         400 |         0.007 |    0 |           0 | object_only|3-4        | train          |
+| T17_V      |         15 | 05-13   | object_only        | 3-4         | False      |          49 |         0     |    0 |           0 | object_only|3-4        | val            |
 
 ## [4단계] split별 분포
 
-```
-         split  images  groups  d1_pct  empty_pct  ambiguous                   dates  scene:kimchi_with_target  scene:object_only  scene:normal_kimchi  stratum:kimchi_with_target|5-6  stratum:kimchi_with_target|1-2  stratum:normal_kimchi|0  stratum:object_only|3-4  class:0  class:1  class:2  class:3  class:5  class:6
-         train     600      11    55.8        2.7         26 04-10,04-11,04-24,05-13                       450                135                   15                               8                               1                        1                        1      487     1104      507      336      170      250
-           val      75       3    56.0       13.3          1             04-10,05-13                        50                 16                    9                               1                               0                        1                        1       29       60      205       10       14        0
-          test      75       2    54.7        0.0          1             04-11,04-24                        75                  0                    0                               1                               1                        0                        0       14      181      177       10       45        1
-bridge_holdout     150       3    54.7        0.0          0             04-11,04-24                       150                  0                    0                               2                               1                        0                        0      179      320       48       22      236        0
-```
+| split          |   images |   groups |   d1_pct |   empty_pct |   ambiguous | dates                   |   scene:kimchi_with_target |   scene:object_only |   scene:normal_kimchi |   scene:none |   stratum:kimchi_with_target|5-6 |   stratum:kimchi_with_target|1-2 |   stratum:normal_kimchi|0 |   stratum:object_only|3-4 |   class:0 |   class:1 |   class:2 |   class:3 |   class:5 |   class:6 |
+|:---------------|---------:|---------:|---------:|------------:|------------:|:------------------------|---------------------------:|--------------------:|----------------------:|-------------:|---------------------------------:|---------------------------------:|--------------------------:|--------------------------:|----------:|----------:|----------:|----------:|----------:|----------:|
+| train          |      600 |       11 |     55.8 |         2.7 |          26 | 04-10,04-11,04-24,05-13 |                        450 |                 134 |                    15 |            1 |                                8 |                                1 |                         1 |                         1 |       487 |      1104 |       507 |       336 |       170 |       250 |
+| val            |       75 |        3 |     56   |        13.3 |           1 | 04-10,05-13             |                         50 |                  15 |                     9 |            1 |                                1 |                                0 |                         1 |                         1 |        29 |        60 |       205 |        10 |        14 |         0 |
+| test           |       75 |        2 |     54.7 |         0   |           1 | 04-11,04-24             |                         75 |                   0 |                     0 |            0 |                                1 |                                1 |                         0 |                         0 |        14 |       181 |       177 |        10 |        45 |         1 |
+| bridge_holdout |      150 |        3 |     54.7 |         0   |           0 | 04-11,04-24             |                        150 |                   0 |                     0 |            0 |                                2 |                                1 |                         0 |                         0 |       179 |       320 |        48 |        22 |       236 |         0 |
 
 ## [4-5] split × Class × bbox 크기
 
-```
-         split class  objects  small  small_pct  medium  medium_pct  large  large_pct
-           all     0      709    236       33.3     236        33.3    237       33.4
-bridge_holdout     0      179    146       81.6      33        18.4      0        0.0
-          test     0       14      3       21.4       6        42.9      5       35.7
-         train     0      487     77       15.8     194        39.8    216       44.4
-           val     0       29     10       34.5       3        10.3     16       55.2
-           all     1     1665    555       33.3     555        33.3    555       33.3
-bridge_holdout     1      320     81       25.3     146        45.6     93       29.1
-          test     1      181     89       49.2      59        32.6     33       18.2
-         train     1     1104    372       33.7     323        29.3    409       37.0
-           val     1       60     13       21.7      27        45.0     20       33.3
-           all     2      937    312       33.3     312        33.3    313       33.4
-bridge_holdout     2       48     19       39.6      13        27.1     16       33.3
-          test     2      177     30       16.9     113        63.8     34       19.2
-         train     2      507    194       38.3     130        25.6    183       36.1
-           val     2      205     69       33.7      56        27.3     80       39.0
-           all     3      378    126       33.3     126        33.3    126       33.3
-bridge_holdout     3       22     10       45.5      10        45.5      2        9.1
-          test     3       10      1       10.0       3        30.0      6       60.0
-         train     3      336    113       33.6     110        32.7    113       33.6
-           val     3       10      2       20.0       3        30.0      5       50.0
-           all     5      465    155       33.3     155        33.3    155       33.3
-bridge_holdout     5      236     22        9.3      67        28.4    147       62.3
-          test     5       45     21       46.7      22        48.9      2        4.4
-         train     5      170    103       60.6      63        37.1      4        2.4
-           val     5       14      9       64.3       3        21.4      2       14.3
-```
+| split          |   class |   objects |   small |   small_pct |   medium |   medium_pct |   large |   large_pct |
+|:---------------|--------:|----------:|--------:|------------:|---------:|-------------:|--------:|------------:|
+| all            |       0 |       709 |     236 |        33.3 |      236 |         33.3 |     237 |        33.4 |
+| bridge_holdout |       0 |       179 |     146 |        81.6 |       33 |         18.4 |       0 |         0   |
+| test           |       0 |        14 |       3 |        21.4 |        6 |         42.9 |       5 |        35.7 |
+| train          |       0 |       487 |      77 |        15.8 |      194 |         39.8 |     216 |        44.4 |
+| val            |       0 |        29 |      10 |        34.5 |        3 |         10.3 |      16 |        55.2 |
+| all            |       1 |      1665 |     555 |        33.3 |      555 |         33.3 |     555 |        33.3 |
+| bridge_holdout |       1 |       320 |      81 |        25.3 |      146 |         45.6 |      93 |        29.1 |
+| test           |       1 |       181 |      89 |        49.2 |       59 |         32.6 |      33 |        18.2 |
+| train          |       1 |      1104 |     372 |        33.7 |      323 |         29.3 |     409 |        37   |
+| val            |       1 |        60 |      13 |        21.7 |       27 |         45   |      20 |        33.3 |
+| all            |       2 |       937 |     312 |        33.3 |      312 |         33.3 |     313 |        33.4 |
+| bridge_holdout |       2 |        48 |      19 |        39.6 |       13 |         27.1 |      16 |        33.3 |
+| test           |       2 |       177 |      30 |        16.9 |      113 |         63.8 |      34 |        19.2 |
+| train          |       2 |       507 |     194 |        38.3 |      130 |         25.6 |     183 |        36.1 |
+| val            |       2 |       205 |      69 |        33.7 |       56 |         27.3 |      80 |        39   |
+| all            |       3 |       378 |     126 |        33.3 |      126 |         33.3 |     126 |        33.3 |
+| bridge_holdout |       3 |        22 |      10 |        45.5 |       10 |         45.5 |       2 |         9.1 |
+| test           |       3 |        10 |       1 |        10   |        3 |         30   |       6 |        60   |
+| train          |       3 |       336 |     113 |        33.6 |      110 |         32.7 |     113 |        33.6 |
+| val            |       3 |        10 |       2 |        20   |        3 |         30   |       5 |        50   |
+| all            |       5 |       465 |     155 |        33.3 |      155 |         33.3 |     155 |        33.3 |
+| bridge_holdout |       5 |       236 |      22 |         9.3 |       67 |         28.4 |     147 |        62.3 |
+| test           |       5 |        45 |      21 |        46.7 |       22 |         48.9 |       2 |         4.4 |
+| train          |       5 |       170 |     103 |        60.6 |       63 |         37.1 |       4 |         2.4 |
+| val            |       5 |        14 |       9 |        64.3 |        3 |         21.4 |       2 |        14.3 |
 
 - 같은 위치·다른 이물 쌍: 0개 (reports/scene_pairs.csv)
 
@@ -93,27 +90,26 @@ bridge_holdout     5      236     22        9.3      67        28.4    147      
 - 대신 묶음 단위로 반영: Val을 고를 때 기존 validation 비율이 높은 묶음에 가산점 ([3-4] orig_val_preference)
   (모든 묶음 비율이 14~30%로 비슷해 효과는 크지 않을 수 있음)
 
-```
-time_group  장수  기존_validation  비율(%)      배정된 split
-       T00  50             10     20          train
-       T01   1              0      0          train
-       T02  10              3     30            val
-       T03  39              7     18          train
-       T04  50             15     30            val
-       T05  48             11     23          train
-       T06  76             14     18          train
-       T07  26              4     15          train
-       T08  25              4     16           test
-       T09  75             14     19 bridge_holdout
-       T10  50             11     22          train
-       T11  25              4     16 bridge_holdout
-       T12  75             16     21          train
-       T13  50              7     14          train
-       T14  50             13     26           test
-       T15  50              9     18          train
-       T16  50              8     16 bridge_holdout
-       T17 150             30     20          train
-```
+| time_group   |   장수 |   기존_validation |   비율(%) | 배정된 split      |
+|:-------------|-----:|----------------:|--------:|:---------------|
+| T00          |   50 |              10 |      20 | train          |
+| T01          |    1 |               0 |       0 | train          |
+| T02          |   10 |               3 |      30 | val            |
+| T03          |   39 |               7 |      18 | train          |
+| T04          |   50 |              15 |      30 | val            |
+| T05          |   48 |              11 |      23 | train          |
+| T06          |   76 |              14 |      18 | train          |
+| T07          |   26 |               4 |      15 | train          |
+| T08          |   25 |               4 |      16 | test           |
+| T09          |   75 |              14 |      19 | bridge_holdout |
+| T10          |   50 |              11 |      22 | train          |
+| T11          |   25 |               4 |      16 | bridge_holdout |
+| T12          |   75 |              16 |      21 | train          |
+| T13          |   50 |               7 |      14 | train          |
+| T14          |   50 |              13 |      26 | test           |
+| T15          |   50 |               9 |      18 | train          |
+| T16          |   50 |               8 |      16 | bridge_holdout |
+| T17          |  150 |              30 |      20 | train          |
 
 ## 확인 필요
 
@@ -135,7 +131,7 @@ time_group  장수  기존_validation  비율(%)      배정된 split
 - [3-2] Train 보호: T01 — 층 'normal_kimchi|0'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)
 - [3-2] Train 보호: T00 — 희소 Class 6 이미지의 96% 보유
 - [3-1] 층: kimchi_with_target|1-2 11%, kimchi_with_target|5-6 71%, normal_kimchi|0 1%, object_only|3-4 17%
-- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, normal_kimchi 2.7%, object_only 16.8%
+- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, none 0.2%, normal_kimchi 2.7%, object_only 16.6%
 - [3-1] Class 객체 비율: 0 17%, 1 40%, 2 23%, 3 9%, 5 11%
 - [3-4] 기존 validation 블록 → Val 고정: T17_V, T02
 - [3-3] 조건 완화: Val·Test Class별 최소 객체 수
@@ -143,7 +139,7 @@ time_group  장수  기존_validation  비율(%)      배정된 split
 - [3-2] Train 보호: T01 — 층 'normal_kimchi|0'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)
 - [3-2] Train 보호: T00 — 희소 Class 6 이미지의 96% 보유
 - [3-1] 층: kimchi_with_target|1-2 11%, kimchi_with_target|5-6 71%, normal_kimchi|0 1%, object_only|3-4 17%
-- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, normal_kimchi 2.7%, object_only 16.8%
+- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, none 0.2%, normal_kimchi 2.7%, object_only 16.6%
 - [3-1] Class 객체 비율: 0 17%, 1 40%, 2 23%, 3 9%, 5 11%
 - [3-4] 기존 validation 블록 → Val 고정: T17_V, T02
 - [3-3] 조건 완화: 배경 이미지 Train 비율 50% → 30%
@@ -151,7 +147,7 @@ time_group  장수  기존_validation  비율(%)      배정된 split
 - [3-2] Train 보호: T01 — 층 'normal_kimchi|0'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)
 - [3-2] Train 보호: T00 — 희소 Class 6 이미지의 96% 보유
 - [3-1] 층: kimchi_with_target|1-2 11%, kimchi_with_target|5-6 71%, normal_kimchi|0 1%, object_only|3-4 17%
-- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, normal_kimchi 2.7%, object_only 16.8%
+- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, none 0.2%, normal_kimchi 2.7%, object_only 16.6%
 - [3-1] Class 객체 비율: 0 17%, 1 40%, 2 23%, 3 9%, 5 11%
 - [3-4] 기존 validation 블록 → Val 고정: T17_V, T02
 - [3-3] 조건 완화: Train Class 객체 수가 가장 많아야 함
@@ -159,7 +155,7 @@ time_group  장수  기존_validation  비율(%)      배정된 split
 - [3-2] Train 보호: T01 — 층 'normal_kimchi|0'에 그룹이 하나뿐 (나누면 Train에서 이 층이 사라짐)
 - [3-2] Train 보호: T00 — 희소 Class 6 이미지의 96% 보유
 - [3-1] 층: kimchi_with_target|1-2 11%, kimchi_with_target|5-6 71%, normal_kimchi|0 1%, object_only|3-4 17%
-- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, normal_kimchi 2.7%, object_only 16.8%
+- [3-1] 장면(이미지 기준): kimchi_with_target 80.6%, none 0.2%, normal_kimchi 2.7%, object_only 16.6%
 - [3-1] Class 객체 비율: 0 17%, 1 40%, 2 23%, 3 9%, 5 11%
 - [3-4] 기존 validation 블록 → Val 고정: T17_V, T02
 - [3-3] 점수 합 11.77 (가장 작은 배정)
