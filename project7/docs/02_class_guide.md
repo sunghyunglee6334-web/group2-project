@@ -3,7 +3,7 @@
 > 📍 [README](../README.md) › docs › **02 Class Labeling Guide** · ← [01 Project Baseline](01_project_baseline.md) · → [03 BBox 기준서](03_bbox_guide.md)
 > 담당 Coord · v1.7.2 · 2026-10-14
 
-## 한눈에 (개요)
+## 한눈에 보기
 
 - 사용 Class **0~6** — 나뭇잎·종이 · 플라스틱·돌·금속 · 나뭇가지 · 벌레 · (4 고무장갑 = 사용 안 함) · 병해·갈변 · 파·고추
 - **김치 · 고무장갑 = 배경** — 박스를 그리지 않고, 남아 있으면 지운 뒤 수정(EDITED)으로 저장
