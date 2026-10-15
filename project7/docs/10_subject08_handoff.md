@@ -1,6 +1,6 @@
 # 10 Subject 07 → Subject 08 Handoff
 
-> 📍 [README](../README.md) › docs › **10 Subject 07 → Subject 08 Handoff** · ← [09 코드 공부](09_code_study.md) · → [reports/01 QA Summary](../reports/01_qa_summary.md)
+> [README](../README.md) › docs › **10 Subject 07 → Subject 08 Handoff** · ← [09 코드 공부](09_code_study.md) · → [reports/01 QA Summary](../reports/01_qa_summary.md)
 > 담당 Manifest · 2026-10-14
 
 ## 한눈에 보기

@@ -1,11 +1,11 @@
 # 03 Bounding Box Labeling Guide
 
-> 📍 [README](../README.md) › docs › **03 Bounding Box Labeling Guide** · ← [02 Class 기준서](02_class_guide.md) · → [04 사용설명서](04_user_manual.md)
+> [README](../README.md) › docs › **03 Bounding Box Labeling Guide** · ← [02 Class 기준서](02_class_guide.md) · → [04 사용설명서](04_user_manual.md)
 > 담당 Coord · v1.2 · 2026-10-13
 
 ## 한눈에 보기
 
-- 박스는 **이물 외곽에 딱 붙게** (여백 3px 이내) — 잘리는 것이 넉넉한 것보다 더 나쁨
+- 박스는 **이물 외곽에 밀착** (여백 3px 이내) — 객체가 잘리지 않는 것을 우선
 - **한 객체 = 박스 1개** · 겹치면 각각 · 이미지 경계에 걸리면 보이는 부분만
 - 가려져 끊겨 보여도 같은 객체면 박스 1개 · 판단이 어려우면 REVIEW
 - 이 기준으로 위치 · 크기 수정 **2,014개** (그중 1,857개는 10px 이내 미세 조정)
