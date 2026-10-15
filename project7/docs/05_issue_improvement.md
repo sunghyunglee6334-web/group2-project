@@ -1,6 +1,6 @@
 # 05 이슈 → 개선 → 고도화 보고서
 
-> 📍 [README](../README.md) › docs › **05 이슈 → 개선** · ← [04 사용설명서](04_user_manual.md) · → [06 버전 기록](06_version_history.md)
+> [README](../README.md) › docs › **05 이슈 → 개선** · ← [04 사용설명서](04_user_manual.md) · → [06 버전 기록](06_version_history.md)
 > 작성 PM · 2026-10-15 · 근거: [02 Test Report](../reports/02_test_report.md) · [07 팀 작업 기록](07_team_worklog.md) · PR 기록
 
 ## 한눈에 보기
@@ -65,7 +65,7 @@
 
 ## 3. 데이터 · QA
 
-### ISSUE-07 QA Summary 보정 숫자 0건 ★
+### ISSUE-07 QA Summary 보정 숫자 0건
 - **문제**: QA Summary 를 만들었더니 '그대로 유지' 만 있고 수정 · 추가 · 삭제가 전부 0
 - **원인**: 프로그램 버그가 아님 — 비교 기준(RAW) 자리에 **이미 고친 폴더**가 들어가 '고친 것 vs 고친 것' 을 비교함 (GUI 의 폴더 열기가 설정의 RAW 경로를 바꿈)
 - **개선**: 원본(`--raw`)과 합친 작업본(`--work`)을 직접 지정해서 다시 생성

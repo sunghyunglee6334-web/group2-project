@@ -1,6 +1,6 @@
 # 09 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램
 
-> 📍 [README](../README.md) › docs › **09 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램** · ← [08 코드 리뷰](08_code_review.md) · → [10 교과 8 Handoff](10_subject08_handoff.md)
+> [README](../README.md) › docs › **09 코드 분석 공부 자료 - 조각김치 이물검출 라벨링 프로그램** · ← [08 코드 리뷰](08_code_review.md) · → [10 교과 8 Handoff](10_subject08_handoff.md)
 > 작성 PM · 2026-10-12
 
 ## 한눈에 보기

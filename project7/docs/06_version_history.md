@@ -1,6 +1,6 @@
 # 06 버전 기록 — 프로그램 · 기준서 · 데이터 · 저장소
 
-> 📍 [README](../README.md) › docs › **06 버전 기록** · ← [05 이슈 → 개선](05_issue_improvement.md) · → [07 팀 작업 기록](07_team_worklog.md)
+> [README](../README.md) › docs › **06 버전 기록** · ← [05 이슈 → 개선](05_issue_improvement.md) · → [07 팀 작업 기록](07_team_worklog.md)
 > 작성 PM · 2026-10-15 · 근거: Git Tags · PR 기록 · 기준서 변경 이력
 
 ## 한눈에 보기
