@@ -62,7 +62,7 @@ POLICY = {
 }
 
 SAVE_MANIFESTS = True   # [5단계] manifests/ 5개 CSV + reports/ 저장 (산출물 1)
-COPY_IMAGES = False     # [6단계] data/yolo/, data/bridge_holdout/로 이미지·라벨 복사 (확정 후 True)
+COPY_IMAGES = True     # [6단계] data/yolo/, data/bridge_holdout/로 이미지·라벨 복사 (확정 후 True)
 
 # ==================================================================
 DATA_ROOT = PROJECT_ROOT / "data" / "final"
