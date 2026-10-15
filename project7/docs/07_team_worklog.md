@@ -10,7 +10,7 @@ updated: 2026-10-15
 
 # 07 팀 작업 기록
 
-> 📍 [README](../README.md) › docs › **07 팀 작업 기록** · ← [06 버전 기록](06_version_history.md) · → [08 코드 리뷰](08_code_review.md)
+> [README](../README.md) › docs › **07 팀 작업 기록** · ← [06 버전 기록](06_version_history.md) · → [08 코드 리뷰](08_code_review.md)
 > 담당 Manifest (서기) · 2026-10-15
 
 ## 한눈에 보기

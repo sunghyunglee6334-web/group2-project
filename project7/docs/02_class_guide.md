@@ -1,6 +1,6 @@
 # 02 Class Labeling Guide
 
-> 📍 [README](../README.md) › docs › **02 Class Labeling Guide** · ← [01 Project Baseline](01_project_baseline.md) · → [03 BBox 기준서](03_bbox_guide.md)
+> [README](../README.md) › docs › **02 Class Labeling Guide** · ← [01 Project Baseline](01_project_baseline.md) · → [03 BBox 기준서](03_bbox_guide.md)
 > 담당 Coord · v1.7.2 · 2026-10-14
 
 ## 한눈에 보기

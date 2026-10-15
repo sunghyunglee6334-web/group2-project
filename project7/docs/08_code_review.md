@@ -1,6 +1,6 @@
 # 08 코드 리뷰 — 교과 7 라벨링 프로그램
 
-> 📍 [README](../README.md) › docs › **08 코드 리뷰** · ← [07 팀 작업 기록](07_team_worklog.md) · → [09 코드 공부](09_code_study.md)
+> [README](../README.md) › docs › **08 코드 리뷰** · ← [07 팀 작업 기록](07_team_worklog.md) · → [09 코드 공부](09_code_study.md)
 > 작성 PM · 2026-10-12 · 2026-10-15 역할별 코드 설명(구 CODE_GUIDE)과 합침
 
 ## 한눈에 보기
@@ -295,12 +295,12 @@ flowchart TD
 
 | 항목 | 결과 |
 |---|---|
-| RAW 보호 | ✅ session.save 가 RAW 안 저장을 막음 · 07 이 RAW 변경을 검사 |
-| 고치면 PASS 불가 | ✅ PASS 요청 + 변경 → EDITED 자동 |
-| 저장 중 꺼짐 | ✅ 임시파일 → 교체 (atomic) |
-| FINAL 조건 | ✅ 미완료 · CRITICAL · RAW 변경 중 하나라도 있으면 중단 |
-| 합치기 위험 | ⚠ 잘못된 입력 zip 은 코드가 못 막음 → 사람이 상태 숫자 확인 |
-| 빈 TXT · Class 4 | ✅ 자동 오류 X · INFO / REVIEW 로 사람 확인 |
+| RAW 보호 | 완료 · session.save 가 RAW 안 저장을 막음 · 07 이 RAW 변경을 검사 |
+| 고치면 PASS 불가 | 완료 · PASS 요청 + 변경 → EDITED 자동 |
+| 저장 중 꺼짐 | 완료 · 임시파일 → 교체 (atomic) |
+| FINAL 조건 | 완료 · 미완료 · CRITICAL · RAW 변경 중 하나라도 있으면 중단 |
+| 합치기 위험 | 주의 · 잘못된 입력 zip 은 코드가 못 막음 → 사람이 상태 숫자 확인 |
+| 빈 TXT · Class 4 | 완료 · 자동 오류 X · INFO / REVIEW 로 사람 확인 |
 | 남은 할 일 | 강사님 형식 확인 후 보완 · 교과 8 코드도 같은 형식으로 `project8/docs/08_code_review.md` |
 
 
