@@ -1,4 +1,6 @@
-"""Baseline 학습: configs/dataset.yaml (train · val) 로 학습 -> models/baseline/baseline_best.pt
+"""Baseline 학습: configs/dataset.yaml (03_build_split 이 만든 train · val) 로 학습 -> models/baseline/baseline_best.pt
+
+학습 조건(epochs 등)은 src/project_config.py 의 BASELINE_CONFIG 한 곳에서 바꾼다.
 
 학습 조건 문서용 정보는 reports/baseline_run_info.json 에 남긴다.
 

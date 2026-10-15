@@ -7,7 +7,7 @@
 - 전체 이미지: 900장 (4K JPG) + YOLO TXT 900개
 - 출처: 이물검출_학습데이터1 (train), 이물검출_학습데이터2 (train · validation)
 - Label Format: YOLO TXT (`class_id x_center y_center width height`, 0~1 정규화)
-- Class: 0~6 (번호 변경 금지), Class 4 고무장갑은 사용하지 않음 → 발견 시 REVIEW
+- Class: 0~6 (번호 변경 금지), Class 4 고무장갑은 사용하지 않음 → 고무장갑 BBox 삭제 후 EDITED 기록
 - Class 설정 파일: `configs/classes.yaml`
 - RAW 데이터: 수정 금지 (SHA-256 해시로 검증, `scripts/00_raw_snapshot.py`)
 - 데이터: AI캠퍼스 교육용 100% 가상 생성 데이터, NDA 대상
@@ -66,3 +66,4 @@ docs: Class 기준서 작성
 - 이미지와 TXT Pair 확인 완료
 - RAW 변경: 0 (해시 검증)
 - FINAL 데이터 정리 완료 (`scripts/07_build_final.py` 성공)
+
