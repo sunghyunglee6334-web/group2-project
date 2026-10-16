@@ -39,7 +39,7 @@ IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp"}
 # Baseline 학습 조건 (smoke 는 epochs 만 줄여서 사용)
 BASELINE_CONFIG = {
     "model_name": "yolo11n.pt",
-    "epochs": 2,
+    "epochs": 50,
     "imgsz": 640,
     "batch": 8,
     "seed": 42,

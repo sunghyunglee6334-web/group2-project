@@ -1,0 +1,8 @@
+﻿class_id,class_name,precision,recall,map50,map50_95
+0,leaf_paper,0.7296,0.6207,0.7239,0.5882
+1,plastic_stone_metal,0.9059,0.6422,0.8028,0.6719
+2,branch,0.8728,0.6361,0.7831,0.5893
+3,insect,0.9761,1.0,0.995,0.6358
+4,rubber_glove_unused,N/A,N/A,N/A,N/A
+5,disease_browning,1.0,0.0,0.029,0.0034
+6,green_onion_pepper,N/A,N/A,N/A,N/A
