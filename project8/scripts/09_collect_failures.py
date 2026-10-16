@@ -128,8 +128,10 @@ def main():
 
     # 3 저장
     save_metrics_csv(summary, SUMMARY_CSV)
-    if fails:                                   # 실패가 0건이면 초안은 만들지 않음
+    if fails:
         save_metrics_csv(fails, DRAFT_CSV)
+    elif DRAFT_CSV.exists():                    # 실패 0건이면 예전 초안이 남지 않게 지움
+        DRAFT_CSV.unlink()
     saved = save_failure_images(summary)
 
     # 4 화면 요약: 6일차 가설의 첫 단서
@@ -139,9 +141,8 @@ def main():
     print("scene_type 별:")
     for (scene, kind), n in sorted(Counter((r["scene_type"], r["failure_type"]) for r in fails).items()):
         print(f"  {scene or '(빈칸)'} / {kind}: {n}")
-    print("저장:", SUMMARY_CSV.relative_to(PROJECT_ROOT), DRAFT_CSV.relative_to(PROJECT_ROOT),
-          OUT_IMG.relative_to(PROJECT_ROOT))
-
+    saved_files = [SUMMARY_CSV] + ([DRAFT_CSV] if fails else []) + [OUT_IMG]
+    print("저장:", ", ".join(str(p.relative_to(PROJECT_ROOT)) for p in saved_files))
 
 if __name__ == "__main__":
     main()
