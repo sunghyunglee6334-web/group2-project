@@ -104,3 +104,5 @@ Improved Experiment:
 - Validation에 Class 6(green_onion_pepper) 없음
 - T17_V 15장은 Train의 T17과 같은 촬영 묶음 → Val 점수가 실제보다 좋게 나올 수 있음
 - eval_exclude 4장(pHash 중복)은 이번 숫자에 포함됨 → 제외 시 재계산 필요
+
+> 실패 이미지(demo/failure_analysis/*.jpg)는 로컬 보관, Git 업로드 금지 (git add -f 사용 금지)
