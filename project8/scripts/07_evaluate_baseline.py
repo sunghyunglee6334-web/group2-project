@@ -1,3 +1,6 @@
+"""5일차: Baseline 모델을 Validation 에서 평가하고 산출물 2·5 파일을 만든다.
+실행: 프로젝트 루트에서  python scripts/07_evaluate_baseline.py"""
+
 import shutil
 import sys
 from pathlib import Path
@@ -31,7 +34,7 @@ TRAIN_RUN = PROJECT_ROOT / "runs" / "baseline_v1"
 REPORTS = PROJECT_ROOT / "reports"
 FIGURES = REPORTS / "figures"
 
-# 평가 결과를 그림으로 저장
+# YOLO 가 만든 그림을 reports/figures 로 복사 (없으면 건너뜀
 def copy_figure(src, dst):
     if Path(src).is_file():
         FIGURES.mkdir(parents=True, exist_ok=True)
