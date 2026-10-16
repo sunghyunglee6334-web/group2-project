@@ -31,17 +31,22 @@ def evaluate_detector(
     split: str = "val",
     imgsz: int = 640,
     allow_test: bool = False,
+    project: str | None = None,
+    name: str | None = None,
 ):
     # 평가 전 입력 확인
     check_inputs(model_path, data_yaml, split, allow_test)
 
     from ultralytics import YOLO  # 실제 평가할 때만 불러온다
     model = YOLO(model_path)
+    # project 를 안 주면 Ultralytics 전역 runs_dir 로 저장되므로, project8/runs 아래로 지정해서 넘긴다
+    save = {"project": str(project), "name": name, "exist_ok": True} if project else {}
     return model.val(
         data=data_yaml,
         split=split,
         imgsz=imgsz,
         plots=True,
+        **save,
     )
 
 # 평가 결과 정리: 전체 성능 4개
