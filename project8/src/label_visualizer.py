@@ -1,7 +1,7 @@
 """YOLO 라벨(정답/예측)을 이미지 위에 박스로 그리는 도구
 
 - 박스 색 = Class별 색 (CLASS_COLORS)
-- 정답(GT) = 실선, 예측(Pred) = 점선 + 확신도
+- 정답(GT) = Class 색 실선, 예측(Pred) = 같은 Class 색을 더 진하게 + 점선 + 확신도
 - 이미지 왼쪽 위에 그 사진에 나온 Class의 색 범례를 붙인다
 """
 
@@ -9,7 +9,7 @@ from pathlib import Path
 import cv2
 
 GT_COLOR = (0, 200, 0)       # (예전 방식) 정답 한 가지 색: 초록
-PRED_COLOR = (255, 120, 0)   # (예전 방식) 예측 한 가지 색: 파랑
+PRED_COLOR = (255, 0, 0)     # (예전 방식) 예측 한 가지 색: 파랑
 
 # Class별 색 (OpenCV는 BGR 순서). 색약인 사람도 구분하기 쉬운 Okabe-Ito 계열
 CLASS_COLORS = {
@@ -28,6 +28,11 @@ def class_color(class_id):
     if class_id in CLASS_COLORS:
         return CLASS_COLORS[class_id]
     return ((class_id * 67) % 200 + 30, (class_id * 131) % 200 + 30, (class_id * 197) % 200 + 30)
+
+
+def darker(color, k=0.6):
+    """BGR 색을 k 배로 어둡게 (0.6 = 40% 진하게). 예측 박스용."""
+    return tuple(int(v * k) for v in color)
 
 
 def read_yolo_labels(txt_path):
@@ -82,17 +87,19 @@ def draw_dashed_rect(image, p1, p2, color, thickness, dash=None):
 
 
 def draw_boxes(image, labels, class_names, color=None, show_conf=False, label_below=False,
-               dashed=False):
+               dashed=False, dark=False):
     """이미지 위에 박스와 Class 이름을 그린다.
     color=None 이면 Class별 색(CLASS_COLORS), 색을 주면 모든 박스를 그 색으로 (예전 방식).
     label_below=True 면 이름표를 박스 아래에 붙인다 (정답 이름표와 겹치지 않게).
-    dashed=True 면 점선 박스 (예측 표시용)."""
+    dashed=True 면 점선 박스, dark=True 면 색을 더 진하게 (예측 표시용)."""
     img_h, img_w = image.shape[:2]
     thickness, font_scale = draw_style(image)
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     for class_id, xc, yc, w, h, conf in labels:
         c = color if color is not None else class_color(class_id)
+        if dark:
+            c = darker(c)
 
         # ① 박스 (정답 = 실선, 예측 = 점선)
         x1, y1, x2, y2 = yolo_to_xyxy(xc, yc, w, h, img_w, img_h)
@@ -129,7 +136,7 @@ def draw_legend(image, class_ids, class_names, with_pred=False):
     fs = font_scale * 0.9
     lines = [(class_color(c), class_names.get(c, str(c)) + f" ({c})") for c in sorted(class_ids)]
     if with_pred:
-        lines.append((None, "GT: solid  /  Pred: dashed"))
+        lines.append((None, "GT: solid  /  Pred: darker dashed"))
     (_, th), base = cv2.getTextSize("Ag", font, fs, 1)
     row = th + base + 8
     width = max(cv2.getTextSize(t, font, fs, 1)[0][0] for _, t in lines) + row + 20
@@ -150,7 +157,7 @@ def draw_legend(image, class_ids, class_names, with_pred=False):
 def visualize(image_path, gt_txt, out_path, class_names, pred_txt=None, max_side=1600,
               color_by_class=True, legend=True):
     """한 장을 그려 저장하고 저장 경로를 돌려준다.
-    color_by_class=True  : Class별 색, 정답 = 실선 / 예측 = 점선 (+확신도)
+    color_by_class=True  : Class별 색, 정답 = 실선 / 예측 = 진한 색 점선 (+확신도)
     color_by_class=False : 예전 방식 (정답 초록, 예측 파랑)
     4K 원본은 너무 크므로 긴 변을 max_side 로 줄여 저장한다."""
     image = cv2.imread(str(image_path))
@@ -163,7 +170,8 @@ def visualize(image_path, gt_txt, out_path, class_names, pred_txt=None, max_side
     if pred_txt is not None and Path(pred_txt).is_file():                        # ③ 예측
         pred = read_yolo_labels(pred_txt)
         draw_boxes(image, pred, class_names, None if color_by_class else PRED_COLOR,
-                   show_conf=True, label_below=True, dashed=color_by_class)
+                   show_conf=True, label_below=True,
+                   dashed=color_by_class, dark=color_by_class)
 
     h, w = image.shape[:2]                              # ④ 크기 줄이기
     scale = max_side / max(h, w)
