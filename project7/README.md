@@ -12,21 +12,24 @@
 
 ### 개선 효과
 
-그 결과 교과 8 학습용 **FINAL 데이터 900쌍 · BBox 4,405개**를 구축했습니다. 누락되었던 **병해 · 갈변(Class 5)** 이 313 → **465개(+49%)** 로 보완되었고, 이물이 아닌 대상에 표기된 **플라스틱 · 돌 · 금속(Class 1)** 오표기가 1,831 → **1,665개(−166)** 로 정리되었습니다.
+그 결과 교과 8 학습용 **FINAL 데이터 900쌍**을 구축했습니다. 누락이 많던 병해 · 갈변이 보완되고, 이물이 아닌 대상에 표기된 오표기가 정리되었습니다.
 
-| 핵심 숫자 | 값 |
-|---|---:|
-| 이미지 · 라벨 | 900장 · 900개 |
-| BBox 원본 → 최종 | 4,399 → **4,405** |
-| 유지 / 위치 · 크기 수정 / Class 변경 / 삭제 / 추가 | 2,016 / 2,014 / 25 / 344 / 350 |
-| 사람 검수 완료 (REVIEWED) | **900 / 900** |
-| 자동 검사 CRITICAL · 남은 REVIEW | **0 · 0** |
+| 핵심 지표 | 원본 | 최종 |
+|---|---:|---:|
+| 전체 BBox | 4,399 | **4,405** |
+| 병해 · 갈변 Class 5 | 313 | **465** · +49% |
+| 플라스틱 · 돌 · 금속 Class 1 | 1,831 | **1,665** · 오표기 −166 |
+| 사람 검수 완료 이미지 | 0 | **900** |
+| CRITICAL · 남은 REVIEW | — | **0 · 0** |
 
-### 작동 화면
+근거 → [QA Summary](reports/01_qa_summary.md) · [라벨 보정 내역](reports/01_qa_summary.md#3-라벨-보정-내역-raw-대비)
 
-![프로그램 실제 작동 화면](docs/images/gui_main.png)
+### 화면 설계 · 작동 화면
 
-*NDA 에 따라 원본 사진은 블러 처리했으며, 노란 박스는 검수 완료된 실제 BBox 입니다. 번호 1~13 은 화면 기능입니다.*
+![SCR-01 메인 작업 화면 UI 스토리보드](docs/images/gui_main.png)
+
+*화면 ID SCR-01 · 번호는 화면 영역, 오른쪽 표는 영역별 기능 · 동작 · 단축키입니다. NDA 에 따라 원본 사진은 블러 처리했으며, 노란 박스는 검수 완료된 실제 BBox 입니다.*
+전체 단축키 · 메뉴 → [04 사용설명서 3장](docs/04_user_manual.md#3-사용-순서--화면--단축키) · 디자인 변천 → [v01](docs/images/gui_v01.png) → [v02](docs/images/gui_v02.png)
 
 ### Architecture
 
@@ -38,51 +41,66 @@
 
 | 용도 | 바로가기 |
 |---|---|
-| 신규 사용자 | [GitHub 3분 설치 · 실행](#github-3분-설치--실행) → [5. 기본 사용 순서](#5-기본-사용-순서) |
-| 성과 지표 | [작업 결과](#작업-결과) · [11. QA · 테스트 결과](#11-qa--테스트-결과) |
-| 문서 · 오류 대응 | [3. 폴더 구조와 문서 지도](#3-프로젝트-폴더-구조) · [15. 주의사항](#15-주의사항) |
+| 처음 실행 | [GitHub 3분 설치 · 실행](#github-3분-설치--실행) → [4. 사용 순서](#4-사용-순서) |
+| 성과 · 근거 | [개선 효과](#개선-효과) · [8. QA · 테스트 결과](#8-qa--테스트-결과) · [10. 산출물](#10-산출물--버전-관리) |
+| 기준 · 문서 | [3. 폴더 구조 · 문서 지도](#3-폴더-구조--문서-지도) · [9. WBS](#9-wbs) |
+| 오류 대응 | [11. 주의사항 · 오류가 나면](#11-주의사항) |
 
 ### 팀원 소개
 
-| 직책 | 역할 |
-|---|---|
-| PM | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 |
-| GUI | 프로그램 화면 디자인 · 발표 캡처 · Figma |
-| Coord | BBox 좌표 · Golden Test · Class · BBox 기준서 |
-| Storage | 라벨 저장 로직 · 데이터 취합 · 배포 |
-| QA | 자동 검사 · RAW 보호 · Test Report |
-| Manifest | 작업 장부 · QA Summary · Handoff · 서기 |
+| 직책 | 역할 | 주요 산출물 |
+|---|---|---|
+| PM | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 | README · Baseline · 사용설명서 · FINAL |
+| GUI | 프로그램 화면 디자인 · 발표 캡처 · Figma | 화면 v01 → v02 |
+| Coord | BBox 좌표 · Golden Test · 기준서 | Class · BBox 기준서 |
+| Storage | 라벨 저장 로직 · 데이터 취합 · 배포 | 저장 · 합치기 |
+| QA | 자동 검사 · RAW 보호 · 테스트 | Validation · Test Report |
+| Manifest | 작업 장부 · 기록 · 인계 · 서기 | Manifest · QA Summary · Handoff |
 
 <br>
 
 ## GitHub 3분 설치 · 실행
 
-준비: Windows 11 + WSL2(Ubuntu 22.04 이상) · 아래 명령은 모두 **WSL 터미널**에서 실행합니다.
+준비물: Windows 11 PC 한 대. WSL 이 이미 있으면 1단계는 건너뜁니다.
+
+**1단계 · WSL 설치 (처음 한 번)** — 시작 메뉴에서 PowerShell 을 **관리자 권한으로 실행**
+
+```powershell
+wsl --install
+```
+
+재부팅 후 열리는 Ubuntu 창에서 사용자 이름과 비밀번호를 정합니다.
+
+**2단계 · 받기 · 설치** — Ubuntu 창에서 한 줄씩 실행 · 비밀번호를 물으면 1단계 비밀번호 입력
 
 ```bash
-# 1. 저장소 받기
+sudo apt update && sudo apt install -y git
 git clone https://github.com/sunghyunglee6334-web/group2-project.git ~/group2_project
-
-# 2. 설치 (패키지 · 한글 글꼴 · 가상환경 · 연습 데이터 · 자동 테스트)
 cd ~/group2_project/project7
 bash setup_wsl.sh
+```
 
-# 3. 연습 데이터로 실행
+`setup_wsl.sh` 가 Python · 한글 글꼴 · 가상환경 · 연습 데이터 설치와 자동 테스트까지 한 번에 합니다. `모든 테스트 통과 (4개)` 가 나오면 완료입니다.
+
+**3단계 · 실행** — 연습 데이터로 프로그램 창이 열립니다.
+
+```bash
 bash run.sh --raw data/dummy_raw
 ```
 
-- 2번 끝에 `모든 테스트 통과 (4개)` 가 나오면 설치 완료입니다.
-- 실제 데이터는 NDA 대상이라 Git 에 없습니다. 메일 · USB 로 받은 `이물검출_학습데이터1` · `이물검출_학습데이터2` 폴더를 `data/raw/` 안에 넣고 `bash run.sh --raw data/raw` 로 실행합니다.
-- 업데이트는 `git switch main && git pull origin main` · 자세한 설명은 [04 사용설명서](docs/04_user_manual.md)
+- 실제 데이터는 NDA 대상이라 Git 에 없습니다. 메일 · USB 로 받은 `이물검출_학습데이터1` · `이물검출_학습데이터2` 를 `data/raw/` 에 넣고 `bash run.sh --raw data/raw`
+- 안 될 때 → [04 사용설명서 8. 문제 해결](docs/04_user_manual.md#8-문제-해결) · 업데이트 → [1-2. 새 버전으로 업데이트](docs/04_user_manual.md#1-2-새-버전으로-업데이트)
 
 <br>
 
-## 2. 프로젝트 주요 기능
+## 2. 주요 기능
+
+번호는 [작동 화면](#화면-설계--작동-화면)의 영역 번호입니다.
 
 | 기능 | 화면 번호 |
 |---|---|
-| JPG 이미지 열기 · 폴더 열기 | 1 · 8 |
-| 기존 YOLO TXT 자동 Load · 기존 BBox 와 Class 표시 | 4 · 11 |
+| JPG 이미지 · 폴더 열기 | 1 · 8 |
+| 기존 YOLO TXT 자동 Load · BBox 와 Class 표시 | 4 · 11 |
 | BBox 추가 / 수정 / 삭제 · 되돌리기 | 4 · 5 · 12 |
 | Class 변경 · 숫자키 0~6 | 10 |
 | 이전 / 다음 이미지 이동 | 7 |
@@ -95,46 +113,29 @@ bash run.sh --raw data/dummy_raw
 
 <br>
 
-## 3. 프로젝트 폴더 구조
+## 3. 폴더 구조 · 문서 지도
 
-### 폴더 · 파일
+### 폴더 구조
 
-`# 설명 · 담당 · 마지막 수정일` 순서입니다.
+| 폴더 · 파일 | 내용 | 담당 | 수정일 |
+|---|---|---|---|
+| `main.py` · `run.sh` · `setup_wsl.sh` | 프로그램 시작 · 실행 · 설치 | PM | 10/12 |
+| `src/` | 화면 · BBox · YOLO 읽기 쓰기 · 자동 검사 · 작업 장부 | GUI · Coord · Storage · QA · Manifest | 10/15 |
+| `configs/` | Class 0~6 이름 · 색 | Storage | 10/12 |
+| `scripts/` | 운영 스크립트 00~10 · 배정 → 합치기 → QA → FINAL → 인계 | PM · QA · Storage · Manifest | 10/15 |
+| `tests/` | 자동 테스트 4개 | QA | 10/15 |
+| `docs/` | 기준서 · 설명서 · 기록 · 인계 01~10 · 아래 문서 지도 | 문서별 | 10/15 |
+| `reports/` | QA Summary · Test Report · 자동 검사 결과 | Manifest · QA | 10/14 |
+| `manifests/` | 작업 장부 사본 | Manifest | 10/14 |
+| `data/` | RAW → WORK → FINAL · **Git 제외** | Storage | 10/14 |
 
-```text
-project7/
-├── main.py                   # 프로그램 시작 · PM · 10/12
-├── run.sh                    # 실행 스크립트 · PM · 10/12
-├── setup_wsl.sh              # 설치 스크립트 · PM · 10/12
-├── requirements.txt          # 실행 환경 패키지 · PM · 10/12
-├── settings.example.json     # 설정 예시 · PM · 10/12
-├── README.md                 # 이 문서 · PM · 10/16
-├── configs/
-│   └── classes.yaml          # Class 0~6 이름 · 색 · Storage · 10/12
-├── src/
-│   ├── ui/                   # 화면 · 메뉴 · 한글 입력 · GUI · 10/15
-│   ├── bbox/                 # BBox 그리기 · 좌표 · 저장 규칙 · Coord · 10/12
-│   ├── yolo/                 # YOLO TXT 읽기 · 쓰기 · Storage · 10/12
-│   ├── validation/           # 자동 검사 · 통계 · QA · 10/13
-│   ├── manifest*.py          # 작업 장부 · Manifest · 10/12
-│   └── config.py             # 경로 · 기준 설정 · PM · 10/12
-├── data/                     # Git 제외 · 사진은 메일 · USB 로만 · Storage · 10/14
-│   ├── raw/                  # 원본 RAW · 읽기만
-│   ├── work_raw/             # 작업본 TXT + 작업 장부
-│   └── final/                # FINAL 900쌍 · 교과 8 입력
-├── docs/                     # 기준서 · 설명서 · 기록 · 인계 01~10 · 아래 문서 지도
-│   └── images/               # 작동 화면 · 디자인 v01 · v02 · GUI · 10/15
-├── manifests/                # 작업 장부 사본 · Manifest · 10/14
-├── reports/                  # QA · 테스트 · 자동 검사 결과 01~03 · Manifest · QA · 10/14
-├── scripts/                  # 운영 스크립트 00~10 · PM · QA · Storage · Manifest · 10/15
-└── tests/                    # 자동 테스트 4개 · QA · 10/15
-```
+파일별 역할 · 코드 흐름 → [09 코드 공부 0.2 파일 지도](docs/09_code_study.md#02-파일-지도와-역할-담당)
 
 ### 문서 지도
 
 문서 번호는 읽는 순서입니다.
 
-| 항목 | 문서 | 담당 · 수정일 |
+| 알고 싶은 것 | 문서 | 담당 · 수정일 |
 |---|---|---|
 | 기준 · 완료 조건 | [01 Project Baseline](docs/01_project_baseline.md) | PM · Manifest · 10/15 |
 | 어떤 Class 로 라벨할지 | [02 Class 기준서](docs/02_class_guide.md) v1.7.2 | Coord · 10/14 |
@@ -145,58 +146,34 @@ project7/
 | 날짜별 팀 작업 | [07 팀 작업 기록](docs/07_team_worklog.md) | Manifest · 10/15 |
 | 코드가 어떻게 동작하나 | [08 코드 리뷰](docs/08_code_review.md) → [09 코드 공부](docs/09_code_study.md) | PM · 10/15 |
 | 교과 8 에 무엇을 넘겼나 | [10 교과 8 Handoff](docs/10_subject08_handoff.md) | Manifest · 10/14 |
-| 검수 결과 · 테스트 결과 | [reports/01 QA Summary](reports/01_qa_summary.md) · [02 Test Report](reports/02_test_report.md) | Manifest · QA |
+| 검수 결과 · 테스트 결과 | [01 QA Summary](reports/01_qa_summary.md) · [02 Test Report](reports/02_test_report.md) | Manifest · QA |
 
 <br>
 
-## 4. 설치 · 실행
+## 4. 사용 순서
 
-### 설치
+1. **폴더 열기** 후 왼쪽 목록에서 **내 담당** 을 고릅니다.
+2. 자동으로 Load 된 기존 BBox 와 Class 를 확인합니다.
+3. 잘못된 BBox 는 수정, 누락된 이물은 추가, 오표기는 삭제합니다.
+4. 판단이 어려우면 **확인 필요(REVIEW)** 로 저장하고 노트에 이유를 적습니다.
+5. **저장하고 다음 (Space)** — TXT 저장과 작업 장부 기록이 같이 됩니다.
+6. 하루 마감에 **Validation** 을 실행하고 작업본을 Storage 에게 보냅니다.
 
-- WSL(Ubuntu) 에서 GitHub 저장소를 받은 뒤, `project7` 폴더의 **설치 스크립트** `setup_wsl.sh` 를 한 번 실행합니다.
-- 패키지 · 한글 글꼴 · 가상환경 · 연습 데이터 · 자동 테스트까지 한 번에 끝나고, **"모든 테스트 통과 (4개)"** 가 나오면 준비 완료입니다.
-
-### 실행
-
-- `project7` 폴더에서 **실행 스크립트** `run.sh` 를 실행합니다.
-- 처음 한 번 **작업자 이름**을 입력하면 기억합니다.
-- **폴더 열기** 로 원본 RAW 폴더, 즉 학습데이터1 · 2 가 바로 안에 있는 폴더를 고릅니다.
-
-실제 명령 · 업데이트 방법 → [04 사용설명서 1 · 2장](docs/04_user_manual.md)
+화면 · 단축키 → [04 사용설명서 3장](docs/04_user_manual.md#3-사용-순서--화면--단축키) · 저장 규칙 → [4장](docs/04_user_manual.md#4-저장-규칙) · 상태 뜻 → [7. 데이터 흐름 · 작업 상태](#7-데이터-흐름--작업-상태)
 
 <br>
 
-## 5. 기본 사용 순서
+## 5. YOLO Label · Class
 
-1. 폴더를 열고 왼쪽 목록에서 **내 담당** 을 고릅니다.
-2. 이미지와 기존 YOLO TXT 가 자동으로 Load 되는지 확인합니다.
-3. 기존 BBox 와 Class 를 확인합니다.
-4. 잘못된 BBox 는 수정하고, 누락된 객체는 새로 그리고, 잘못된 객체는 지웁니다.
-5. 판단이 어려우면 **확인 필요(REVIEW)** 로 저장하고 노트에 이유를 적습니다.
-6. **저장하고 다음 (Space)** — TXT 저장과 작업 장부 기록이 같이 됩니다.
-7. 하루 마감에 **Validation** 을 실행하고, 작업본을 취합 담당 Storage 에게 보냅니다.
+### YOLO Label 형식
 
-단축키 · 메뉴 · 화면 설명 → [04 사용설명서 3장](docs/04_user_manual.md)
-
-<br>
-
-## 6. YOLO Label 형식
-
-- TXT 한 줄 = 객체 하나: **Class 번호 · 중심 x · 중심 y · 너비 · 높이**
+- TXT 한 줄 = 객체 하나: **Class 번호 · 중심 x · 중심 y · 너비 · 높이**, 이미지 대비 **0~1 비율** · 소수점 6자리
 - 예: `6 0.800620 0.623148 0.034091 0.053704` → Class 6 파 · 고추 박스 하나
-- 좌표는 픽셀이 아니라 이미지 크기 대비 **0~1 비율**, 소수점 6자리
-- 이물이 없는 사진도 **빈 TXT 파일**이 있어야 합니다 — 해당 26장
-- 라벨을 안 바꾼 사진은 원본 TXT 를 **바이트 그대로** 저장합니다
+- 이물이 없는 사진도 **빈 TXT** 를 둡니다 (26장) · 라벨을 안 바꾼 사진은 원본 TXT 를 **바이트 그대로** 저장
 
-<br>
+### Class 기준
 
-## 7. Class 설정
-
-- 설정 파일 `configs/classes.yaml` · 판단 기준 [docs/02_class_guide.md](docs/02_class_guide.md) v1.7.2
-- **김치 · 고무장갑 = 배경** — 박스를 그리지 않습니다. Class 4 번호는 교과 8 과 맞추려고 비워 둡니다.
-- 작아도 이물이 확실하면 박스 + 노트 `small`
-
-### Class 별 BBox 분석
+설정 `configs/classes.yaml` · 판단 기준 [02 Class 기준서](docs/02_class_guide.md) v1.7.2 · 헷갈릴 때 → [Class 구분표](docs/02_class_guide.md#헷갈리기-쉬운-class-구분표)
 
 | Class | 이름 | 원본 BBox | 최종 BBox | 변화 |
 |---:|---|---:|---:|---:|
@@ -209,33 +186,34 @@ project7/
 | 6 | 파 · 고추 | 249 | 251 | +2 |
 | | 합계 | 4,399 | 4,405 | +6 |
 
+- **김치 · 고무장갑 = 배경**, 박스를 그리지 않습니다. Class 4 번호는 교과 8 과 맞추려고 비워 둡니다 → [ISSUE-05](docs/05_issue_improvement.md#issue-05-고무장갑-class)
+- 작아도 이물이 확실하면 박스 + 노트 `small` → [작은 이물 처리 기준](docs/02_class_guide.md#작은-이물-처리-기준)
+
 <br>
 
-## 8. BBox 작업 기준
+## 6. BBox 작업 기준
 
-- 기준 [docs/03_bbox_guide.md](docs/03_bbox_guide.md) v1.2
-- 객체 **외곽에 밀착**, 여백 3px 이내 — 객체가 잘리지 않는 것을 우선
+- 기준 [03 BBox 기준서](docs/03_bbox_guide.md) v1.2 · 좋은 예 · 나쁜 예 → [팀 예시 이미지](docs/03_bbox_guide.md#11-팀-예시-이미지)
+- 객체 **외곽에 밀착**, 여백 3px 이내 · 객체가 잘리지 않는 것을 우선
 - **한 객체 = 박스 1개** · 이미지 경계에 걸리면 보이는 부분만 · 애매하면 REVIEW
-- 이 기준으로 위치 · 크기 수정 **2,014개**, 그중 1,857개가 10px 이내 미세 조정
 
 <br>
 
-## 9. 데이터 작업 위치
+## 7. 데이터 흐름 · 작업 상태
 
 | 단계 | 위치 | 내용 | Git |
 |---|---|---|---|
-| 원본 | `data/raw/` | 학습데이터1 train 500 · 학습데이터2 train 220 · validation 180 | 제외 |
-| 작업 중 | `data/work_raw/` | 고친 TXT + 작업 장부 | 제외 |
-| 최종 | `data/final/` | images 900 · labels 900 + 최종 장부 | 라벨만 허용 |
+| 원본 RAW | `data/raw/` | 학습데이터1 train 500 · 학습데이터2 train 220 · validation 180 | 제외 |
+| 작업본 WORK | `data/work_raw/` | 고친 TXT + 작업 장부 | 제외 |
+| 최종 FINAL | `data/final/` | images 900 · labels 900 + 최종 장부 · 교과 8 입력 | 라벨만 허용 |
 
-- **RAW 는 직접 수정하지 않습니다** — 열기만 하고, 해시로 바뀌지 않았는지 확인합니다.
+- **RAW 는 열기만 합니다** — 해시로 바뀌지 않았는지 확인
+- **FINAL 은 REVIEW 0 · CRITICAL 0 일 때만 생성**, 직접 고치지 않고 WORK 에서 고친 뒤 다시 생성 → [교과 8 Handoff](docs/10_subject08_handoff.md)
 - 장면 유형: 김치 + 이물 725 · 이물만 149 · 정상 김치 24 · 김치 · 이물 없음 2
 
-<br>
+### 작업 상태
 
-## 10. 작업 상태 확인
-
-900장의 작업 상태는 **작업 장부**에 자동으로 기록됩니다. 작업 중에는 `data/work_raw/manifest.csv`, 사본은 `manifests/manifest_final.csv`, 제출용 `manifests/dataset_manifest.csv` 는 FINAL 후 만듭니다.
+모든 사진의 상태는 작업 장부에 자동 기록됩니다. 사본 [manifests/manifest_final.csv](manifests/manifest_final.csv)
 
 | 상태 | 뜻 |
 |---|---|
@@ -245,68 +223,56 @@ project7/
 | 확인 필요 REVIEW | 판단이 애매함 → PM + QA 가 결정 |
 | 검수 완료 REVIEWED | 교차 · 최종검수까지 끝 → FINAL 대상 |
 
-### 검수 단계
-
-1차 라벨링 900장 → 교차검수 710장, 수정 · 확인 필요 사진을 다른 사람이 → 최종검수 3명 × 300장, 본인이 본 사진 제외 → **900장 REVIEWED**
+검수 단계: 1차 라벨링 900장 → 교차검수 710장 → 최종검수 3명 × 300장, 본인이 본 사진 제외 → **전체 REVIEWED**
 
 <br>
 
-## 11. QA · 테스트 결과
+## 8. QA · 테스트 결과
 
-### QA 결과
-
-- 자세히 [reports/01_qa_summary.md](reports/01_qa_summary.md) · 검사 결과 파일 `reports/03_validation_final.csv`
-- 전체 이미지 **900** · TXT **900** · Validation CRITICAL **0** · 최종 REVIEW **0**
-- 사람이 찾은 오류: 빈 라벨 26건 중 2건이 고무장갑만 있는 사진 → 장면 유형 `none` 추가로 해결
-
-### 프로그램 테스트 결과
-
-- 자세히 [reports/02_test_report.md](reports/02_test_report.md)
-- 개발 단계 오류 **8개** — 메뉴 잔상 · 단축키 · 빈 화면 · 깨진 이미지 · 경로 — 모두 고치고 재시험 PASS
-- 자동 테스트 **4개 통과** — 좌표 왕복 · 화면 배율 · 저장 규칙 · 전체 작업 흐름
-- 테스트 단계 Golden → Pilot → Final Acceptance · Golden · Pilot 결과 작성 중
+- **QA** — 이미지 900 · TXT 900 · CRITICAL **0** · 최종 REVIEW **0** → [01 QA Summary](reports/01_qa_summary.md) · [검사 결과 파일](reports/03_validation_final.csv)
+- **사람이 찾은 오류** — 빈 라벨 26건 중 2건이 고무장갑만 있는 사진 → 장면 유형 `none` 추가 → [ISSUE-08](docs/05_issue_improvement.md#issue-08-배경만-있는-사진-2장)
+- **프로그램 테스트** — 개발 단계 오류 **8개** 모두 수정 · 재시험 PASS · 자동 테스트 **4개 통과** → [02 Test Report](reports/02_test_report.md)
+- Golden → Pilot → Final Acceptance 중 Golden · Pilot 결과 작성 중 → [Golden Test](reports/02_test_report.md#1-golden-test)
 
 <br>
 
-## 12. FINAL Dataset
+## 9. WBS
 
-- 위치 `data/final/images/` 900장 · `data/final/labels/` 900개, 같은 파일명 쌍 + 최종 장부
-- REVIEW 0 · CRITICAL 0 일 때만 만들어지고, FINAL 은 직접 고치지 않습니다 — WORK 에서 고친 뒤 다시 생성
-- 교과 8 인계 [docs/10_subject08_handoff.md](docs/10_subject08_handoff.md) — FINAL 900쌍을 YOLO11n 학습 입력으로 전달
+| WBS | 작업 | 산출물 | 담당 | 기간 |
+|---|---|---|---|---|
+| **1** | **프로젝트 준비** | | | **10/01 – 10/02** |
+| 1.1 | 조 편성 · 역할 배정 | 역할표 | PM | |
+| 1.2 | 공통 기준 · 완료 조건 | [01 Project Baseline](docs/01_project_baseline.md) | PM · Manifest | |
+| 1.3 | 개발 환경 · Git 규칙 | 저장소 · 역할별 브랜치 | PM | |
+| **2** | **라벨링 프로그램 개발** | | | **10/02 – 10/08** |
+| 2.1 | 화면 설계 v01 → v02 | [화면 디자인](docs/images/gui_v02.png) | GUI | |
+| 2.2 | BBox 편집 · 좌표 변환 | `src/bbox/` | Coord | |
+| 2.3 | YOLO TXT 저장 · Load | `src/yolo/` | Storage | |
+| 2.4 | 자동 검사 · 자동 테스트 | `src/validation/` · `tests/` | QA | |
+| 2.5 | 작업 장부 | `src/manifest*.py` | Manifest | |
+| 2.6 | 통합 · 배포 v2.1 → v2.2 | 프로그램 v2.2 | PM | |
+| **3** | **기준서 작성** | | | **10/06 – 10/14** |
+| 3.1 | Class 기준서 v1.0 → v1.7.2 | [02 Class 기준서](docs/02_class_guide.md) | Coord | |
+| 3.2 | BBox 기준서 v1.0 → v1.2 | [03 BBox 기준서](docs/03_bbox_guide.md) | Coord | |
+| **4** | **라벨링 · 검수** | | | **10/06 – 10/13** |
+| 4.1 | 1차 라벨링 900장 | 작업본 TXT · 장부 | 전원 | 10/06 – 10/07 |
+| 4.2 | 교차검수 710장 | 검수 기록 | 전원 | 10/08 – 10/12 |
+| 4.3 | 최종검수 3명 × 300장 | 900장 REVIEWED | 3명 배정 | 10/12 – 10/13 |
+| **5** | **QA · FINAL** | | | **10/13 – 10/15** |
+| 5.1 | 자동 검사 · RAW 보호 | [Validation 결과](reports/03_validation_final.csv) | QA | |
+| 5.2 | QA Summary | [01 QA Summary](reports/01_qa_summary.md) | Manifest | |
+| 5.3 | FINAL 생성 · Freeze | `data/final/` 900쌍 | PM | |
+| **6** | **인계 · 발표** | | | **10/13 – 10/21** |
+| 6.1 | 교과 8 Handoff | [10 Handoff](docs/10_subject08_handoff.md) | Manifest | |
+| 6.2 | Test Report | [02 Test Report](reports/02_test_report.md) | QA · Coord | |
+| 6.3 | README · 문서 정리 | README · docs 01~10 | PM | |
+| 6.4 | 발표 | 발표 자료 · 화면 캡처 | PM · GUI | |
 
-<br>
-
-## 13. 팀 운영
-
-### 역할표
-
-| 직책 | 브랜치 | 맡은 일 | 주요 산출물 |
-|---|---|---|---|
-| PM · Integrator | feature/pm | 일정 · 배분 · Git · FINAL 생성 | README · Baseline · FINAL · 사용설명서 |
-| GUI · Image | feature/gui | 화면 디자인 v01 → v02 · 캡처 · Figma | 프로그램 화면 |
-| Coord · BBox Coordinate | feature/coord | 좌표 · Golden Test · 기준서 | Class · BBox 기준서 |
-| Storage · Label Storage | feature/storage | 저장 로직 · 데이터 취합 · 배포 | 저장 · 병합 |
-| QA · Validation | feature/qa | 자동 검사 · RAW 보호 · 테스트 | Validation · Test Report |
-| Manifest · 서기 | feature/manifest | 작업 장부 · 기록 · 인계 | Manifest · QA Summary · Handoff |
-
-### WBS 일정
-
-| 단계 | 기간 | 결과 |
-|---|---|---|
-| 1 준비 | 10/01 – 10/02 | 조 편성 · 기준 · 환경 · Git |
-| 2 프로그램 | 10/02 – 10/08 | v01 → v02 디자인 → v2.1 · v2.2 배포 |
-| 3 기준서 | 10/06 – 10/14 | Class v1.0 → v1.7.2 · BBox v1.0 → v1.2 |
-| 4 1차 라벨링 | 10/06 – 10/07 | 900장 완료 |
-| 5 교차검수 | 10/08 – 10/12 | 수정 · 확인 필요 710장 재확인 |
-| 6 최종검수 | 10/12 – 10/13 | 3명 × 300장 → 900 REVIEWED |
-| 7 QA · FINAL | 10/13 – 10/15 | CRITICAL 0 · FINAL 900쌍 |
-| 8 인계 · 발표 | 10/13 – 10/21 | 교과 8 Handoff · 문서 정리 · 발표 |
-
-Feature Freeze 10/13 — 이후 버그 수정 · 문서만
+Feature Freeze 10/13 — 이후 버그 수정 · 문서만 · 날짜별 기록 → [07 팀 작업 기록](docs/07_team_worklog.md)
 
 <br>
 
-## 14. 산출물 · 버전 관리
+## 10. 산출물 · 버전 관리
 
 ### 필수 산출물
 
@@ -328,37 +294,36 @@ Feature Freeze 10/13 — 이후 버그 수정 · 문서만
 
 | 추가 산출물 | 위치 | 추가 사유 |
 |---|---|---|
-| 사용설명서 | [docs/04](docs/04_user_manual.md) | README 는 요약만 두고, 설치 · 실행 · 단축키 · 문제 해결은 따로 모아 처음 쓰는 사람도 따라 하게 |
+| 사용설명서 | [docs/04](docs/04_user_manual.md) | 처음 쓰는 사람도 설치 · 실행 · 문제 해결을 따라 하게 |
 | 이슈 → 개선 보고서 | [docs/05](docs/05_issue_improvement.md) | 이슈 발견 · 원인 · 조치 과정 기록 |
 | 버전 기록 | [docs/06](docs/06_version_history.md) | 프로그램 · 기준서 · 데이터 변경 이력 관리 |
 | 팀 작업 기록 | [docs/07](docs/07_team_worklog.md) | 날짜별 작업 · 서기 |
 | 코드 리뷰 · 코드 공부 | [docs/08](docs/08_code_review.md) · [docs/09](docs/09_code_study.md) | 팀원 모두가 코드를 설명할 수 있게 |
-| 자동 검사 결과 · 작업 장부 사본 | `reports/03` · `manifests/manifest_final.csv` | CRITICAL 0 · 900장 상태를 파일로 증명 |
+| 자동 검사 결과 · 작업 장부 사본 | [reports/03](reports/03_validation_final.csv) · [manifest_final.csv](manifests/manifest_final.csv) | CRITICAL 0 · 전체 상태를 파일로 증명 |
 
 ### 버전 · 이슈
 
-- 지금 버전: 프로그램 **v2.2** · Class 기준서 **v1.7.2** · BBox 기준서 **v1.2** · 데이터 **FINAL 900** → [06 버전 기록](docs/06_version_history.md)
+- 현재 버전: 프로그램 **v2.2** · Class 기준서 **v1.7.2** · BBox 기준서 **v1.2** · 데이터 **FINAL 900** → [06 버전 기록](docs/06_version_history.md)
 - 이슈 **11개 모두 해결** + 고도화 4개 → [05 이슈 → 개선](docs/05_issue_improvement.md)
-- 가장 큰 이슈: QA Summary 보정 숫자가 전부 0 → 버그가 아니라 비교 경로 문제 → 원본 · 작업본 경로를 직접 지정해 정식 숫자를 얻음
+- 가장 큰 이슈: QA Summary 보정 숫자가 전부 0 → 버그가 아니라 비교 경로 문제 → 원본 · 작업본 경로를 직접 지정해 해결 → [ISSUE-07](docs/05_issue_improvement.md#issue-07-qa-summary-보정-숫자-0건)
 
 <br>
 
-## 15. 주의사항
+## 11. 주의사항
 
-- `data/raw/` 원본은 수정하지 않습니다.
 - **원본 김치 사진은 GitHub · 메신저 · 개인 클라우드 금지**, 메일 · USB 로만 · 라벨 TXT · CSV 는 Git 허용 (10/13 강사님 확인)
 - 데이터는 AI캠퍼스 교육용 **100% 가상 생성** 데이터이며 **NDA 대상**입니다.
-- REVIEW 상태의 데이터는 FINAL 에 넣지 않습니다.
+- RAW 는 수정하지 않고, REVIEW 상태는 FINAL 에 넣지 않습니다.
 - 이미지와 TXT 의 파일명은 같아야 합니다.
-- 수정 후 저장 · Reload 를 확인하고, 제출 전 Validation 을 실행합니다.
+- 제출 전 저장 · Reload 확인 후 Validation 을 실행합니다.
 - main 은 PR 로만 바꿉니다 · `git add .` 금지
 
 ### 오류가 나면
 
 | 증상 | 확인 문서 |
 |---|---|
-| 설치 · 실행이 안 됨 | 04 사용설명서 «8. 문제 해결» |
-| 저장이 안 되거나 박스가 이상함 | 04 사용설명서 «4. 저장 규칙» → 08 코드 리뷰 A1 |
-| Validation 에 CRITICAL | `reports/03_validation_final.csv` → 02 Class 기준서 |
-| QA Summary 숫자가 0 | 05 이슈 보고서 ISSUE-07 |
-| Class 판단이 애매함 | 02 Class 기준서 «헷갈리기 쉬운 Class 구분표» |
+| 설치 · 실행이 안 됨 | [04 사용설명서 8. 문제 해결](docs/04_user_manual.md#8-문제-해결) |
+| 저장이 안 되거나 박스가 이상함 | [04 사용설명서 4. 저장 규칙](docs/04_user_manual.md#4-저장-규칙) → [08 코드 리뷰 A1](docs/08_code_review.md#a1-srcbboxsessionpy--저장-규칙) |
+| Validation 에 CRITICAL | [Validation 결과](reports/03_validation_final.csv) → [02 Class 기준서](docs/02_class_guide.md) |
+| QA Summary 숫자가 0 | [05 ISSUE-07](docs/05_issue_improvement.md#issue-07-qa-summary-보정-숫자-0건) |
+| Class 판단이 애매함 | [02 Class 구분표](docs/02_class_guide.md#헷갈리기-쉬운-class-구분표) |
