@@ -5,17 +5,27 @@ from pathlib import Path
 
 from src.label_visualizer import read_yolo_labels
 
-IOU_MATCH = 0.5      # 이 이상 겹치면 "같은 물체를 가리킨다"고 본다
-IOU_LOW = 0.1        # 이 이상 ~ IOU_MATCH 미만이면 BBOX 오류 후보
-CONF_MIN = 0.25      # 이보다 확신도가 낮은 예측은 버린다
+IOU_MATCH = 0.5  # 이 이상 겹치면 "같은 물체를 가리킨다"고 본다
+IOU_LOW = 0.1  # 이 이상 ~ IOU_MATCH 미만이면 BBOX 오류 후보
+CONF_MIN = 0.25  # 이보다 확신도가 낮은 예측은 버린다
 FAILURE_TYPES = ("TP", "FP", "FN", "CLASS", "BBOX")
 
 
 def box_iou(a, b):
     """두 박스 a, b 의 IoU 를 계산한다. a, b 는 (x_center, y_center, width, height)"""
     # 1 중심·크기 → 꼭짓점
-    ax1, ay1, ax2, ay2 = a[0] - a[2] / 2, a[1] - a[3] / 2, a[0] + a[2] / 2, a[1] + a[3] / 2
-    bx1, by1, bx2, by2 = b[0] - b[2] / 2, b[1] - b[3] / 2, b[0] + b[2] / 2, b[1] + b[3] / 2
+    ax1, ay1, ax2, ay2 = (
+        a[0] - a[2] / 2,
+        a[1] - a[3] / 2,
+        a[0] + a[2] / 2,
+        a[1] + a[3] / 2,
+    )
+    bx1, by1, bx2, by2 = (
+        b[0] - b[2] / 2,
+        b[1] - b[3] / 2,
+        b[0] + b[2] / 2,
+        b[1] + b[3] / 2,
+    )
 
     # 2·3 겹친 부분 (안 겹치면 너비나 높이가 0)
     inter_w = max(0.0, min(ax2, bx2) - max(ax1, bx1))
@@ -24,7 +34,7 @@ def box_iou(a, b):
 
     # 4 합친 넓이
     union = a[2] * a[3] + b[2] * b[3] - inter
-    if union <= 0:                 # 크기 0 짜리 박스가 들어와도 0 으로 나누지 않게
+    if union <= 0:  # 크기 0 짜리 박스가 들어와도 0 으로 나누지 않게
         return 0.0
 
     # 5
@@ -36,7 +46,7 @@ def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
     gts, preds: [(class_id, xc, yc, w, h, conf), ...]  (정답의 conf 는 None)
     결과: [{"failure_type", "gt_class", "pred_class", "confidence", "iou"}, ...]"""
     results = []
-    used = set()                                   # 이미 짝이 정해진 정답 번호
+    used = set()  # 이미 짝이 정해진 정답 번호
 
     # 1 확신도가 높은 예측부터
     for pred in sorted(preds, key=lambda p: p[5] or 0, reverse=True):
@@ -61,18 +71,32 @@ def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
             kind = "FP"
 
         if kind == "FP":
-            g_cls = None                           # FP 는 짝지은 정답이 없다
+            g_cls = None  # FP 는 짝지은 정답이 없다
         else:
-            used.add(best_i)                       # 이 정답은 짝이 생겼다
+            used.add(best_i)  # 이 정답은 짝이 생겼다
 
-        results.append({"failure_type": kind, "gt_class": g_cls, "pred_class": p_cls,
-                        "confidence": conf, "iou": round(best_iou, 3)})
+        results.append(
+            {
+                "failure_type": kind,
+                "gt_class": g_cls,
+                "pred_class": p_cls,
+                "confidence": conf,
+                "iou": round(best_iou, 3),
+            }
+        )
 
     # 4 끝까지 짝이 없는 정답 → FN
     for i, gt in enumerate(gts):
         if i not in used:
-            results.append({"failure_type": "FN", "gt_class": gt[0], "pred_class": None,
-                            "confidence": None, "iou": 0.0})
+            results.append(
+                {
+                    "failure_type": "FN",
+                    "gt_class": gt[0],
+                    "pred_class": None,
+                    "confidence": None,
+                    "iou": 0.0,
+                }
+            )
     return results
 
 
@@ -96,7 +120,7 @@ def analyze_image(gt_txt, pred_txt, conf_min=CONF_MIN):
 
 def count_types(results):
     """판정 결과를 유형별로 센다. 예: {"TP": 3, "FP": 1, "FN": 0, "CLASS": 0, "BBOX": 1}"""
-    counts = {t: 0 for t in FAILURE_TYPES}      # 0건인 유형도 0 으로 보이게
+    counts = {t: 0 for t in FAILURE_TYPES}  # 0건인 유형도 0 으로 보이게
     for r in results:
         counts[r["failure_type"]] += 1
     return counts
