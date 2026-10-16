@@ -1,0 +1,2 @@
+﻿model_version,dataset_version,split,imgsz,batch,epochs,seed,precision,recall,map50,map50_95
+baseline_v1,kimchi_v1,val,640,8,50,42,0.8969,0.5798,0.6667,0.4977

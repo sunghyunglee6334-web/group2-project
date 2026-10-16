@@ -1,12 +1,13 @@
 """Smoke Test: 작은 데이터로 End-to-End 가 도는지 확인 (03_build_split.py 를 COPY_IMAGES = True 로 실행한 다음)
 
-  1단계  data/yolo 의 train · val 에서 이름순 앞쪽 일부만 data/smoke 로 복사 + configs/smoke_dataset.yaml
+  1단계  data/yolo 의 train · val 에서 무작위(seed 고정) 일부만 data/smoke 로 복사 + configs/smoke_dataset.yaml
          (test · bridge 는 읽지 않는다)
-  2단계  3 epoch 학습 → runs/smoke_v1/weights/best.pt 확인 → Val 1장 예측 (runs/predict/smoke_v1)
+  2단계  3 epoch 학습 → runs/<RUN_NAME>/weights/best.pt 확인 → Val 1장 예측 (runs/predict/<RUN_NAME>)
 
     python scripts/05_smoke_train.py
 """
 import os
+import random
 import shutil
 import sys
 from pathlib import Path
@@ -44,10 +45,13 @@ def copy_split(split, n):
         print(f"{img_dir} 가 없습니다. scripts/03_build_split.py 를 COPY_IMAGES = True 로 먼저 실행하세요.")
         raise SystemExit(1)
 
-    images = list_images(img_dir)[:n]
-    if len(images) < n:
-        print(f"{img_dir} 이미지가 {len(images)}장뿐입니다 ({n}장 필요)")
+    all_images = list_images(img_dir)
+    if len(all_images) < n:
+        print(f"{img_dir} 이미지가 {len(all_images)}장뿐입니다 ({n}장 필요)")
         raise SystemExit(1)
+    # 이름순 앞쪽은 같은 촬영 묶음에 몰림 (예: val 앞 8장 = 정상 김치 T02 → 박스 0개 → mAP 0)
+    # → seed 고정 무작위로 뽑아 여러 묶음이 섞이게 한다 (다시 돌려도 같은 사진)
+    images = sorted(random.Random(BASELINE_CONFIG["seed"]).sample(all_images, n))
 
     out_img = SMOKE_DIR / "images" / split
     out_lbl = SMOKE_DIR / "labels" / split
@@ -60,7 +64,8 @@ def copy_split(split, n):
             raise SystemExit(1)
         shutil.copy2(img, out_img / img.name)
         shutil.copy2(lbl, out_lbl / lbl.name)
-    print(f"[{split}] {len(images)}쌍 -> {out_img.relative_to(PROJECT_ROOT)}")
+    n_box = sum(1 for img in images if (lbl_dir / f"{img.stem}.txt").stat().st_size > 0)
+    print(f"[{split}] {len(images)}쌍 -> {out_img.relative_to(PROJECT_ROOT)} (박스 있는 사진 {n_box}장 · 배경 {len(images) - n_box}장)")
     return len(images)
 
 
