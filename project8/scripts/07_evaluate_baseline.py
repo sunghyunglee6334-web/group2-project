@@ -22,8 +22,9 @@ CONFIG = {
     "dataset_version": "kimchi_v1",
     "split": "val",
     "imgsz": 640,
-    "batch": 16,
-    "epochs": 100,
+    "batch": 8,
+    "epochs": 70,
+    "patience": 30,
     "seed": 42,
 }
 
