@@ -1,3 +1,6 @@
+"""5일차: Baseline 모델을 Validation 에서 평가하고 산출물 2·5 파일을 만든다.
+실행: 프로젝트 루트에서  python scripts/07_evaluate_baseline.py"""
+
 import shutil
 import sys
 from pathlib import Path
@@ -20,7 +23,8 @@ CONFIG = {
     "split": "val",
     "imgsz": 640,
     "batch": 8,
-    "epochs": 50,
+    "epochs": 70,
+    "patience": 30,
     "seed": 42,
 }
 
@@ -31,7 +35,7 @@ TRAIN_RUN = PROJECT_ROOT / "runs" / "baseline_v1"
 REPORTS = PROJECT_ROOT / "reports"
 FIGURES = REPORTS / "figures"
 
-# 평가 결과를 그림으로 저장
+# YOLO 가 만든 그림을 reports/figures 로 복사 (없으면 건너뜀
 def copy_figure(src, dst):
     if Path(src).is_file():
         FIGURES.mkdir(parents=True, exist_ok=True)
@@ -44,7 +48,8 @@ def copy_figure(src, dst):
 def main():
     # 1단계: 평가
     metrics = evaluate_detector(str(WEIGHT), str(DATA_YAML),
-                                split=CONFIG["split"], imgsz=CONFIG["imgsz"])
+                                split=CONFIG["split"], imgsz=CONFIG["imgsz"],
+                                project=PROJECT_ROOT / "runs" / "val", name=CONFIG["model_version"])
 
     # 2단계: CSV 저장
     row = {**CONFIG, **summarize_overall(metrics)}
@@ -53,7 +58,9 @@ def main():
 
     # 3단계: Class별 성능 화면 출력
     print("\n[Class별 성능]")
-    for r in summarize_per_class(metrics):
+    per_class = summarize_per_class(metrics)
+    print("저장:", save_metrics_csv(per_class, REPORTS / "baseline_class_metrics.csv"))
+    for r in per_class:
         print(f"{r['class_id']} {r['class_name']:<22} "
               f"P={r['precision']}  R={r['recall']}  mAP50={r['map50']}")
 

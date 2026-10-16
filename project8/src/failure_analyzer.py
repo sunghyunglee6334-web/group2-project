@@ -88,15 +88,8 @@ def match_boxes(gts, preds, iou_match=IOU_MATCH, iou_low=IOU_LOW):
     # 4 끝까지 짝이 없는 정답 → FN
     for i, gt in enumerate(gts):
         if i not in used:
-            results.append(
-                {
-                    "failure_type": "FN",
-                    "gt_class": gt[0],
-                    "pred_class": None,
-                    "confidence": None,
-                    "iou": 0.0,
-                }
-            )
+            results.append({"failure_type": "FN", "gt_class": gt[0], "pred_class": None,
+                            "confidence": None, "iou": 0.0, "gt_w": gt[3], "gt_h": gt[4]})
     return results
 
 
