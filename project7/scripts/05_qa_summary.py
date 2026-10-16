@@ -1,6 +1,6 @@
 """QA Summary(Markdown) 자동 생성. 매일 마감 때 실행해서 진행 상황 확인에도 사용.
 
-    python scripts/05_qa_summary.py            -> reports/qa_summary.md  (산출물 8번)
+    python scripts/05_qa_summary.py            -> reports/01_qa_summary.md  (산출물 8번)
 """
 import argparse
 from datetime import datetime
@@ -59,9 +59,9 @@ def build(paths: Paths, label_root=None, title="QA Summary") -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw"); ap.add_argument("--work")
-    ap.add_argument("--out", help="저장 위치 (기본: reports/qa_summary.md)")
+    ap.add_argument("--out", help="저장 위치 (기본: reports/01_qa_summary.md)")
     a = ap.parse_args()
-    out = Path(a.out) if a.out else REPORT_DIR / "qa_summary.md"
+    out = Path(a.out) if a.out else REPORT_DIR / "01_qa_summary.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(build(Paths(a.raw, a.work)), encoding="utf-8")
     print(f"저장: {out}")
