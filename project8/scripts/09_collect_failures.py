@@ -1,7 +1,9 @@
 """Val 전체에서 실패 후보를 모아 비교 그림과 failure_analysis 초안을 만든다.
 실행 (project8 폴더에서, compare_gt_pred.py 다음에): python scripts/09_collect_failures.py"""
 
+import shutil
 import sys
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
@@ -89,16 +91,56 @@ def collect(images, info, label_dir=LABEL_DIR, pred_dir=PRED_DIR):
     return summary, fails
 
 
-def save_failure_images(summary_rows):
+def main_type(row):
+    """실패가 가장 많은 유형. 같으면 FAIL_TYPES 순서(FN 우선)."""
+    return max(FAIL_TYPES, key=lambda t: (row[t], -FAIL_TYPES.index(t)))
+
+
+def save_failure_images(summary_rows, image_dir=IMAGE_DIR, label_dir=LABEL_DIR,
+                        pred_dir=PRED_DIR, out_dir=OUT_IMG):
     """실패가 있는 이미지만 비교 그림을 그려 유형별 폴더에 저장하고, 저장한 장수를 돌려준다."""
-    # TODO C
-    pass
+    if out_dir.exists():                 # 1 지난번 결과 지우기 (다시 돌려도 섞이지 않게)
+        shutil.rmtree(out_dir)
+    saved = 0
+    for row in summary_rows:
+        if row["n_fail"] == 0:           # 2 다 맞힌 이미지는 건너뜀
+            continue
+        stem = Path(row["image"]).stem
+        visualize(image_dir / row["image"], label_dir / f"{stem}.txt",          # 3 GT 초록 + 예측 파랑
+                  out_dir / main_type(row) / f"{stem}.jpg", CLASS_NAMES,
+                  pred_txt=pred_dir / f"{stem}.txt")
+        saved += 1
+    return saved
 
 
 def main():
     """준비물 확인 → 정보 읽기 → 판정 → CSV 2개 저장 → 그림 저장 → 요약 출력"""
-    # TODO D
-    pass
+    # 1 준비물
+    for need in (IMAGE_DIR, LABEL_DIR, PRED_DIR, VAL_CSV):
+        if not need.exists():
+            sys.exit(f"아직 없습니다: {need.relative_to(PROJECT_ROOT)}\n"
+                     "→ Split 결과와 compare_gt_pred.py 예측이 끝난 뒤 다시 실행하세요.")
+
+    # 2 판정
+    info = load_val_info(VAL_CSV)
+    images = sorted(p for p in IMAGE_DIR.iterdir() if p.suffix.lower() in IMAGE_EXTS)
+    summary, fails = collect(images, info)
+
+    # 3 저장
+    save_metrics_csv(summary, SUMMARY_CSV)
+    if fails:                                   # 실패가 0건이면 초안은 만들지 않음
+        save_metrics_csv(fails, DRAFT_CSV)
+    saved = save_failure_images(summary)
+
+    # 4 화면 요약: 6일차 가설의 첫 단서
+    total = Counter(r["failure_type"] for r in fails)
+    print(f"Val {len(images)}장 중 실패가 있는 이미지 {saved}장")
+    print("유형별:", {t: total.get(t, 0) for t in FAIL_TYPES})
+    print("scene_type 별:")
+    for (scene, kind), n in sorted(Counter((r["scene_type"], r["failure_type"]) for r in fails).items()):
+        print(f"  {scene or '(빈칸)'} / {kind}: {n}")
+    print("저장:", SUMMARY_CSV.relative_to(PROJECT_ROOT), DRAFT_CSV.relative_to(PROJECT_ROOT),
+          OUT_IMG.relative_to(PROJECT_ROOT))
 
 
 if __name__ == "__main__":
