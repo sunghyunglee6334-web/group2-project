@@ -22,8 +22,8 @@ CONFIG = {
     "dataset_version": "kimchi_v1",
     "split": "val",
     "imgsz": 640,
-    "batch": 8,
-    "epochs": 50,
+    "batch": 16,
+    "epochs": 100,
     "seed": 42,
 }
 
@@ -47,7 +47,8 @@ def copy_figure(src, dst):
 def main():
     # 1단계: 평가
     metrics = evaluate_detector(str(WEIGHT), str(DATA_YAML),
-                                split=CONFIG["split"], imgsz=CONFIG["imgsz"])
+                                split=CONFIG["split"], imgsz=CONFIG["imgsz"],
+                                project=PROJECT_ROOT / "runs" / "val", name=CONFIG["model_version"])
 
     # 2단계: CSV 저장
     row = {**CONFIG, **summarize_overall(metrics)}
@@ -56,7 +57,9 @@ def main():
 
     # 3단계: Class별 성능 화면 출력
     print("\n[Class별 성능]")
-    for r in summarize_per_class(metrics):
+    per_class = summarize_per_class(metrics)
+    print("저장:", save_metrics_csv(per_class, REPORTS / "baseline_class_metrics.csv"))
+    for r in per_class:
         print(f"{r['class_id']} {r['class_name']:<22} "
               f"P={r['precision']}  R={r['recall']}  mAP50={r['map50']}")
 
