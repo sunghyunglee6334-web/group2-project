@@ -2,10 +2,11 @@
 
   1단계  data/yolo 의 train · val 에서 무작위(seed 고정) 일부만 data/smoke 로 복사 + configs/smoke_dataset.yaml
          (test · bridge 는 읽지 않는다)
-  2단계  3 epoch 학습 → runs/<RUN_NAME>/weights/best.pt 확인 → Val 1장 예측 (runs/predict/<RUN_NAME>)
+  2단계  SMOKE_CONFIG(imgsz 960 · batch 16 · 3 epoch) 학습 · GPU 최대 메모리 기록 → runs/<RUN_NAME>/weights/best.pt 확인 → Val 1장 예측 (runs/predict/<RUN_NAME>)
 
     python scripts/05_smoke_train.py
 """
+import json
 import os
 import random
 import shutil
@@ -24,7 +25,9 @@ from src.project_config import (  # noqa: E402
     BASELINE_CONFIG,
     CLASS_NAMES,
     PRED_CONF,
+    REPORT_DIR,
     RUNS_DIR,
+    SMOKE_CONFIG,
     SMOKE_DIR,
     SMOKE_YAML,
     YOLO_DIR,
@@ -34,7 +37,6 @@ from src.train_detector import train_detector  # noqa: E402
 N_TRAIN = 30
 N_VAL = 8
 RUN_NAME = "smoke_v1"
-SMOKE_EPOCHS = 3
 
 
 # ---------------------------------------------------------------- 1단계: Smoke Dataset
@@ -93,13 +95,17 @@ def make_smoke_dataset():
 
 # ---------------------------------------------------------------- 2단계: 학습 · 1장 예측
 def smoke_train():
+    import torch
+
     cfg = BASELINE_CONFIG
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
     run_dir = train_detector(
         model_name=cfg["model_name"],
         data_yaml=SMOKE_YAML,
-        epochs=SMOKE_EPOCHS,
-        imgsz=cfg["imgsz"],
-        batch=cfg["batch"],
+        epochs=SMOKE_CONFIG["epochs"],
+        imgsz=SMOKE_CONFIG["imgsz"],
+        batch=SMOKE_CONFIG["batch"],
         seed=cfg["seed"],
         project=RUNS_DIR,
         name=RUN_NAME,
@@ -108,6 +114,24 @@ def smoke_train():
     best = run_dir / "weights" / "best.pt"
     assert best.exists(), f"best.pt 가 없습니다: {best}"
     print(f"best.pt 확인: {best}")
+
+    # GPU 최대 메모리 (나중 960 실험이 이 GPU 에서 가능한지 판단용)
+    if torch.cuda.is_available():
+        mem = {
+            "run_name": RUN_NAME,
+            "imgsz": SMOKE_CONFIG["imgsz"],
+            "batch": SMOKE_CONFIG["batch"],
+            "epochs": SMOKE_CONFIG["epochs"],
+            "gpu": torch.cuda.get_device_name(0),
+            "peak_reserved_gb": round(torch.cuda.max_memory_reserved() / 1024**3, 2),
+            "peak_allocated_gb": round(torch.cuda.max_memory_allocated() / 1024**3, 2),
+            "total_gb": round(torch.cuda.get_device_properties(0).total_memory / 1024**3, 1),
+        }
+        out = REPORT_DIR / "smoke_gpu_memory.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(mem, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"GPU 최대 메모리 {mem['peak_reserved_gb']} GB / {mem['total_gb']} GB "
+              f"(imgsz {mem['imgsz']} · batch {mem['batch']}) -> {out.relative_to(PROJECT_ROOT)}")
 
     first = list_images(SMOKE_DIR / "images" / "val")[0]
     results = YOLO(str(best)).predict(

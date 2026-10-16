@@ -60,6 +60,7 @@ def main():
         imgsz=cfg["imgsz"],
         batch=cfg["batch"],
         seed=cfg["seed"],
+        patience=cfg["patience"],
         project=RUNS_DIR,
         name=args.name,
     )
@@ -85,6 +86,7 @@ def main():
         "batch": cfg["batch"],
         "imgsz": cfg["imgsz"],
         "seed": cfg["seed"],
+        "patience": cfg["patience"],
         "optimizer": train_args.get("optimizer"),
         "lr0": train_args.get("lr0"),
         "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU",
