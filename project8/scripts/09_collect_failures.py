@@ -27,6 +27,7 @@ DRAFT_CSV = PROJECT_ROOT / "reports" / "failure_analysis_draft.csv"
 IMAGE_EXTS = {".jpg", ".jpeg", ".png"}
 FAIL_TYPES = ("FN", "FP", "CLASS", "BBOX")                    # TP 는 실패가 아님
 
+
 def class_name(class_id):
     """Class 번호 → 이름. 짝이 없으면(None) "none"."""
     if class_id is None:
@@ -143,6 +144,7 @@ def main():
         print(f"  {scene or '(빈칸)'} / {kind}: {n}")
     saved_files = [SUMMARY_CSV] + ([DRAFT_CSV] if fails else []) + [OUT_IMG]
     print("저장:", ", ".join(str(p.relative_to(PROJECT_ROOT)) for p in saved_files))
+
 
 if __name__ == "__main__":
     main()
