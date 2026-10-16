@@ -93,7 +93,7 @@ def collect(images, info, label_dir=LABEL_DIR, pred_dir=PRED_DIR):
 
 def main_type(row):
     """실패가 가장 많은 유형. 같으면 FAIL_TYPES 순서(FN 우선)."""
-    return max(FAIL_TYPES, key=lambda t: (row[t], -FAIL_TYPES.index(t)))
+    return max(FAIL_TYPES, key=lambda t: (row.get(t, 0), -FAIL_TYPES.index(t)))
 
 
 def save_failure_images(summary_rows, image_dir=IMAGE_DIR, label_dir=LABEL_DIR,
