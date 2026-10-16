@@ -79,3 +79,19 @@ def test_collect_missing_info(tmp_path):
     images, _, gt_dir, pred_dir = make_case(tmp_path)
     summary, _ = collect.collect(images, {}, gt_dir, pred_dir)
     assert summary[0]["scene_type"] == ""
+
+def test_main_type_tie_prefers_fn():
+    row = {"FN": 1, "FP": 1, "CLASS": 0, "BBOX": 0}
+    assert collect.main_type(row) == "FN"
+
+
+def test_save_failure_images(tmp_path, monkeypatch):
+    """실패 없는 이미지는 건너뛰고, 실패 이미지는 주된 유형 폴더로"""
+    calls = []
+    monkeypatch.setattr(collect, "visualize", lambda img, gt, out, names, pred_txt: calls.append(out))
+    images, info, gt_dir, pred_dir = make_case(tmp_path)
+    summary, _ = collect.collect(images, info, gt_dir, pred_dir)
+    out = tmp_path / "out"
+    n = collect.save_failure_images(summary, tmp_path / "img", gt_dir, pred_dir, out)
+    assert n == 2
+    assert sorted(p.relative_to(out).as_posix() for p in calls) == ["FN/b.jpg", "FP/c.jpg"]
