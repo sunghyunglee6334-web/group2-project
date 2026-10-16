@@ -1,7 +1,19 @@
-# Subject 07 → Subject 08 Handoff
+# 10 Subject 07 → Subject 08 Handoff
+
+> [README](../README.md) › docs › **10 Subject 07 → Subject 08 Handoff** · ← [09 코드 공부](09_code_study.md) · → [reports/01 QA Summary](../reports/01_qa_summary.md)
+> 담당 Manifest · 2026-10-14
+
+## 한눈에 보기
+
+- 교과 7 FINAL **900쌍 (BBox 4,405)** 을 교과 8 YOLO11n 학습 입력으로 넘깁니다
+- 빈 TXT 26 = 정상 김치 24 + 김치 · 이물 없음(none) 2 · Class 4 라벨 0 · 미처리 REVIEW 0
+- 교과 8 은 라벨을 다시 만들지 않고 **먼저 감사(Audit)** → 촬영 묶음 단위로 Split
+- 라벨 오류를 찾으면 FINAL 을 직접 고치지 않고 교과 7 WORK 에서 고친 뒤 FINAL 을 다시 만듭니다
+
+---
 
 > 교과 7에서 검수한 조각김치 이물검출 YOLO Dataset과 데이터 기준·QA 결과를 교과 8로 전달합니다.
-> 본 문서는 `reports/qa_summary.md` (원 자동 집계 2026-10-14 11:08, Human QA 수동 보완 11:59)와 현재 FINAL 파일을 대조해 갱신했습니다. 원본 이미지는 NDA 대상이며 외부 공개 저장소에 올리지 않습니다.
+> 본 문서는 `reports/01_qa_summary.md` (원 자동 집계 2026-10-14 11:08, Human QA 수동 보완 11:59)와 현재 FINAL 파일을 대조해 갱신했습니다. 원본 이미지는 NDA 대상이며 외부 공개 저장소에 올리지 않습니다.
 
 ## 1. Handoff 목적
 
@@ -65,7 +77,7 @@ class_id x_center y_center width height
 | 6 | 파·고추 | 사용 | 251 |
 | **합계** |  |  | **4,405** |
 
-Class ID는 교과 7 기준을 그대로 유지합니다. Class 4는 번호 체계상 설정에 남아 있지만 학습 라벨에는 사용하지 않습니다. 김치와 고무장갑은 배경이며 BBox 대상이 아닙니다. 상세 기준은 `docs/class_guide.md`, `docs/bbox_guide.md`, 프로그램 설정은 `configs/classes.yaml`을 참조하세요.
+Class ID는 교과 7 기준을 그대로 유지합니다. Class 4는 번호 체계상 설정에 남아 있지만 학습 라벨에는 사용하지 않습니다. 김치와 고무장갑은 배경이며 BBox 대상이 아닙니다. 상세 기준은 `docs/02_class_guide.md`, `docs/03_bbox_guide.md`, 프로그램 설정은 `configs/classes.yaml`을 참조하세요.
 
 ## 5. 자동 Validation, Human Final QA 및 교차검수
 
@@ -87,7 +99,7 @@ Class ID는 교과 7 기준을 그대로 유지합니다. Class 4는 번호 체�
 
 ### 별도 집계인 작업 배정과 교차검수
 
-`qa_summary.md` 4절은 작업 상태와 담당자별 장수, reviewer 기록을 포함한 교차검수 집계를 보여줍니다. 이 값은 Human Final QA 결과와 다른 지표입니다.
+`01_qa_summary.md` 4절은 작업 상태와 담당자별 장수, reviewer 기록을 포함한 교차검수 집계를 보여줍니다. 이 값은 Human Final QA 결과와 다른 지표입니다.
 
 | 작업·교차검수 항목 | 결과 |
 |---|---:|
@@ -101,7 +113,7 @@ Class ID는 교과 7 기준을 그대로 유지합니다. Class 4는 번호 체�
 
 PASS 표본검수가 0/0이므로 PASS 표본검수는 수행 기록이 없습니다. 이 사실과 교차검수 완료 수치만으로 Human Final QA의 범위나 완료 여부를 대신할 수 없습니다.
 
-세부 기록은 `reports/qa_summary.md`를 참조하세요. Human Final QA 대상별 결과가 보완되면 그 기록을 이 문서에도 반영해야 합니다. 기능 테스트와 코드 검토는 각각 `reports/test_report.md`, `docs/code_review.md`를 참조합니다.
+세부 기록은 `reports/01_qa_summary.md`를 참조하세요. Human Final QA 대상별 결과가 보완되면 그 기록을 이 문서에도 반영해야 합니다. 기능 테스트와 코드 검토는 각각 `reports/02_test_report.md`, `docs/08_code_review.md`를 참조합니다.
 ## 6. 라벨 보정 집계 (RAW 대비)
 
 | 항목 | 수 |
@@ -113,7 +125,7 @@ PASS 표본검수가 0/0이므로 PASS 표본검수는 수행 기록이 없습�
 | 삭제 | 344 |
 | 전체 BBox 변화 | +6 (4,399 → 4,405) |
 
-Class별 상세는 위 표 및 `reports/qa_summary.md`를 기준으로 합니다.
+Class별 상세는 위 표 및 `reports/01_qa_summary.md`를 기준으로 합니다.
 
 ## 7. 출처 및 추적 정보
 
@@ -131,8 +143,8 @@ FINAL Manifest에서 다음 정보를 확인할 수 있습니다.
 교과 8에는 내부 승인된 경로로 다음을 전달합니다.
 
 - FINAL 이미지와 YOLO TXT, FINAL Manifest와 파일 매핑 정보
-- `docs/class_guide.md`, `docs/bbox_guide.md`, `configs/classes.yaml`
-- `reports/qa_summary.md`, `reports/test_report.md`
+- `docs/02_class_guide.md`, `docs/03_bbox_guide.md`, `configs/classes.yaml`
+- `reports/01_qa_summary.md`, `reports/02_test_report.md`
 - 본 Handoff 문서와 제출용 Manifest
 
 원본 김치 이미지는 공개 GitHub, 메신저, 개인 클라우드에 올리지 않습니다. 사진이 포함된 데이터는 승인된 내부 저장·전달 방식을 따릅니다.
