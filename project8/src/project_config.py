@@ -36,13 +36,22 @@ CLASS_NAMES = {
 
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp"}
 
-# Baseline 학습 조건 (smoke 는 epochs 만 줄여서 사용)
+# Baseline 학습 조건 (팀 계획 · 07_evaluate_baseline.py 의 CONFIG 와 같게 유지)
+#   patience: val 성능(fitness)이 이 epoch 수 동안 좋아지지 않으면 학습을 일찍 멈춤 (Early Stopping)
 BASELINE_CONFIG = {
     "model_name": "yolo11n.pt",
-    "epochs": 50,
+    "epochs": 70,
     "imgsz": 640,
     "batch": 8,
+    "patience": 30,
     "seed": 42,
+}
+
+# Smoke 조건: 짧게 돌리면서 960 · batch 16 의 GPU 메모리를 미리 잰다 (나중 960 실험 대비)
+SMOKE_CONFIG = {
+    "epochs": 3,
+    "imgsz": 960,
+    "batch": 16,
 }
 BASELINE_RUN_NAME = "baseline_v1"
 BASELINE_BEST = MODEL_DIR / "baseline" / "baseline_best.pt"
