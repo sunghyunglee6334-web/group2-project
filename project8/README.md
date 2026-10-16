@@ -43,7 +43,7 @@
 | Bridge Holdout | 150 | T09 · T11 · T16 | dataset.yaml 에 넣지 않음 · 교과 14 용 |
 
 - 나누는 단위: **capture_group (5분 촬영 묶음)** 통째 → 같은 김치 · 같은 이물이 두 역할에 걸치지 않게 (누수 방지) · 예외는 T17 끝 15장 1곳
-- 누수 점검: `scripts/06_check_phash.py` (pHash) → 묶음 경계 전부 거리 14 이상 · 거의 같은 사진 5장 `eval_exclude` → [reports/phash_check.csv](reports/phash_check.csv)
+- 누수 점검: `scripts/03b_check_phash.py` (pHash) → 묶음 경계 전부 거리 14 이상 · 거의 같은 사진 5장 `eval_exclude` → [reports/phash_check.csv](reports/phash_check.csv)
 - 설정: [configs/dataset.yaml](configs/dataset.yaml) (상대경로 · 실제 Class 이름) · 목록: `manifests/train.csv · val.csv · test.csv · bridge_holdout.csv · split_manifest.csv`
 - 분포: [reports/dataset_summary.csv](reports/dataset_summary.csv) · [reports/size_distribution.csv](reports/size_distribution.csv)
 
