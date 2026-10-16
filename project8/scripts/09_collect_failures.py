@@ -1,6 +1,5 @@
-"""5~6일차: Val 전체에서 실패 후보를 모아 비교 그림과 failure_analysis 초안을 만든다.
-실행 (project8 폴더에서, compare_gt_pred.py 다음에):
-    python scripts/09_collect_failures.py"""
+"""Val 전체에서 실패 후보를 모아 비교 그림과 failure_analysis 초안을 만든다.
+실행 (project8 폴더에서, compare_gt_pred.py 다음에): python scripts/09_collect_failures.py"""
 
 import sys
 from pathlib import Path
@@ -29,8 +28,22 @@ FAIL_TYPES = ("FN", "FP", "CLASS", "BBOX")                    # TP 는 실패가
 
 def load_val_info(val_csv):
     """val.csv 를 읽어 {이미지 이름(확장자 제외): {"source_dataset", "scene_type"}} 로 돌려준다."""
-    # TODO A
-    pass
+    df = pd.read_csv(val_csv, encoding="utf-8-sig")
+
+    # 1 필요한 컬럼이 있는지 먼저 확인
+    need = ["image_name", "source_dataset", "scene_type"]
+    missing = [c for c in need if c not in df.columns]
+    if missing:
+        raise ValueError(f"val.csv 에 필요한 컬럼이 없습니다: {missing}")
+
+    # 2 빈칸(NaN)은 빈 글자로
+    df = df[need].fillna("")
+
+    # 3 이름 → 정보 사전
+    info = {}
+    for name, source, scene in zip(df["image_name"], df["source_dataset"], df["scene_type"]):
+        info[Path(name).stem] = {"source_dataset": source, "scene_type": scene}
+    return info
 
 
 def collect(images, info):
