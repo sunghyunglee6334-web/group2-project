@@ -1,6 +1,8 @@
 # Kimchi YOLO Labeling Tool
 
-## 조각김치 이물검출 라벨링 · 2조
+## 1. 프로젝트 소개
+
+### 조각김치 이물검출 라벨링 · 2조
 
 - 조각김치 4K 사진 **900장**과 기존 라벨 **BBox 4,399개**를 자체 개발 라벨링 프로그램으로 6명이 검수했습니다.
 - 원본 BBox 의 **54%(2,383개)를 수정**하고, 누락된 이물 **350개를 추가**했습니다.
@@ -13,13 +15,20 @@
 
 | 용도 | 바로가기 |
 |---|---|
-| 신규 사용자 | [4. 설치 · 실행](#4-설치--실행) → [5. 기본 사용 순서](#5-기본-사용-순서) |
-| 성과 지표 | [1. 프로젝트 소개](#1-프로젝트-소개) · [11. QA · 테스트 결과](#11-qa--테스트-결과) |
+| 신규 사용자 | [GitHub 3분 설치 · 실행](#github-3분-설치--실행) → [5. 기본 사용 순서](#5-기본-사용-순서) |
+| 성과 지표 | [작업 결과](#작업-결과) · [11. QA · 테스트 결과](#11-qa--테스트-결과) |
 | 문서 · 오류 대응 | [3. 폴더 구조와 문서 지도](#3-프로젝트-폴더-구조) · [15. 주의사항](#15-주의사항) |
 
-<br>
+### 팀원 소개
 
-## 1. 프로젝트 소개
+| 직책 | 역할 |
+|---|---|
+| PM | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 |
+| GUI | 프로그램 화면 디자인 · 발표 캡처 · Figma |
+| Coord | BBox 좌표 · Golden Test · Class · BBox 기준서 |
+| Storage | 라벨 저장 로직 · 데이터 취합 · 배포 |
+| QA | 자동 검사 · RAW 보호 · Test Report |
+| Manifest | 작업 장부 · QA Summary · Handoff · 서기 |
 
 ### 개요
 
@@ -49,6 +58,28 @@
 
 <br>
 
+## GitHub 3분 설치 · 실행
+
+준비: Windows 11 + WSL2(Ubuntu 22.04 이상) · 아래 명령은 모두 **WSL 터미널**에서 실행합니다.
+
+```bash
+# 1. 저장소 받기
+git clone https://github.com/sunghyunglee6334-web/group2-project.git ~/group2_project
+
+# 2. 설치 (패키지 · 한글 글꼴 · 가상환경 · 연습 데이터 · 자동 테스트)
+cd ~/group2_project/project7
+bash setup_wsl.sh
+
+# 3. 연습 데이터로 실행
+bash run.sh --raw data/dummy_raw
+```
+
+- 2번 끝에 `모든 테스트 통과 (4개)` 가 나오면 설치 완료입니다.
+- 실제 데이터는 NDA 대상이라 Git 에 없습니다. 메일 · USB 로 받은 `이물검출_학습데이터1` · `이물검출_학습데이터2` 폴더를 `data/raw/` 안에 넣고 `bash run.sh --raw data/raw` 로 실행합니다.
+- 업데이트는 `git switch main && git pull origin main` · 자세한 설명은 [04 사용설명서](docs/04_user_manual.md)
+
+<br>
+
 ## 2. 프로젝트 주요 기능
 
 | 기능 | 화면 번호 |
@@ -71,23 +102,36 @@
 
 ### 폴더 · 파일
 
-| 위치 | 무엇 | 담당 | 수정일 |
-|---|---|---|---|
-| `main.py` · `run.sh` · `setup_wsl.sh` | 실행 · 설치 | PM | 10/12 |
-| `requirements.txt` · `settings.example.json` | 실행 환경 · 설정 예시 | PM | 10/12 |
-| `README.md` | 이 문서 | PM | 10/16 |
-| `src/ui/` | 화면 · 메뉴 · 한글 입력 | GUI | 10/15 |
-| `src/bbox/` | BBox 그리기 · 좌표 · 저장 규칙 | Coord | 10/12 |
-| `src/yolo/` | YOLO TXT 읽기 · 쓰기 · FINAL 이름 | Storage | 10/12 |
-| `src/validation/` | 자동 검사 · 통계 | QA | 10/13 |
-| `src/manifest*.py` · `src/config.py` | 작업 장부 · 기준 설정 | Manifest · PM | 10/12 |
-| `configs/classes.yaml` | Class 0~6 이름 · 색 | Storage | 10/12 |
-| `data/raw · work · final` | 원본 · 작업본 · 최종, 사진은 Git 제외 | Storage | 10/14 |
-| `docs/01~10` | 기준서 · 설명서 · 기록 · 인계 — 아래 문서 지도 | 문서마다 표시 | 10/15 |
-| `docs/images/` | 작동 화면 · 디자인 v01 · v02 · BBox 예시 | GUI · Coord | 10/15 |
-| `manifests/` | 작업 장부 사본, dataset_manifest 예정 | Manifest | 10/14 |
-| `reports/01~03` | QA 결과 · 테스트 결과 · 자동 검사 결과 | Manifest · QA | 10/14 |
-| `scripts/00~10` · `tests/` | 운영 스크립트 · 자동 테스트 4개 | PM · QA · Storage · Manifest | 10/15 |
+`# 설명 · 담당 · 마지막 수정일` 순서입니다.
+
+```text
+project7/
+├── main.py                   # 프로그램 시작 · PM · 10/12
+├── run.sh                    # 실행 스크립트 · PM · 10/12
+├── setup_wsl.sh              # 설치 스크립트 · PM · 10/12
+├── requirements.txt          # 실행 환경 패키지 · PM · 10/12
+├── settings.example.json     # 설정 예시 · PM · 10/12
+├── README.md                 # 이 문서 · PM · 10/16
+├── configs/
+│   └── classes.yaml          # Class 0~6 이름 · 색 · Storage · 10/12
+├── src/
+│   ├── ui/                   # 화면 · 메뉴 · 한글 입력 · GUI · 10/15
+│   ├── bbox/                 # BBox 그리기 · 좌표 · 저장 규칙 · Coord · 10/12
+│   ├── yolo/                 # YOLO TXT 읽기 · 쓰기 · Storage · 10/12
+│   ├── validation/           # 자동 검사 · 통계 · QA · 10/13
+│   ├── manifest*.py          # 작업 장부 · Manifest · 10/12
+│   └── config.py             # 경로 · 기준 설정 · PM · 10/12
+├── data/                     # Git 제외 · 사진은 메일 · USB 로만 · Storage · 10/14
+│   ├── raw/                  # 원본 RAW · 읽기만
+│   ├── work_raw/             # 작업본 TXT + 작업 장부
+│   └── final/                # FINAL 900쌍 · 교과 8 입력
+├── docs/                     # 기준서 · 설명서 · 기록 · 인계 01~10 · 아래 문서 지도
+│   └── images/               # 작동 화면 · 디자인 v01 · v02 · GUI · 10/15
+├── manifests/                # 작업 장부 사본 · Manifest · 10/14
+├── reports/                  # QA · 테스트 · 자동 검사 결과 01~03 · Manifest · QA · 10/14
+├── scripts/                  # 운영 스크립트 00~10 · PM · QA · Storage · Manifest · 10/15
+└── tests/                    # 자동 테스트 4개 · QA · 10/15
+```
 
 ### 문서 지도
 
