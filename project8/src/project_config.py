@@ -42,7 +42,7 @@ BASELINE_CONFIG = {
     "model_name": "yolo11n.pt",
     "epochs": 70,
     "imgsz": 640,
-    "batch": 16,
+    "batch": 8,
     "patience": 30,
     "seed": 42,
 }
@@ -51,7 +51,7 @@ BASELINE_CONFIG = {
 SMOKE_CONFIG = {
     "epochs": 3,
     "imgsz": 1280,
-    "batch": 4,
+    "batch": 16,
 }
 BASELINE_RUN_NAME = "baseline_v1"
 BASELINE_BEST = MODEL_DIR / "baseline" / "baseline_best.pt"

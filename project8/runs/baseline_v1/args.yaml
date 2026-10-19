@@ -5,7 +5,7 @@ data: /home/jaden/교과_7_2조/group2-project/project8/configs/dataset.yaml
 epochs: 70
 time: null
 patience: 30
-batch: 16
+batch: 8
 imgsz: 640
 save: true
 save_period: -1

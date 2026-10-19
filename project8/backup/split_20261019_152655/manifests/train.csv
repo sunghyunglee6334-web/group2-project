@@ -1,0 +1,601 @@
+﻿image_name,split,scene_type,cluster_id,n_boxes,classes,reason,original_split
+250410_144403911987.jpg,train,kimchi_with_target,C000,5,6,라벨 30%+ 겹침 묶음 C000 → train,train
+250410_144449962356.jpg,train,kimchi_with_target,C001,6,5 6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_145316482671.jpg,train,kimchi_with_target,C002,5,6,라벨 30%+ 겹침 묶음 C002 → train,train
+250410_145522054916.jpg,train,kimchi_with_target,,4,6,kimchi_with_target 층화 배정,train
+250410_145804344533.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_150133469509.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_150216388445.jpg,train,kimchi_with_target,,6,5 6,kimchi_with_target 층화 배정,train
+250410_150306918269.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_150346868183.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_150516419769.jpg,train,kimchi_with_target,C003,5,6,라벨 30%+ 겹침 묶음 C003 → train,train
+250410_150559581998.jpg,train,kimchi_with_target,C004,5,6,라벨 30%+ 겹침 묶음 C004 → train,train
+250410_150635306503.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_150848922166.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_150949043386.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_151029696229.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_151139983231.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_151231944374.jpg,train,kimchi_with_target,C003,5,6,라벨 30%+ 겹침 묶음 C003 → train,train
+250410_151304603268.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_151341801257.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_151431800368.jpg,train,kimchi_with_target,C005,5,6,라벨 30%+ 겹침 묶음 C005 → train,train
+250410_151546165963.jpg,train,kimchi_with_target,C005,5,6,라벨 30%+ 겹침 묶음 C005 → train,train
+250410_151631868173.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_151713908283.jpg,train,kimchi_with_target,C005,5,6,라벨 30%+ 겹침 묶음 C005 → train,train
+250410_151754102631.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_151920880325.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_152120483994.jpg,train,kimchi_with_target,C000,5,6,라벨 30%+ 겹침 묶음 C000 → train,train
+250410_152232188708.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_152308081822.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_152413150828.jpg,train,kimchi_with_target,C004,5,6,라벨 30%+ 겹침 묶음 C004 → train,train
+250410_152606438450.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,train
+250410_152647794740.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_152727057876.jpg,train,kimchi_with_target,C003,5,6,라벨 30%+ 겹침 묶음 C003 → train,train
+250410_152802371370.jpg,train,kimchi_with_target,C005,5,6,라벨 30%+ 겹침 묶음 C005 → train,train
+250410_155009160971.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_155526034625.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_155601084144.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_155641957140.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_155826598654.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_155901509386.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_160021775802.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_160112679219.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_165645848530.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_165759582289.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_165840226763.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_165918398621.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170124048539.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170204849002.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170257620893.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170345204621.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170436151500.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170523246924.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170605462218.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_170658904840.jpg,train,normal_kimchi,,0,,정상 김치 → train,train
+250410_171329931220.jpg,train,kimchi_with_target,,3,0 2,kimchi_with_target 층화 배정,train
+250410_171711703137.jpg,train,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250410_171954431319.jpg,train,kimchi_with_target,,4,0 1 5,kimchi_with_target 층화 배정,train
+250410_172202967252.jpg,train,kimchi_with_target,,5,0 1 5,kimchi_with_target 층화 배정,train
+250410_172249187179.jpg,train,kimchi_with_target,C006,3,0 1 2,라벨 30%+ 겹침 묶음 C006 → train,train
+250410_172509481867.jpg,train,kimchi_with_target,,3,1,kimchi_with_target 층화 배정,train
+250410_172553110670.jpg,train,kimchi_with_target,,3,1,kimchi_with_target 층화 배정,train
+250410_172921255820.jpg,train,kimchi_with_target,,3,1 3,kimchi_with_target 층화 배정,train
+250410_173012631688.jpg,train,kimchi_with_target,,4,1 3 5,kimchi_with_target 층화 배정,train
+250410_173104200591.jpg,train,kimchi_with_target,C007,3,1 3,라벨 30%+ 겹침 묶음 C007 → train,train
+250410_173307709999.jpg,train,kimchi_with_target,,3,0 2,kimchi_with_target 층화 배정,train
+250410_173355965733.jpg,train,kimchi_with_target,,3,0 2,kimchi_with_target 층화 배정,train
+250410_173647327410.jpg,train,kimchi_with_target,C008,3,0 2 6,라벨 30%+ 겹침 묶음 C008 → train,train
+250410_174241672560.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_174322665070.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_174414309990.jpg,train,kimchi_with_target,,7,2 5,kimchi_with_target 층화 배정,train
+250410_174607125731.jpg,train,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250410_174656591360.jpg,train,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250410_175036549862.jpg,train,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250410_175401330493.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_175705326258.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_180417359391.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_180642000478.jpg,train,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250410_180721146468.jpg,train,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250410_180800068444.jpg,train,kimchi_with_target,,5,0 2 5,kimchi_with_target 층화 배정,train
+250410_180910324799.jpg,train,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250410_181140480178.jpg,train,kimchi_with_target,C009,6,1 2 5,라벨 30%+ 겹침 묶음 C009 → train,train
+250410_181223026123.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250410_181352268335.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250410_181650625647.jpg,train,kimchi_with_target,,6,1 2 3 5,kimchi_with_target 층화 배정,train
+250410_181811462137.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,train
+250410_182340189473.jpg,train,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250410_182427975624.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250410_182749738751.jpg,train,kimchi_with_target,,5,0 2,kimchi_with_target 층화 배정,train
+250411_092511506342.jpg,train,kimchi_with_target,C012,6,1 5,라벨 30%+ 겹침 묶음 C012 → train,train
+250411_092851295826.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_093403074817.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_093439164001.jpg,train,kimchi_with_target,C011,5,1,라벨 30%+ 겹침 묶음 C011 → train,train
+250411_093700427956.jpg,train,kimchi_with_target,C014,5,1,라벨 30%+ 겹침 묶음 C014 → train,train
+250411_093901909722.jpg,train,kimchi_with_target,C013,6,1 5,라벨 30%+ 겹침 묶음 C013 → train,train
+250411_094027390387.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_094117478009.jpg,train,kimchi_with_target,C012,6,1 5,라벨 30%+ 겹침 묶음 C012 → train,train
+250411_094214912155.jpg,train,kimchi_with_target,C015,5,1,라벨 30%+ 겹침 묶음 C015 → train,train
+250411_094354631616.jpg,train,kimchi_with_target,C016,5,1,라벨 30%+ 겹침 묶음 C016 → train,train
+250411_094447587115.jpg,train,kimchi_with_target,C015,5,1,라벨 30%+ 겹침 묶음 C015 → train,train
+250411_094548003041.jpg,train,kimchi_with_target,C017,5,1,라벨 30%+ 겹침 묶음 C017 → train,train
+250411_095020396284.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_095211804856.jpg,train,kimchi_with_target,C017,4,1 2,라벨 30%+ 겹침 묶음 C017 → train,train
+250411_095307375377.jpg,train,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250411_095542189491.jpg,train,kimchi_with_target,,4,1,kimchi_with_target 층화 배정,train
+250411_095626998091.jpg,train,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_095715404683.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250411_095845387065.jpg,train,kimchi_with_target,,7,1 3 5,kimchi_with_target 층화 배정,train
+250411_100024779062.jpg,train,kimchi_with_target,,4,1 2 3,kimchi_with_target 층화 배정,train
+250411_100327766278.jpg,train,kimchi_with_target,,6,0 1 3,kimchi_with_target 층화 배정,train
+250411_100413893857.jpg,train,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_100623192554.jpg,train,kimchi_with_target,C012,4,1,라벨 30%+ 겹침 묶음 C012 → train,train
+250411_100709985238.jpg,train,kimchi_with_target,C018,5,1 2 3,라벨 30%+ 겹침 묶음 C018 → train,train
+250411_100751575116.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250411_100841614300.jpg,train,kimchi_with_target,C019,6,0 1 2 5,라벨 30%+ 겹침 묶음 C019 → train,train
+250411_104332904696.jpg,train,kimchi_with_target,C020,5,1,라벨 30%+ 겹침 묶음 C020 → train,train
+250411_104639578731.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_104754825896.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_104919108350.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105029820007.jpg,train,kimchi_with_target,C021,5,1,라벨 30%+ 겹침 묶음 C021 → train,train
+250411_105141558000.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_105254272584.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250411_105330424099.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105411000658.jpg,train,kimchi_with_target,C022,6,1 5,라벨 30%+ 겹침 묶음 C022 → train,train
+250411_105453593325.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105617386414.jpg,train,kimchi_with_target,C023,5,1,라벨 30%+ 겹침 묶음 C023 → train,train
+250411_105736419426.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105859449687.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105944783561.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_110315830870.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_110403647899.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250411_110528408973.jpg,train,kimchi_with_target,,4,1 3,kimchi_with_target 층화 배정,train
+250411_110621247330.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250411_110708889349.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250411_111224174351.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250411_111804424043.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_111841310699.jpg,train,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250411_111931684327.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_112016533939.jpg,train,kimchi_with_target,,10,0 1 2 5,kimchi_with_target 층화 배정,train
+250411_112539453476.jpg,train,kimchi_with_target,C026,5,1,라벨 30%+ 겹침 묶음 C026 → train,train
+250411_112949853261.jpg,train,kimchi_with_target,,6,1,kimchi_with_target 층화 배정,train
+250411_113033634859.jpg,train,kimchi_with_target,C027,6,1,라벨 30%+ 겹침 묶음 C027 → train,train
+250411_113153017884.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_113241070555.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_113548636483.jpg,train,kimchi_with_target,C026,6,1,라벨 30%+ 겹침 묶음 C026 → train,train
+250411_113626826177.jpg,train,kimchi_with_target,,7,1,kimchi_with_target 층화 배정,train
+250411_113710947633.jpg,train,kimchi_with_target,,8,1,kimchi_with_target 층화 배정,train
+250411_113808387570.jpg,train,kimchi_with_target,C021,6,1,라벨 30%+ 겹침 묶음 C021 → train,train
+250411_113959391025.jpg,train,kimchi_with_target,,8,1,kimchi_with_target 층화 배정,train
+250411_114051394051.jpg,train,kimchi_with_target,C028,5,1,라벨 30%+ 겹침 묶음 C028 → train,train
+250411_114252525628.jpg,train,kimchi_with_target,,9,1 5,kimchi_with_target 층화 배정,train
+250411_114345771169.jpg,train,kimchi_with_target,,7,1,kimchi_with_target 층화 배정,train
+250411_114451800273.jpg,train,kimchi_with_target,,8,1,kimchi_with_target 층화 배정,train
+250411_133144794149.jpg,train,kimchi_with_target,C029,5,1 3,라벨 30%+ 겹침 묶음 C029 → train,train
+250411_133236119624.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250411_133502277094.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,train
+250411_133550188212.jpg,train,kimchi_with_target,,9,1 3 5,kimchi_with_target 층화 배정,train
+250411_133634777214.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_133724174349.jpg,train,kimchi_with_target,,9,1 2,kimchi_with_target 층화 배정,train
+250411_133957480847.jpg,train,kimchi_with_target,,7,1 2,kimchi_with_target 층화 배정,train
+250411_134246962589.jpg,train,kimchi_with_target,,5,1 3,kimchi_with_target 층화 배정,train
+250411_134515221630.jpg,train,kimchi_with_target,,7,0 1 2 3,kimchi_with_target 층화 배정,train
+250411_135120060204.jpg,train,kimchi_with_target,,8,1 2 3,kimchi_with_target 층화 배정,train
+250411_135253570383.jpg,train,kimchi_with_target,,8,1 2,kimchi_with_target 층화 배정,train
+250411_135341531808.jpg,train,kimchi_with_target,C025,5,0 1,라벨 30%+ 겹침 묶음 C025 → train,train
+250411_140005265446.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250411_140059718969.jpg,train,kimchi_with_target,,7,1,kimchi_with_target 층화 배정,train
+250411_140314154941.jpg,train,kimchi_with_target,,6,1,kimchi_with_target 층화 배정,train
+250411_140647006979.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_140734845588.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_140956814957.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_141042153876.jpg,train,kimchi_with_target,,6,1,kimchi_with_target 층화 배정,train
+250411_141717372582.jpg,train,kimchi_with_target,,8,1 5,kimchi_with_target 층화 배정,train
+250411_141859877677.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_142033408182.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250411_142216814830.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_142354319596.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_151707909443.jpg,train,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_152011813992.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_152216764651.jpg,train,kimchi_with_target,,7,1 2 3,kimchi_with_target 층화 배정,train
+250411_152410462673.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250411_152459280077.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_152640864385.jpg,train,kimchi_with_target,,6,1 2 3 5,kimchi_with_target 층화 배정,train
+250411_152729639809.jpg,train,kimchi_with_target,C030,5,1 3,라벨 30%+ 겹침 묶음 C030 → train,train
+250411_152918560135.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_153105900410.jpg,train,kimchi_with_target,C031,4,1,라벨 30%+ 겹침 묶음 C031 → train,train
+250411_153808979651.jpg,train,kimchi_with_target,,5,1 3,kimchi_with_target 층화 배정,train
+250411_153940519769.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_154031477357.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250411_154545289934.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_154632400103.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_154812203890.jpg,train,kimchi_with_target,C032,5,5,라벨 30%+ 겹침 묶음 C032 → train,train
+250411_155040808617.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_155128186558.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_155257817932.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_155343382262.jpg,train,kimchi_with_target,,6,5,kimchi_with_target 층화 배정,train
+250411_155428154120.jpg,train,kimchi_with_target,,7,5,kimchi_with_target 층화 배정,train
+250411_155518151067.jpg,train,kimchi_with_target,C032,5,5,라벨 30%+ 겹침 묶음 C032 → train,train
+250411_155836164875.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_155922338003.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250411_160102367806.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_160154461519.jpg,train,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_160457010505.jpg,train,kimchi_with_target,,6,5,kimchi_with_target 층화 배정,train
+250411_160552248555.jpg,train,kimchi_with_target,,6,5,kimchi_with_target 층화 배정,train
+250411_160736641056.jpg,train,kimchi_with_target,,4,1 2 5,kimchi_with_target 층화 배정,train
+250411_160944442902.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_161335497942.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_161459121635.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_161601751564.jpg,train,kimchi_with_target,,5,2 3 5,kimchi_with_target 층화 배정,train
+250411_161815507507.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_161918392744.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_162312139510.jpg,train,kimchi_with_target,,5,1 2 3 5,kimchi_with_target 층화 배정,train
+250411_163007238647.jpg,train,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_163141810871.jpg,train,kimchi_with_target,,5,3 5,kimchi_with_target 층화 배정,train
+250424_105909724238.jpg,train,kimchi_with_target,,7,2 5,kimchi_with_target 층화 배정,train
+250424_110233789711.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_110456428256.jpg,train,kimchi_with_target,C033,5,2,라벨 30%+ 겹침 묶음 C033 → train,train
+250424_110523358494.jpg,train,kimchi_with_target,C033,5,2,라벨 30%+ 겹침 묶음 C033 → train,train
+250424_110555963740.jpg,train,kimchi_with_target,C033,5,2,라벨 30%+ 겹침 묶음 C033 → train,train
+250424_110621146818.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_110645745568.jpg,train,kimchi_with_target,C033,5,2,라벨 30%+ 겹침 묶음 C033 → train,train
+250424_110825373075.jpg,train,kimchi_with_target,,7,2 5,kimchi_with_target 층화 배정,train
+250424_110907410038.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_110954320748.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_111020116028.jpg,train,kimchi_with_target,,8,2,kimchi_with_target 층화 배정,train
+250424_111201206403.jpg,train,kimchi_with_target,,8,2 5,kimchi_with_target 층화 배정,train
+250424_111415135407.jpg,train,kimchi_with_target,C024,5,2,라벨 30%+ 겹침 묶음 C024 → train,train
+250424_111454886462.jpg,train,kimchi_with_target,C024,6,1 2,라벨 30%+ 겹침 묶음 C024 → train,train
+250424_111525566429.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_111555047880.jpg,train,kimchi_with_target,,4,1 2,kimchi_with_target 층화 배정,train
+250424_111632364928.jpg,train,kimchi_with_target,,7,1 2 5,kimchi_with_target 층화 배정,train
+250424_111810266612.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_111900294585.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_112106131252.jpg,train,kimchi_with_target,,7,1 2,kimchi_with_target 층화 배정,train
+250424_112224118014.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_112408452967.jpg,train,kimchi_with_target,,6,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_112445358653.jpg,train,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_112626180721.jpg,train,kimchi_with_target,C034,5,0 1 2,라벨 30%+ 겹침 묶음 C034 → train,train
+250424_112818764337.jpg,train,kimchi_with_target,,4,2 3,kimchi_with_target 층화 배정,train
+250424_114506760277.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250424_114647549614.jpg,train,kimchi_with_target,C035,5,1,라벨 30%+ 겹침 묶음 C035 → train,train
+250424_114709957499.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_114731998378.jpg,train,kimchi_with_target,C009,5,1,라벨 30%+ 겹침 묶음 C009 → train,train
+250424_114834243086.jpg,train,kimchi_with_target,C028,5,1,라벨 30%+ 겹침 묶음 C028 → train,train
+250424_114911512397.jpg,train,kimchi_with_target,C036,6,1 5,라벨 30%+ 겹침 묶음 C036 → train,train
+250424_115042694119.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_115104493302.jpg,train,kimchi_with_target,C026,7,1 5,라벨 30%+ 겹침 묶음 C026 → train,train
+250424_115126242024.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_115154083033.jpg,train,kimchi_with_target,C035,6,1 5,라벨 30%+ 겹침 묶음 C035 → train,train
+250424_115322964196.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250424_115344852900.jpg,train,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250424_115411440722.jpg,train,kimchi_with_target,C026,5,1,라벨 30%+ 겹침 묶음 C026 → train,train
+250424_115429203755.jpg,train,kimchi_with_target,C028,5,1,라벨 30%+ 겹침 묶음 C028 → train,train
+250424_115451303584.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_131237407672.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250424_131408934842.jpg,train,kimchi_with_target,C036,5,0 1,라벨 30%+ 겹침 묶음 C036 → train,train
+250424_131628719461.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_131652631597.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250424_131717240598.jpg,train,kimchi_with_target,,7,1 2 5,kimchi_with_target 층화 배정,train
+250424_131847882251.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_131927234268.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_132230751822.jpg,train,kimchi_with_target,,4,0 1 3,kimchi_with_target 층화 배정,train
+250424_132349669195.jpg,train,kimchi_with_target,,5,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_132551814312.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_132651301309.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_132758494169.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_133117662886.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_133236037318.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_133306190678.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_133336623350.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_133656915044.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_133722168136.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_133746717037.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_133848190733.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_133952219104.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_134022709122.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_134108731645.jpg,train,kimchi_with_target,,6,0 2,kimchi_with_target 층화 배정,train
+250424_134126674217.jpg,train,kimchi_with_target,,5,0 2,kimchi_with_target 층화 배정,train
+250424_134312393649.jpg,train,kimchi_with_target,C037,5,0 1 3,라벨 30%+ 겹침 묶음 C037 → train,train
+250424_134338803481.jpg,train,kimchi_with_target,,7,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_134458172998.jpg,train,kimchi_with_target,C037,6,0 1 3 5,라벨 30%+ 겹침 묶음 C037 → train,train
+250424_134638430765.jpg,train,kimchi_with_target,,6,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_135619213899.jpg,train,kimchi_with_target,,6,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_135855115910.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250424_135944045455.jpg,train,kimchi_with_target,,6,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_140115786154.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250424_140721608012.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_140751922758.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_140827554248.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_141205147850.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_141311988574.jpg,train,kimchi_with_target,,4,0,kimchi_with_target 층화 배정,train
+250424_141347737368.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_141414962071.jpg,train,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_141749469834.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142024804916.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142046745378.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142211379999.jpg,train,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_142245033292.jpg,train,kimchi_with_target,,6,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_142338011529.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250424_142408511885.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250424_142451194734.jpg,train,kimchi_with_target,,10,0 1 5,kimchi_with_target 층화 배정,train
+250424_142525298132.jpg,train,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_142652562190.jpg,train,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_142728989367.jpg,train,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_142806480763.jpg,train,kimchi_with_target,,7,0 1 5,kimchi_with_target 층화 배정,train
+250424_142938362989.jpg,train,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_143017228317.jpg,train,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_143107609014.jpg,train,kimchi_with_target,,5,0 2,kimchi_with_target 층화 배정,train
+250424_143141044687.jpg,train,kimchi_with_target,,4,0 2,kimchi_with_target 층화 배정,train
+250424_143423334547.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250424_143523864568.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250424_150530068599.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_150601578171.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_150726922844.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_150908898857.jpg,train,kimchi_with_target,,7,2 5,kimchi_with_target 층화 배정,train
+250424_150932563138.jpg,train,kimchi_with_target,,9,2 5,kimchi_with_target 층화 배정,train
+250424_151144785207.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_151209385709.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_151249899389.jpg,train,kimchi_with_target,,8,2 5,kimchi_with_target 층화 배정,train
+250424_151328835745.jpg,train,kimchi_with_target,,7,2 5,kimchi_with_target 층화 배정,train
+250424_151740506562.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_152218486902.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_152301409922.jpg,train,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_152358815799.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_152545483072.jpg,train,kimchi_with_target,C038,5,0 1 2,라벨 30%+ 겹침 묶음 C038 → train,train
+250424_152713073232.jpg,train,kimchi_with_target,C038,5,0 1,라벨 30%+ 겹침 묶음 C038 → train,train
+250424_152817392808.jpg,train,kimchi_with_target,,4,0 2 5,kimchi_with_target 층화 배정,train
+250424_153015693567.jpg,train,kimchi_with_target,,6,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_153155248673.jpg,train,kimchi_with_target,C039,5,1 2 3,라벨 30%+ 겹침 묶음 C039 → train,train
+250424_153338308367.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,train
+250424_153453270568.jpg,train,kimchi_with_target,C039,6,1 2 3 5,라벨 30%+ 겹침 묶음 C039 → train,train
+250424_153545918427.jpg,train,kimchi_with_target,,4,1 2 3,kimchi_with_target 층화 배정,train
+250424_154424370442.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_154449695884.jpg,train,kimchi_with_target,C027,5,3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_154522785740.jpg,train,kimchi_with_target,C040,5,3,라벨 30%+ 겹침 묶음 C040 → train,train
+250424_154704448893.jpg,train,kimchi_with_target,,6,1 3,kimchi_with_target 층화 배정,train
+250424_154741377185.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_154843279325.jpg,train,kimchi_with_target,C040,5,3,라벨 30%+ 겹침 묶음 C040 → train,train
+250424_154917407586.jpg,train,kimchi_with_target,C029,5,3,라벨 30%+ 겹침 묶음 C029 → train,train
+250424_154950467801.jpg,train,kimchi_with_target,C041,5,3,라벨 30%+ 겹침 묶음 C041 → train,train
+250424_155038372746.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155129094693.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155157438614.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155322980630.jpg,train,kimchi_with_target,C010,5,3,라벨 30%+ 겹침 묶음 C010 → train,train
+250424_155351657201.jpg,train,kimchi_with_target,C027,6,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_155415756891.jpg,train,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155439226083.jpg,train,kimchi_with_target,C042,5,3,라벨 30%+ 겹침 묶음 C042 → train,train
+250424_155512166104.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_155536501884.jpg,train,kimchi_with_target,C041,5,0 1 3,라벨 30%+ 겹침 묶음 C041 → train,train
+250424_155753466380.jpg,train,kimchi_with_target,C027,6,0 1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_155824864441.jpg,train,kimchi_with_target,C027,5,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_155925517432.jpg,train,kimchi_with_target,C027,5,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_160002175452.jpg,train,kimchi_with_target,C027,3,2 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_160124271601.jpg,train,kimchi_with_target,C007,3,2 3,라벨 30%+ 겹침 묶음 C007 → train,train
+250424_160154484717.jpg,train,kimchi_with_target,,3,2 3,kimchi_with_target 층화 배정,train
+250424_160247658866.jpg,train,kimchi_with_target,,5,0 3,kimchi_with_target 층화 배정,train
+250424_160324182339.jpg,train,kimchi_with_target,,5,0 3,kimchi_with_target 층화 배정,train
+250424_160343037975.jpg,train,kimchi_with_target,,5,0 3,kimchi_with_target 층화 배정,train
+250424_160408720170.jpg,train,kimchi_with_target,,5,0 3,kimchi_with_target 층화 배정,train
+250424_160532201123.jpg,train,kimchi_with_target,,4,1 2 3,kimchi_with_target 층화 배정,train
+250424_160546850518.jpg,train,kimchi_with_target,C027,4,1 2 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250424_164310605033.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164455938988.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164535209801.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164637508527.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164734340835.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164910871087.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164942449664.jpg,train,kimchi_with_target,,6,0 1,kimchi_with_target 층화 배정,train
+250424_165045797026.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_165143232306.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_165211833951.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_165418497986.jpg,train,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250424_165505539730.jpg,train,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250424_165553096484.jpg,train,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250424_165711484642.jpg,train,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_165737940764.jpg,train,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_165900444499.jpg,train,kimchi_with_target,C022,6,0 1,라벨 30%+ 겹침 묶음 C022 → train,train
+250424_170003430959.jpg,train,kimchi_with_target,C025,5,0 1,라벨 30%+ 겹침 묶음 C025 → train,train
+250424_170032248410.jpg,train,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_170112241458.jpg,train,kimchi_with_target,C028,6,0 1 5,라벨 30%+ 겹침 묶음 C028 → train,train
+250424_170230154929.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_170325776755.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_170457181197.jpg,train,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_170616179502.jpg,train,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_170640733964.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250513_014148760172.jpg,train,object_only,,5,1,object_only 층화 배정,train
+250513_014220423606.jpg,train,object_only,,2,1,object_only 층화 배정,train
+250513_014239750324.jpg,train,object_only,C043,3,1,라벨 30%+ 겹침 묶음 C043 → train,train
+250513_014250690081.jpg,train,object_only,,3,1,object_only 층화 배정,train
+250513_014619552198.jpg,train,object_only,,4,2 3,object_only 층화 배정,train
+250513_014716701635.jpg,train,object_only,,5,2 3,object_only 층화 배정,train
+250513_014805286637.jpg,train,object_only,C044,3,1 2,라벨 30%+ 겹침 묶음 C044 → train,train
+250513_014819436154.jpg,train,object_only,,2,2,object_only 층화 배정,train
+250513_014828866941.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_015246673678.jpg,train,object_only,,2,0,object_only 층화 배정,train
+250513_015331540104.jpg,train,object_only,,3,2 3,object_only 층화 배정,train
+250513_015342343246.jpg,train,object_only,C027,2,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250513_015352753427.jpg,train,object_only,C045,2,1,라벨 30%+ 겹침 묶음 C045 → train,train
+250513_015403580381.jpg,train,object_only,,2,1,object_only 층화 배정,train
+250513_015420675871.jpg,train,object_only,C045,3,0 1,라벨 30%+ 겹침 묶음 C045 → train,train
+250513_015429479009.jpg,train,object_only,C008,3,0 1,라벨 30%+ 겹침 묶음 C008 → train,train
+250513_015442042178.jpg,train,object_only,,3,0 1,object_only 층화 배정,train
+250513_015514809852.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_015523209371.jpg,train,object_only,,3,2,object_only 층화 배정,train
+250513_015532932551.jpg,train,object_only,,3,2 3,object_only 층화 배정,train
+250513_015542447244.jpg,train,object_only,,2,2,object_only 층화 배정,train
+250513_015550523265.jpg,train,object_only,C046,3,2 3,라벨 30%+ 겹침 묶음 C046 → train,train
+250513_015559001262.jpg,train,object_only,C027,2,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250513_015607259390.jpg,train,object_only,C046,3,1 3,라벨 30%+ 겹침 묶음 C046 → train,train
+250513_015635581130.jpg,train,object_only,,4,0 2 3,object_only 층화 배정,train
+250513_015643998868.jpg,train,object_only,,4,0 2 3,object_only 층화 배정,train
+250513_015712687737.jpg,train,object_only,,2,2,object_only 층화 배정,train
+250513_015737558428.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_015748335568.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_015819340200.jpg,train,object_only,,4,1 2 3,object_only 층화 배정,train
+250513_015835050786.jpg,train,object_only,C045,3,0 1 2,라벨 30%+ 겹침 묶음 C045 → train,train
+250513_015848527907.jpg,train,object_only,,2,1 2,object_only 층화 배정,train
+250513_015923922984.jpg,train,object_only,C047,3,1 3,라벨 30%+ 겹침 묶음 C047 → train,train
+250513_015934463160.jpg,train,object_only,,1,3,object_only 층화 배정,train
+250513_015943430085.jpg,train,object_only,C048,3,3,라벨 30%+ 겹침 묶음 C048 → train,train
+250513_015956702950.jpg,train,object_only,,2,1 3,object_only 층화 배정,train
+250513_020008155376.jpg,train,object_only,,2,2,object_only 층화 배정,train
+250513_020017027166.jpg,train,object_only,,2,2,object_only 층화 배정,train
+250513_020048358486.jpg,train,object_only,C047,1,3,라벨 30%+ 겹침 묶음 C047 → train,train
+250513_020112593206.jpg,train,object_only,,2,1 2,object_only 층화 배정,train
+250513_020126825853.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_020141991605.jpg,train,object_only,C045,2,0 1,라벨 30%+ 겹침 묶음 C045 → train,train
+250513_020204533684.jpg,train,object_only,,4,0,object_only 층화 배정,train
+250513_020212490214.jpg,train,object_only,,4,0,object_only 층화 배정,train
+250513_020225144840.jpg,train,object_only,,4,0 1,object_only 층화 배정,train
+250513_020250961835.jpg,train,object_only,,2,0 2,object_only 층화 배정,train
+250513_020304399650.jpg,train,object_only,,5,0 1 2,object_only 층화 배정,train
+250513_020320098243.jpg,train,object_only,,5,1,object_only 층화 배정,train
+250513_020337379138.jpg,train,object_only,,5,0 1 3,object_only 층화 배정,train
+250513_020402036089.jpg,train,object_only,,4,0 1 2,object_only 층화 배정,train
+250513_020431482923.jpg,train,object_only,,5,0 1 2,object_only 층화 배정,train
+250513_020440264823.jpg,train,object_only,,5,0 1 2,object_only 층화 배정,train
+250513_020502446188.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_020519404101.jpg,train,object_only,,5,1 2,object_only 층화 배정,train
+250513_020538475964.jpg,train,object_only,,5,1 2 3,object_only 층화 배정,train
+250513_020558935073.jpg,train,object_only,,4,1 2,object_only 층화 배정,train
+250513_020611446070.jpg,train,object_only,,4,1 2,object_only 층화 배정,train
+250513_020621226161.jpg,train,object_only,,3,2 3,object_only 층화 배정,train
+250513_020633185824.jpg,train,object_only,,3,2,object_only 층화 배정,train
+250513_020644737505.jpg,train,object_only,C044,3,0 1,라벨 30%+ 겹침 묶음 C044 → train,train
+250513_020750875797.jpg,train,object_only,,4,1 2,object_only 층화 배정,train
+250513_020804589690.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_020818506439.jpg,train,object_only,C006,3,0 1,라벨 30%+ 겹침 묶음 C006 → train,train
+250513_020832754654.jpg,train,object_only,,3,0 1,object_only 층화 배정,train
+250513_020915257020.jpg,train,object_only,,2,0 1,object_only 층화 배정,train
+250513_020943104521.jpg,train,object_only,,4,1 2,object_only 층화 배정,train
+250513_021003217917.jpg,train,object_only,,3,0 1 2,object_only 층화 배정,train
+250513_021046362799.jpg,train,object_only,C038,3,0 1 2,라벨 30%+ 겹침 묶음 C038 → train,train
+250513_021108612477.jpg,train,object_only,,2,1,object_only 층화 배정,train
+250513_021119693563.jpg,train,object_only,C049,1,2,라벨 30%+ 겹침 묶음 C049 → train,train
+250513_021126718161.jpg,train,object_only,C049,2,2,라벨 30%+ 겹침 묶음 C049 → train,train
+250513_021144766911.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_021150715030.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_021157703738.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_021204824022.jpg,train,object_only,,1,0,object_only 층화 배정,train
+250513_021224263265.jpg,train,object_only,C027,2,1,라벨 30%+ 겹침 묶음 C027 → train,train
+250513_021240978983.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_021249058642.jpg,train,object_only,,1,1,object_only 층화 배정,train
+250513_021305141318.jpg,train,object_only,,1,0,object_only 층화 배정,train
+250513_021344514305.jpg,train,object_only,,7,2,object_only 층화 배정,train
+250513_021357007585.jpg,train,object_only,,3,2,object_only 층화 배정,train
+250513_021406217768.jpg,train,object_only,,3,2,object_only 층화 배정,train
+250513_021413998344.jpg,train,object_only,,3,2,object_only 층화 배정,train
+250513_021424892102.jpg,train,none,,0,,정상 김치 → train,train
+250513_021435579095.jpg,train,object_only,,3,1 2,object_only 층화 배정,train
+250513_021445620839.jpg,train,object_only,C043,2,0 1,라벨 30%+ 겹침 묶음 C043 → train,train
+250513_021503927470.jpg,train,object_only,C027,2,1 3,라벨 30%+ 겹침 묶음 C027 → train,train
+250513_021539913227.jpg,train,object_only,C042,5,1 3,라벨 30%+ 겹침 묶음 C042 → train,train
+250513_021549661328.jpg,train,object_only,C040,5,1 3,라벨 30%+ 겹침 묶음 C040 → train,train
+250513_021558743377.jpg,train,object_only,C040,5,1 3,라벨 30%+ 겹침 묶음 C040 → train,train
+250513_021615909822.jpg,train,object_only,C040,5,2 3,라벨 30%+ 겹침 묶음 C040 → train,train
+250513_021628303797.jpg,train,object_only,,4,3,object_only 층화 배정,train
+250513_021646222060.jpg,train,object_only,,4,3,object_only 층화 배정,train
+250513_021653487917.jpg,train,object_only,,4,3,object_only 층화 배정,train
+250513_021702627527.jpg,train,object_only,C048,4,3,라벨 30%+ 겹침 묶음 C048 → train,train
+250513_021711038406.jpg,train,object_only,C027,2,3,라벨 30%+ 겹침 묶음 C027 → train,train
+250410_144532010108.jpg,train,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,validation
+250410_145433197807.jpg,train,kimchi_with_target,C002,5,6,라벨 30%+ 겹침 묶음 C002 → train,validation
+250410_150722732261.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_151837622952.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_151959551499.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_152043730782.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_152154012800.jpg,train,kimchi_with_target,C000,5,6,라벨 30%+ 겹침 묶음 C000 → train,validation
+250410_152458884244.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_152531781799.jpg,train,kimchi_with_target,C001,5,6,라벨 30%+ 겹침 묶음 C001 → train,validation
+250410_155734186034.jpg,train,normal_kimchi,,0,,정상 김치 → train,validation
+250410_155943122243.jpg,train,normal_kimchi,,0,,정상 김치 → train,validation
+250410_160155606350.jpg,train,none,,0,,정상 김치 → train,validation
+250410_170005947995.jpg,train,normal_kimchi,,0,,정상 김치 → train,validation
+250410_170049726315.jpg,train,normal_kimchi,,0,,정상 김치 → train,validation
+250410_170944512953.jpg,train,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,validation
+250410_172417911438.jpg,train,kimchi_with_target,,3,1,kimchi_with_target 층화 배정,validation
+250410_172828996170.jpg,train,kimchi_with_target,,3,1 3,kimchi_with_target 층화 배정,validation
+250410_175133040999.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_175613332662.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_180033976404.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_180117079374.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_180317754189.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_181313625145.jpg,train,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,validation
+250410_181519426889.jpg,train,kimchi_with_target,C010,5,1 2 3,라벨 30%+ 겹침 묶음 C010 → train,validation
+250411_092158458691.jpg,train,kimchi_with_target,C011,6,1 5,라벨 30%+ 겹침 묶음 C011 → train,validation
+250411_093234406905.jpg,train,kimchi_with_target,C013,5,1,라벨 30%+ 겹침 묶음 C013 → train,validation
+250411_093324099646.jpg,train,kimchi_with_target,C014,6,1 5,라벨 30%+ 겹침 묶음 C014 → train,validation
+250411_093519741399.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_093743680890.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_094259430445.jpg,train,kimchi_with_target,C016,5,1,라벨 30%+ 겹침 묶음 C016 → train,validation
+250411_094651666580.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_095401865132.jpg,train,kimchi_with_target,C018,4,1 2,라벨 30%+ 겹침 묶음 C018 → train,validation
+250411_100158094554.jpg,train,kimchi_with_target,,4,1 3,kimchi_with_target 층화 배정,validation
+250411_104956612339.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_110038287967.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250411_111004245983.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,validation
+250411_111136595839.jpg,train,kimchi_with_target,,4,1 3,kimchi_with_target 층화 배정,validation
+250411_111313130597.jpg,train,kimchi_with_target,C023,5,0 1 2,라벨 30%+ 겹침 묶음 C023 → train,validation
+250411_111440055274.jpg,train,kimchi_with_target,,4,1 2,kimchi_with_target 층화 배정,validation
+250411_111721406014.jpg,train,kimchi_with_target,C024,6,1 2 5,라벨 30%+ 겹침 묶음 C024 → train,validation
+250411_112446720529.jpg,train,kimchi_with_target,C025,6,1 5,라벨 30%+ 겹침 묶음 C025 → train,validation
+250411_112741745606.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_133907433178.jpg,train,kimchi_with_target,,7,0 1 2,kimchi_with_target 층화 배정,validation
+250411_134156935624.jpg,train,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,validation
+250411_135428632799.jpg,train,kimchi_with_target,,6,0 1 3 5,kimchi_with_target 층화 배정,validation
+250411_141549265009.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_141637675543.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_152820604579.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,validation
+250411_153856079886.jpg,train,kimchi_with_target,,4,0 1 3,kimchi_with_target 층화 배정,validation
+250411_161204714653.jpg,train,kimchi_with_target,,7,1 2 5,kimchi_with_target 층화 배정,validation
+250411_162102317297.jpg,train,kimchi_with_target,C027,6,1 3 5,라벨 30%+ 겹침 묶음 C027 → train,validation
+250411_162535290470.jpg,train,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,validation
+250411_162846129980.jpg,train,kimchi_with_target,C031,6,1 5,라벨 30%+ 겹침 묶음 C031 → train,validation
+250411_163231309394.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250424_105826238840.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250424_110422490499.jpg,train,kimchi_with_target,,10,2,kimchi_with_target 층화 배정,validation
+250424_111341945533.jpg,train,kimchi_with_target,,11,2 5,kimchi_with_target 층화 배정,validation
+250424_112520861551.jpg,train,kimchi_with_target,,8,0 1 2 5,kimchi_with_target 층화 배정,validation
+250424_112714928952.jpg,train,kimchi_with_target,C034,4,2 3,라벨 30%+ 겹침 묶음 C034 → train,validation
+250424_113017660157.jpg,train,kimchi_with_target,,4,2 3,kimchi_with_target 층화 배정,validation
+250424_114427299303.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250424_114541448139.jpg,train,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250424_114752056861.jpg,train,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250424_131300572776.jpg,train,kimchi_with_target,C020,5,0 1,라벨 30%+ 겹침 묶음 C020 → train,validation
+250424_131447980205.jpg,train,kimchi_with_target,,7,0 1 5,kimchi_with_target 층화 배정,validation
+250424_132417140373.jpg,train,kimchi_with_target,,4,0 1 3,kimchi_with_target 층화 배정,validation
+250424_133425417139.jpg,train,kimchi_with_target,,7,0 5,kimchi_with_target 층화 배정,validation
+250424_134528641228.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,validation
+250424_134609468397.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,validation
+250424_134711838797.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,validation
+250424_135228979866.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,validation
+250424_135437428949.jpg,train,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,validation
+250424_140147957962.jpg,train,kimchi_with_target,,6,0 1 2 3 5,kimchi_with_target 층화 배정,validation
+250424_140927386469.jpg,train,kimchi_with_target,,7,0 5,kimchi_with_target 층화 배정,validation
+250424_141046132793.jpg,train,kimchi_with_target,,8,0 5,kimchi_with_target 층화 배정,validation
+250424_141117326057.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_141906362111.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_143454496733.jpg,train,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,validation
+250424_150358295363.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250424_150428766903.jpg,train,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250424_150657426032.jpg,train,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,validation
+250424_151403291574.jpg,train,kimchi_with_target,,4,2,kimchi_with_target 층화 배정,validation
+250424_152501766895.jpg,train,kimchi_with_target,C019,5,1 2,라벨 30%+ 겹침 묶음 C019 → train,validation
+250424_152845371656.jpg,train,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,validation
+250424_153311253394.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,validation
+250424_153617318943.jpg,train,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,validation
+250424_154345201732.jpg,train,kimchi_with_target,,6,3 5,kimchi_with_target 층화 배정,validation
+250424_154617146128.jpg,train,kimchi_with_target,C041,5,3,라벨 30%+ 겹침 묶음 C041 → train,validation
+250424_155103672911.jpg,train,kimchi_with_target,C042,4,3,라벨 30%+ 겹침 묶음 C042 → train,validation
+250424_155623994647.jpg,train,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,validation
+250424_155647704752.jpg,train,kimchi_with_target,,5,1 3,kimchi_with_target 층화 배정,validation
+250424_155903753937.jpg,train,kimchi_with_target,C030,5,1 3,라벨 30%+ 겹침 묶음 C030 → train,validation
+250424_160514972268.jpg,train,kimchi_with_target,,4,1 2 3,kimchi_with_target 층화 배정,validation
+250424_164108548301.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_164139809945.jpg,train,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_164235214851.jpg,train,kimchi_with_target,,7,0 1,kimchi_with_target 층화 배정,validation
+250424_170546955381.jpg,train,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,validation
+250513_021732352571.jpg,train,object_only,C007,2,2 3,라벨 30%+ 겹침 묶음 C007 → train,validation
+250513_021739998611.jpg,train,object_only,C050,2,2 3,라벨 30%+ 겹침 묶음 C050 → train,validation
+250513_021752644486.jpg,train,object_only,,4,2 3,object_only 층화 배정,validation
+250513_021804963969.jpg,train,object_only,C050,3,2 3,라벨 30%+ 겹침 묶음 C050 → train,validation
+250513_021827419874.jpg,train,object_only,,4,2 3,object_only 층화 배정,validation
+250513_021837552190.jpg,train,object_only,,4,1 2 3,object_only 층화 배정,validation
+250513_021851164524.jpg,train,object_only,C050,3,1 3,라벨 30%+ 겹침 묶음 C050 → train,validation
+250513_021911942196.jpg,train,object_only,C046,3,1 2,라벨 30%+ 겹침 묶음 C046 → train,validation
+250513_021922770294.jpg,train,object_only,,3,0 1,object_only 층화 배정,validation
+250513_021933338649.jpg,train,object_only,,4,0 1,object_only 층화 배정,validation
+250513_021952888560.jpg,train,object_only,,2,1,object_only 층화 배정,validation
+250513_022020042401.jpg,train,object_only,,3,0 1,object_only 층화 배정,validation
+250513_022041431304.jpg,train,object_only,,4,1 2 3,object_only 층화 배정,validation
+250513_022057115759.jpg,train,object_only,,3,1 2,object_only 층화 배정,validation
+250513_022118763062.jpg,train,object_only,,3,1 2 3,object_only 층화 배정,validation
+250513_022131908234.jpg,train,object_only,,2,3,object_only 층화 배정,validation
+250513_022144941639.jpg,train,object_only,,2,1 2,object_only 층화 배정,validation
+250513_022210287197.jpg,train,object_only,,3,0,object_only 층화 배정,validation
+250513_022220095831.jpg,train,object_only,,3,0,object_only 층화 배정,validation
+250513_022341564846.jpg,train,object_only,,3,1,object_only 층화 배정,validation
+250513_022352029211.jpg,train,object_only,,3,1,object_only 층화 배정,validation
+250513_022402086607.jpg,train,object_only,,4,0 1,object_only 층화 배정,validation
+250513_022416739467.jpg,train,object_only,,2,0 1,object_only 층화 배정,validation
+250513_022444165179.jpg,train,object_only,,7,0 1 2,object_only 층화 배정,validation

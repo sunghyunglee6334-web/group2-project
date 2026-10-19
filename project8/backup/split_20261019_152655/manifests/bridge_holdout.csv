@@ -1,0 +1,151 @@
+﻿image_name,split,scene_type,cluster_id,n_boxes,classes,reason,original_split
+250410_150040264734.jpg,bridge_holdout,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_150808416709.jpg,bridge_holdout,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_151504600233.jpg,bridge_holdout,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_171043114194.jpg,bridge_holdout,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250410_171242763678.jpg,bridge_holdout,kimchi_with_target,,4,0 2 5,kimchi_with_target 층화 배정,train
+250410_172041141763.jpg,bridge_holdout,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250410_172124374052.jpg,bridge_holdout,kimchi_with_target,,2,1 2,kimchi_with_target 층화 배정,train
+250410_172731889723.jpg,bridge_holdout,kimchi_with_target,,3,1 3,kimchi_with_target 층화 배정,train
+250410_174507760057.jpg,bridge_holdout,kimchi_with_target,,8,2,kimchi_with_target 층화 배정,train
+250410_175222116316.jpg,bridge_holdout,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_175933697183.jpg,bridge_holdout,kimchi_with_target,,7,2,kimchi_with_target 층화 배정,train
+250410_180203619316.jpg,bridge_holdout,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250410_180838247546.jpg,bridge_holdout,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250410_181045535509.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250410_182251586507.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250410_182706284064.jpg,bridge_holdout,kimchi_with_target,,7,0 2 5,kimchi_with_target 층화 배정,train
+250411_092955630580.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_093822949037.jpg,bridge_holdout,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250411_093947029472.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_095447313719.jpg,bridge_holdout,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_095802178687.jpg,bridge_holdout,kimchi_with_target,,6,1 3 5,kimchi_with_target 층화 배정,train
+250411_100114230398.jpg,bridge_holdout,kimchi_with_target,,5,1 3 5,kimchi_with_target 층화 배정,train
+250411_100243218238.jpg,bridge_holdout,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250411_104605859828.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_104839535885.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105218591549.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_105818677104.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_110128241504.jpg,bridge_holdout,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_110216046156.jpg,bridge_holdout,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250411_110752793773.jpg,bridge_holdout,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250411_110912420662.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_111523441250.jpg,bridge_holdout,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250411_113112105032.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_114148498012.jpg,bridge_holdout,kimchi_with_target,,7,1,kimchi_with_target 층화 배정,train
+250411_133000176335.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_133329581087.jpg,bridge_holdout,kimchi_with_target,,6,1 2 3,kimchi_with_target 층화 배정,train
+250411_133415890554.jpg,bridge_holdout,kimchi_with_target,,8,0 1 2 5,kimchi_with_target 층화 배정,train
+250411_134059250467.jpg,bridge_holdout,kimchi_with_target,,8,1 2 3 5,kimchi_with_target 층화 배정,train
+250411_134654281384.jpg,bridge_holdout,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250411_135211530132.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250411_140154662081.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_140553670865.jpg,bridge_holdout,kimchi_with_target,,8,1 5,kimchi_with_target 층화 배정,train
+250411_140908232349.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_141809689183.jpg,bridge_holdout,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,train
+250411_142123259727.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_151903234059.jpg,bridge_holdout,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250411_152117347333.jpg,bridge_holdout,kimchi_with_target,,7,0 1 3 5,kimchi_with_target 층화 배정,train
+250411_153202843304.jpg,bridge_holdout,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250411_153351252246.jpg,bridge_holdout,kimchi_with_target,,6,1 2 3 5,kimchi_with_target 층화 배정,train
+250411_153708642128.jpg,bridge_holdout,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,train
+250411_154123030062.jpg,bridge_holdout,kimchi_with_target,,5,1 3,kimchi_with_target 층화 배정,train
+250411_154949761626.jpg,bridge_holdout,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_155751552207.jpg,bridge_holdout,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_160015579183.jpg,bridge_holdout,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_160638581161.jpg,bridge_holdout,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_161718524589.jpg,bridge_holdout,kimchi_with_target,,4,1 2 5,kimchi_with_target 층화 배정,train
+250411_162447162532.jpg,bridge_holdout,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250411_162756223396.jpg,bridge_holdout,kimchi_with_target,,5,3 5,kimchi_with_target 층화 배정,train
+250411_163054857361.jpg,bridge_holdout,kimchi_with_target,,5,2 5,kimchi_with_target 층화 배정,train
+250424_110200584818.jpg,bridge_holdout,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250424_110716273731.jpg,bridge_holdout,kimchi_with_target,,7,2,kimchi_with_target 층화 배정,train
+250424_111302561521.jpg,bridge_holdout,kimchi_with_target,,6,2,kimchi_with_target 층화 배정,train
+250424_111713850672.jpg,bridge_holdout,kimchi_with_target,,4,1 2,kimchi_with_target 층화 배정,train
+250424_112034421928.jpg,bridge_holdout,kimchi_with_target,,8,1 2,kimchi_with_target 층화 배정,train
+250424_112343085390.jpg,bridge_holdout,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_112924042782.jpg,bridge_holdout,kimchi_with_target,,5,2 3,kimchi_with_target 층화 배정,train
+250424_114610718081.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_115021023301.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_115215894054.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250424_115252382931.jpg,bridge_holdout,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,train
+250424_131214458981.jpg,bridge_holdout,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250424_131333355993.jpg,bridge_holdout,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_131814741865.jpg,bridge_holdout,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_132322938300.jpg,bridge_holdout,kimchi_with_target,,5,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_132732143495.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_133043450183.jpg,bridge_holdout,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_133202379766.jpg,bridge_holdout,kimchi_with_target,,6,0 2,kimchi_with_target 층화 배정,train
+250424_133529972703.jpg,bridge_holdout,kimchi_with_target,,7,0 5,kimchi_with_target 층화 배정,train
+250424_133629807292.jpg,bridge_holdout,kimchi_with_target,,6,0 2,kimchi_with_target 층화 배정,train
+250424_133917633597.jpg,bridge_holdout,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_134045604000.jpg,bridge_holdout,kimchi_with_target,,6,0 2,kimchi_with_target 층화 배정,train
+250424_134225907817.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_134406959434.jpg,bridge_holdout,kimchi_with_target,,7,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_134810265899.jpg,bridge_holdout,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_135259190207.jpg,bridge_holdout,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_135531230106.jpg,bridge_holdout,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250424_135756404426.jpg,bridge_holdout,kimchi_with_target,,7,0 1 2 3 5,kimchi_with_target 층화 배정,train
+250424_140037360411.jpg,bridge_holdout,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_141236657334.jpg,bridge_holdout,kimchi_with_target,,7,0 5,kimchi_with_target 층화 배정,train
+250424_141518822839.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_141652963394.jpg,bridge_holdout,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_141936963734.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142134495262.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142310994229.jpg,bridge_holdout,kimchi_with_target,,7,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_142625989941.jpg,bridge_holdout,kimchi_with_target,,7,0 1 5,kimchi_with_target 층화 배정,train
+250424_142834656188.jpg,bridge_holdout,kimchi_with_target,,6,0 1 5,kimchi_with_target 층화 배정,train
+250424_143044127420.jpg,bridge_holdout,kimchi_with_target,,4,0 2,kimchi_with_target 층화 배정,train
+250424_143340574867.jpg,bridge_holdout,kimchi_with_target,,5,0 1 2 3,kimchi_with_target 층화 배정,train
+250424_150320374794.jpg,bridge_holdout,kimchi_with_target,,9,2 5,kimchi_with_target 층화 배정,train
+250424_150626550405.jpg,bridge_holdout,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_151045537032.jpg,bridge_holdout,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_151110625683.jpg,bridge_holdout,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_151612445088.jpg,bridge_holdout,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_151649731424.jpg,bridge_holdout,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,train
+250424_152336292034.jpg,bridge_holdout,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,train
+250424_152433490577.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,train
+250424_153120277271.jpg,bridge_holdout,kimchi_with_target,,7,1 2 3 5,kimchi_with_target 층화 배정,train
+250424_153520639358.jpg,bridge_holdout,kimchi_with_target,,6,1 2 3,kimchi_with_target 층화 배정,train
+250424_154322097228.jpg,bridge_holdout,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_154635713023.jpg,bridge_holdout,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155020308984.jpg,bridge_holdout,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155250067367.jpg,bridge_holdout,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,train
+250424_155603348923.jpg,bridge_holdout,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_160059103717.jpg,bridge_holdout,kimchi_with_target,,3,2 3,kimchi_with_target 층화 배정,train
+250424_160303658850.jpg,bridge_holdout,kimchi_with_target,,5,0 2 3,kimchi_with_target 층화 배정,train
+250424_160456860690.jpg,bridge_holdout,kimchi_with_target,,4,1 2 3,kimchi_with_target 층화 배정,train
+250424_164033250654.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164205945780.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_164415645065.jpg,bridge_holdout,kimchi_with_target,,7,0 1,kimchi_with_target 층화 배정,train
+250424_164836160471.jpg,bridge_holdout,kimchi_with_target,,6,0 1,kimchi_with_target 층화 배정,train
+250424_165115853593.jpg,bridge_holdout,kimchi_with_target,,6,0 1,kimchi_with_target 층화 배정,train
+250424_165529269617.jpg,bridge_holdout,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250424_165639244639.jpg,bridge_holdout,kimchi_with_target,,6,0 1 2 5,kimchi_with_target 층화 배정,train
+250424_165931923085.jpg,bridge_holdout,kimchi_with_target,,5,0 1,kimchi_with_target 층화 배정,train
+250424_170156569067.jpg,bridge_holdout,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250424_170525843567.jpg,bridge_holdout,kimchi_with_target,,5,0 1 2,kimchi_with_target 층화 배정,train
+250410_145141723860.jpg,bridge_holdout,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,validation
+250410_173557486868.jpg,bridge_holdout,kimchi_with_target,,3,0 2,kimchi_with_target 층화 배정,validation
+250410_174950640074.jpg,bridge_holdout,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,validation
+250410_175310273550.jpg,bridge_holdout,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,validation
+250410_181608031071.jpg,bridge_holdout,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,validation
+250410_182921481743.jpg,bridge_holdout,kimchi_with_target,,5,0 2,kimchi_with_target 층화 배정,validation
+250411_104718061502.jpg,bridge_holdout,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250411_112205486359.jpg,bridge_holdout,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,validation
+250411_112702519484.jpg,bridge_holdout,kimchi_with_target,,10,1,kimchi_with_target 층화 배정,validation
+250411_113506054354.jpg,bridge_holdout,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,validation
+250411_113904005033.jpg,bridge_holdout,kimchi_with_target,,11,1 5,kimchi_with_target 층화 배정,validation
+250411_141127764893.jpg,bridge_holdout,kimchi_with_target,,7,1,kimchi_with_target 층화 배정,validation
+250411_153254824777.jpg,bridge_holdout,kimchi_with_target,,6,1 2,kimchi_with_target 층화 배정,validation
+250411_155213979703.jpg,bridge_holdout,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,validation
+250411_160333681517.jpg,bridge_holdout,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,validation
+250411_161125175112.jpg,bridge_holdout,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250424_110344645163.jpg,bridge_holdout,kimchi_with_target,,12,2 5,kimchi_with_target 층화 배정,validation
+250424_111106537338.jpg,bridge_holdout,kimchi_with_target,,7,1 2 5,kimchi_with_target 층화 배정,validation
+250424_114354919791.jpg,bridge_holdout,kimchi_with_target,,7,1 5,kimchi_with_target 층화 배정,validation
+250424_131537176736.jpg,bridge_holdout,kimchi_with_target,,6,1 2,kimchi_with_target 층화 배정,validation
+250424_141008289141.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_150822430768.jpg,bridge_holdout,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,validation
+250424_164608823093.jpg,bridge_holdout,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,validation
+250424_165356368327.jpg,bridge_holdout,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,validation

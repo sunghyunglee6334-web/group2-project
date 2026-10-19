@@ -1,11 +1,11 @@
 task: detect
 mode: train
-model: /home/jaden/교과_7_2조/group2-project/project8/yolo11m.pt
+model: /home/jaden/교과_7_2조/group2-project/project8/yolo11n.pt
 data: /home/jaden/교과_7_2조/group2-project/project8/configs/smoke_dataset.yaml
 epochs: 3
 time: null
 patience: 100
-batch: 4
+batch: 16
 imgsz: 1280
 save: true
 save_period: -1
