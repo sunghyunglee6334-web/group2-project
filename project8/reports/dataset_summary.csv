@@ -1,5 +1,5 @@
-﻿split,images,groups,d1_pct,empty_pct,ambiguous,dates,scene:kimchi_with_target,scene:object_only,scene:normal_kimchi,scene:none,stratum:kimchi_with_target|5-6,stratum:kimchi_with_target|1-2,stratum:normal_kimchi|0,stratum:object_only|3-4,class:0,class:1,class:2,class:3,class:5,class:6
-train,600,11,55.8,2.7,26,"04-10,04-11,04-24,05-13",450,134,15,1,8,1,1,1,487,1104,507,336,170,250
-val,75,3,56.0,13.3,1,"04-10,05-13",50,15,9,1,1,0,1,1,29,60,205,10,14,0
-test,75,2,54.7,0.0,1,"04-11,04-24",75,0,0,0,1,1,0,0,14,181,177,10,45,1
-bridge_holdout,150,3,54.7,0.0,0,"04-11,04-24",150,0,0,0,2,1,0,0,179,320,48,22,236,0
+﻿split,images,groups,d1_pct,empty_pct,ambiguous,dates,scene:kimchi_with_target,scene:object_only,scene:normal_kimchi,scene:none,class:0,class:1,class:2,class:3,class:5,class:6
+train,609,10,52.9,1.8,27,"04-10,04-11,04-24,05-13",449,149,9,2,489,1019,673,323,163,249
+val,66,3,83.3,22.7,0,"04-10,04-11",51,0,15,0,27,145,39,23,21,1
+test,75,2,54.7,0.0,1,"04-11,04-24",75,0,0,0,14,181,177,10,45,1
+bridge_holdout,150,3,54.7,0.0,0,"04-11,04-24",150,0,0,0,179,320,48,22,236,0
