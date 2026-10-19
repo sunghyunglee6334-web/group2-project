@@ -38,3 +38,4 @@ Thumbs.db
 .idea/
 *:Zone.Identifier
 backup/
+runs/
