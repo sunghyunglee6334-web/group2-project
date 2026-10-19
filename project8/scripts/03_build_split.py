@@ -33,36 +33,30 @@ from src.split_builder import SPLITS, SplitError, build_split
 # ==================================================================
 # 정책 값 — docs/split_policy.md에서 확정한 값으로 여기만 고칩니다
 # ==================================================================
-DATASET_VERSION = "kimchi_v1"   # TODO(기준선)
+DATASET_VERSION = "kimchi_v2"   # v2: Class 6 장면 경계 나누기 · T17 쪼개기 끔
 GAP_SECONDS = 300               # [1-2] 5분 넘게 쉬면 새 그룹 (쉬는 동안 이물이 바뀜) — 팀 결정: 원래 기준 유지
 SEED = 42                       # 기록용 (배정은 결정적 → 누가 실행해도 같은 결과)
 EXPECTED_TOTAL = 900
 
 # src/split_builder.py의 DEFAULT_POLICY 중 바꿀 값만 적습니다
 POLICY = {
+    "name": "group_stratified_v2_scene",
     "sizes": {"bridge_holdout": 150, "test": 75, "val": 75},   # [3단계] train = 나머지 600
-    # ── 팀 결정 (2026-10-15): Val = T02 + T04 통째 + T17 뒤 15장 ──
-    "pinned_val": ["T02"],                               # [3-2] 정상 김치(T02) + 김치·이물(T04) 묶음째
-    "orig_val_block": {"enabled": True, "take": 15},            # [1-6] T17 끝 기존 validation 중 뒤 15장 (이물만)
-    "use_phash": False,                                         # 배정은 그대로 두고 pHash는 03b_check_phash.py로 따로 확인
-    # "size_tolerance": 0,                    # 0 = 장수 정확히
-    # "rare_classes": ["6"],                  # [2-3] 희소 클래스
-    # "pinned_train": [],                     # [3-2] Train에 직접 고정할 group_id
-    # "pinned_val": ["T02"],                  # [3-2] Val에 묶음째 고정 (기본: T02 정상 김치) · 끄려면 []
-    # "orig_val_block": {"enabled": True, "take_range": [15, 30]},  # [1-5] T17 끝 기존 validation 블록을 Val로 (같은 이물 → same_bundle_split 표시)
-    # "val_first": {"enabled": True},         # [3-0] 기존 validation 사진만 Val로 (묶음을 쪼갬 → 누수, 기본 끔)
-    # "use_phash": True,                      # [1-3] pHash 병합 (imagehash 필요)
-    # "score_weights": {"stratum": 0.5, "scene": 1.0, "class": 1.0, "background": 1.0, "size": 1.0},  # [3-4] 점수 가중치
-    # "scene_pair": {"mode": "merge", "min_iou": 0.8},  # [1-5] 같은 위치·다른 이물 (merge = 묶음 합침 / flag = 표시만)
-    # "size_bins": {"train_px": 640, "small": 32, "large": 96},  # [2-4a] bbox 크기 구간 (학습 해상도 기준 px)
-    # "size_check": True,                     # [3-3a] Val·Test Class별 크기 쏠림(90% 초과) 금지
-    # "class_min_objects": {"val": 5, "test": 5},       # [3-3] Val·Test Class별 최소 객체 수
-    # "train_min_background_share": 0.5,                # [3-3] 배경 이미지 중 Train 최소 비율
-    # "orig_val_preference": {"enabled": True, "weight": 2.0},  # [3-4] 기존 validation 비율 높은 묶음을 Val로 우선
+    "size_tolerance": 0,                                        # 장수 허용 오차 (팀이 정하면 2~5로. 늘리면 탐색이 느려짐)
+    "pinned_val": ["T02"],                                      # [3-2] 정상 김치(T02) 묶음째 Val
+    "orig_val_block": {"enabled": False},                       # v2: T17 끝을 떼어 Val에 넣지 않음 (누수) → T17 전체 Train
+    "scene_split": {"enabled": True},                           # v2 [1-2b] Class 6가 몰린 묶음(T00)만 장면 경계로 나눔
+    "eval_classes": ["0", "1", "2", "3", "5", "6"],             # v2: Class 6도 점수·Val/Test 최소 개수·Train 최다 검사에 포함
+    "use_phash": False,                                         # 배정은 그대로 두고 pHash는 06_check_phash.py로 따로 확인
+    "export": {                                                 # v2 결과는 따로 저장 (v1 덮어쓰지 않음)
+        "manifest_dir": "manifests/kimchi_v2", "report_dir": "reports/kimchi_v2",
+        "yolo_dir": "data/yolo_kimchi_v2", "bridge_dir": "data/bridge_holdout_kimchi_v2",
+        "dataset_yaml": "configs/dataset_kimchi_v2.yaml",
+    },
 }
 
 SAVE_MANIFESTS = True   # [5단계] manifests/ 5개 CSV + reports/ 저장 (산출물 1)
-COPY_IMAGES = True     # [6단계] data/yolo/, data/bridge_holdout/로 이미지·라벨 복사 (확정 후 True)
+COPY_IMAGES = False    # [6단계] data/yolo/, data/bridge_holdout/로 이미지·라벨 복사 (확정 후 True)
 
 # ==================================================================
 DATA_ROOT = PROJECT_ROOT / "data" / "final"
@@ -114,8 +108,9 @@ def main():
 
     print()
     if SAVE_MANIFESTS:
-        print("[5단계] 저장: manifests/split_manifest.csv, train.csv, val.csv, test.csv, bridge_holdout.csv")
-        print("        기록: reports/dataset_summary.csv, reports/split_report.md")
+        ex = POLICY["export"]
+        print(f"[5단계] 저장: {ex['manifest_dir']}/split_manifest.csv, train.csv, val.csv, test.csv, bridge_holdout.csv")
+        print(f"        기록: {ex['report_dir']}/dataset_summary.csv, split_report.md")
     else:
         print("[5단계] 시험 실행 — manifests를 저장하지 않았습니다 (SAVE_MANIFESTS = True로 저장)")
     print("[6단계] 복사: data/yolo/, data/bridge_holdout/, configs/dataset.yaml" if COPY_IMAGES
