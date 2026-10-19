@@ -1,10 +1,10 @@
 {
   "run_name": "smoke_v1",
-  "imgsz": 960,
-  "batch": 16,
+  "imgsz": 1280,
+  "batch": 4,
   "epochs": 3,
   "gpu": "NVIDIA GeForce RTX 3060",
-  "peak_reserved_gb": 4.86,
-  "peak_allocated_gb": 4.47,
+  "peak_reserved_gb": 8.23,
+  "peak_allocated_gb": 7.66,
   "total_gb": 12.0
 }
