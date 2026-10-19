@@ -1,6 +1,6 @@
 """교과 8 Handoff 문서 자동 생성 (FINAL 생성 후 실행).
 
-    python scripts/08_handoff.py              -> docs/subject08_handoff.md  (산출물 11번)
+    python scripts/08_handoff.py              -> docs/10_subject08_handoff.md  (산출물 11번)
     python scripts/08_handoff.py --template   -> 숫자 칸을 TBD 로 둔 뼈대 (FINAL 전 미리보기)
 
 구성은 강사님 '산출물 예시_교과7' 11번(1~10장)을 따르고,
@@ -128,19 +128,19 @@ def render(n: dict | None, final_dir: str) -> str:
         "- **배경 (Class 없음)**: 김치(잎 · 조각 · 양념)와 고무장갑에는 BBox 가 없습니다. 모델은 이 부분을 \"이물이 아닌 것\"으로 배웁니다.",
         "- Class 4 는 번호 체계 유지를 위해 `dataset.yaml` 에 남기되 라벨은 0건입니다. 모델이 Class 4 를 예측하면 FP 로 확인합니다.",
         "- 작아도 확실한 이물은 BBox + 노트 `small` (스티로폼 = Class 1) → 교과 8 실패분석에서 \"작은 이물 FN\" 근거",
-        "- 상세 기준: `docs/class_guide.md` (v1.7.1) · 프로그램 설정: `configs/classes.yaml`",
+        "- 상세 기준: `docs/02_class_guide.md` (v1.7.1) · 프로그램 설정: `configs/classes.yaml`",
         "",
         "## 5. BBox 기준",
         "",
         "- 객체 외곽에 밀착 (여백 최대 3px, 잘림 금지) · 하나의 객체 = BBox 1개 · 가려져 끊겨 보여도 같은 객체면 1개",
-        "- 상세 기준: `docs/bbox_guide.md` (v1.2)",
+        "- 상세 기준: `docs/03_bbox_guide.md` (v1.2)",
         "",
         "## 6. QA 결과",
         "",
         f"- 작업 상태: {v('status')}",
         "- 목표: REVIEW 0 · CRITICAL 0 · Pair 오류 0 (07_build_final 은 이 조건을 만족해야만 FINAL 을 만듦)",
         "- 검수 과정: 1차 라벨링 → 교차검수 → 확인 필요(REVIEW) 최종검수 → 전체 900장 최종검수(3명, 이전 검수자와 겹치지 않게)",
-        "- 상세: `reports/qa_summary.md` · 프로그램 테스트: `reports/test_report.md` · 코드 리뷰: `docs/code_review.md`",
+        "- 상세: `reports/01_qa_summary.md` · 프로그램 테스트: `reports/02_test_report.md` · 코드 리뷰: `docs/08_code_review.md`",
         "",
         "## 7. Dataset 작업 이력",
         "",
@@ -157,11 +157,11 @@ def render(n: dict | None, final_dir: str) -> str:
         "FINAL 폴더 (내부 저장 · USB / 공유폴더로 전달)",
         "├── images/ · labels/ · manifest_final.csv · final_file_map.csv · FINAL_INFO.json",
         "Git (project7/)",
-        "├── docs/subject08_handoff.md   ← 이 문서",
-        "├── docs/class_guide.md · docs/bbox_guide.md",
+        "├── docs/10_subject08_handoff.md   ← 이 문서",
+        "├── docs/02_class_guide.md · docs/03_bbox_guide.md",
         "├── configs/classes.yaml",
         "├── manifests/dataset_manifest.csv",
-        "└── reports/qa_summary.md · reports/test_report.md",
+        "└── reports/01_qa_summary.md · reports/02_test_report.md",
         "```",
         "",
         "- 원본 김치 사진(JPG)은 GitHub · 디스코드 · 카톡에 올리지 않습니다 (NDA). 사진 전달은 USB · 공유폴더 · 메일(작은 zip)만 · 라벨 TXT · CSV 는 Git 허용.",
@@ -205,10 +205,10 @@ def render(n: dict | None, final_dir: str) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw"); ap.add_argument("--work"); ap.add_argument("--final")
-    ap.add_argument("--out", help="저장 위치 (기본: docs/subject08_handoff.md)")
+    ap.add_argument("--out", help="저장 위치 (기본: docs/10_subject08_handoff.md)")
     ap.add_argument("--template", action="store_true", help="FINAL 없이 숫자를 TBD 로 둔 뼈대만 생성")
     a = ap.parse_args()
-    out = Path(a.out) if a.out else DOCS_DIR / "subject08_handoff.md"
+    out = Path(a.out) if a.out else DOCS_DIR / "10_subject08_handoff.md"
     out.parent.mkdir(parents=True, exist_ok=True)
 
     if a.template:
