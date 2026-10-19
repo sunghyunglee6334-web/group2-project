@@ -66,4 +66,4 @@
 | Validation CRITICAL 0 | 완료 · 0 ([reports/03_validation_final.csv](../reports/03_validation_final.csv)) |
 | 이미지 · TXT Pair | 완료 · 900쌍 |
 | FINAL 생성 (`07_build_final.py`) | 완료 · 900쌍 |
-| RAW 변경 0 (해시 확인) | 예정 · `00_raw_snapshot.py --verify` 결과 기록 예정 |
+| RAW 변경 0 (해시 확인) | 결과 · [OK] RAW 1800개 파일이 처음과 동일합니다. |
