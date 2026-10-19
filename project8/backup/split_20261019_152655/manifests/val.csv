@@ -1,0 +1,76 @@
+﻿image_name,split,scene_type,cluster_id,n_boxes,classes,reason,original_split
+250410_144834943618.jpg,val,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_152339920357.jpg,val,kimchi_with_target,,5,6,kimchi_with_target 층화 배정,train
+250410_175444219123.jpg,val,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250410_182623838600.jpg,val,kimchi_with_target,,6,0 2,kimchi_with_target 층화 배정,train
+250411_095114999624.jpg,val,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_100540938085.jpg,val,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250411_105659553370.jpg,val,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_111358192719.jpg,val,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,train
+250411_113335977212.jpg,val,kimchi_with_target,,9,1,kimchi_with_target 층화 배정,train
+250411_134422867708.jpg,val,kimchi_with_target,,7,1 2,kimchi_with_target 층화 배정,train
+250411_134741200055.jpg,val,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_140452731605.jpg,val,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_142304725518.jpg,val,kimchi_with_target,,5,1,kimchi_with_target 층화 배정,train
+250411_152317457996.jpg,val,kimchi_with_target,,5,1 2 5,kimchi_with_target 층화 배정,train
+250411_152549760336.jpg,val,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,train
+250411_155607936718.jpg,val,kimchi_with_target,,5,5,kimchi_with_target 층화 배정,train
+250411_162929801419.jpg,val,kimchi_with_target,,5,1 5,kimchi_with_target 층화 배정,train
+250424_110748018790.jpg,val,kimchi_with_target,,8,2,kimchi_with_target 층화 배정,train
+250424_112004831679.jpg,val,kimchi_with_target,,9,1 2 5,kimchi_with_target 층화 배정,train
+250424_112841184247.jpg,val,kimchi_with_target,,4,2 3,kimchi_with_target 층화 배정,train
+250424_133357022002.jpg,val,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_135403978558.jpg,val,kimchi_with_target,,6,0 1 2,kimchi_with_target 층화 배정,train
+250424_135655980687.jpg,val,kimchi_with_target,,6,0 1 3 5,kimchi_with_target 층화 배정,train
+250424_141556763818.jpg,val,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,train
+250424_141831775241.jpg,val,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_142911137938.jpg,val,kimchi_with_target,,7,0 1 5,kimchi_with_target 층화 배정,train
+250424_151459859261.jpg,val,kimchi_with_target,,5,2,kimchi_with_target 층화 배정,train
+250424_155719300374.jpg,val,kimchi_with_target,,5,1 3,kimchi_with_target 층화 배정,train
+250424_164708984954.jpg,val,kimchi_with_target,,5,0,kimchi_with_target 층화 배정,train
+250424_165010824897.jpg,val,kimchi_with_target,,7,0 1 5,kimchi_with_target 층화 배정,train
+250424_165440056716.jpg,val,kimchi_with_target,,4,0 1,kimchi_with_target 층화 배정,train
+250424_170251913373.jpg,val,kimchi_with_target,,5,0 1 3,kimchi_with_target 층화 배정,train
+250513_014212675091.jpg,val,object_only,,1,1,object_only 층화 배정,train
+250513_014651188904.jpg,val,object_only,,5,2 3,object_only 층화 배정,train
+250513_014744740745.jpg,val,object_only,,4,1 2,object_only 층화 배정,train
+250513_014839145281.jpg,val,object_only,,3,1 2,object_only 층화 배정,train
+250513_015237273675.jpg,val,object_only,,3,0 1,object_only 층화 배정,train
+250513_015452233667.jpg,val,object_only,,4,0 1 3,object_only 층화 배정,train
+250513_015652352412.jpg,val,object_only,,5,0 2 3,object_only 층화 배정,train
+250513_015705034630.jpg,val,object_only,,1,2,object_only 층화 배정,train
+250513_015757121885.jpg,val,object_only,,4,1 2,object_only 층화 배정,train
+250513_020026421685.jpg,val,object_only,,2,2,object_only 층화 배정,train
+250513_020037160142.jpg,val,object_only,,2,2 3,object_only 층화 배정,train
+250513_020101011960.jpg,val,object_only,,2,1,object_only 층화 배정,train
+250513_020150756977.jpg,val,object_only,,2,0 1,object_only 층화 배정,train
+250513_020233505190.jpg,val,object_only,,4,0 1,object_only 층화 배정,train
+250513_020421725158.jpg,val,object_only,,5,0 1 2,object_only 층화 배정,train
+250513_020549238232.jpg,val,object_only,,4,1 2,object_only 층화 배정,train
+250513_020743814028.jpg,val,object_only,,3,1 2,object_only 층화 배정,train
+250513_020846723329.jpg,val,object_only,,3,0 1,object_only 층화 배정,train
+250513_021015212241.jpg,val,object_only,,3,1 2,object_only 층화 배정,train
+250513_021137841395.jpg,val,object_only,,2,1,object_only 층화 배정,train
+250513_021213190018.jpg,val,object_only,,2,0 1,object_only 층화 배정,train
+250513_021233704903.jpg,val,object_only,,1,1,object_only 층화 배정,train
+250513_021405809512.jpg,val,object_only,,3,2,object_only 층화 배정,train
+250513_021522087814.jpg,val,object_only,,1,3,object_only 층화 배정,train
+250410_171526553647.jpg,val,kimchi_with_target,,3,1 2,kimchi_with_target 층화 배정,validation
+250410_182048797815.jpg,val,kimchi_with_target,,5,1 2,kimchi_with_target 층화 배정,validation
+250410_182143992189.jpg,val,kimchi_with_target,,6,1 2 5,kimchi_with_target 층화 배정,validation
+250411_095929903223.jpg,val,kimchi_with_target,,4,1 3,kimchi_with_target 층화 배정,validation
+250411_134338103210.jpg,val,kimchi_with_target,,6,0 1,kimchi_with_target 층화 배정,validation
+250411_160845945710.jpg,val,kimchi_with_target,,5,0 1 5,kimchi_with_target 층화 배정,validation
+250424_112256216378.jpg,val,kimchi_with_target,,9,1 2,kimchi_with_target 층화 배정,validation
+250424_131605365916.jpg,val,kimchi_with_target,,6,1 5,kimchi_with_target 층화 배정,validation
+250424_133822721787.jpg,val,kimchi_with_target,,6,0 5,kimchi_with_target 층화 배정,validation
+250424_151011160174.jpg,val,kimchi_with_target,,6,2 5,kimchi_with_target 층화 배정,validation
+250424_152915766700.jpg,val,kimchi_with_target,,4,0 1 2,kimchi_with_target 층화 배정,validation
+250424_153231474040.jpg,val,kimchi_with_target,,5,1 2 3,kimchi_with_target 층화 배정,validation
+250424_154812782976.jpg,val,kimchi_with_target,,5,3,kimchi_with_target 층화 배정,validation
+250513_021719424551.jpg,val,object_only,,4,3,object_only 층화 배정,validation
+250513_021900840954.jpg,val,object_only,,3,1 2 3,object_only 층화 배정,validation
+250513_021942681060.jpg,val,object_only,,3,0 1,object_only 층화 배정,validation
+250513_022002033052.jpg,val,object_only,,1,1,object_only 층화 배정,validation
+250513_022029312836.jpg,val,object_only,,3,1 2,object_only 층화 배정,validation
+250513_022233676410.jpg,val,object_only,,4,0 1 2,object_only 층화 배정,validation

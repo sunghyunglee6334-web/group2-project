@@ -1,4 +1,5 @@
-# 03_build_split.py가 생성 (라벨 겹침 기준 split · Bridge Holdout 제외)
+# group_fixed_v4 · 03_build_split.py가 생성
+# Bridge Holdout(data/bridge_holdout)은 교과 8 개발에 사용하지 않으므로 넣지 않음
 train: ../data/yolo/images/train
 val: ../data/yolo/images/val
 test: ../data/yolo/images/test
