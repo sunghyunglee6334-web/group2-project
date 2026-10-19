@@ -1,5 +1,18 @@
 # Failure Analysis Hypothesis
 
+> ⚠️ **옛 Split(v1) 기준 · 참고용**
+> 이 문서의 숫자는 확정 Split(v4-B)이 아니라 이전 Split(v1, `kimchi_v1`) 기준이에요.
+>
+> | 항목 | 이 문서 (v1) | 확정 Split (v4-B) |
+> |---|---|---|
+> | 장수 | Train 600 / Val 75 | Train 609 / Val 66 / Test 75 / Bridge 150 |
+> | Baseline (Val) | P 0.890 · R 0.592 · mAP50 0.658 | R 0.444 (v4-A 누수 상태에서는 0.781) |
+>
+> - "작은 이물 FN 36%"(EXP001 시작 근거)도 **v1 Val 75장 기준** 값이에요.
+>   v4-B에서 같은 분석을 다시 하면 숫자가 달라질 수 있어요.
+> - v4-B 기준 한계점: `docs/split_report.md`, `limitations.md`
+> - Class 6(파·고추)·이물만 장면(T17)은 v4-B에서 **평가 불가**예요.
+
 ## 1. 분석 대상
 
 - Model: baseline_v1 (YOLO11n)
