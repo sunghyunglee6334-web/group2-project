@@ -16,7 +16,7 @@ data/final/images/
 
 # ── 보고서: 실행마다 생기는 validation_날짜.csv 는 제외 · 최종본만 ──
 reports/validation_*.csv
-!reports/validation_final.csv
+!reports/03_validation_final.csv
 
 # ── 용량 · 개인 설정 ──
 *.zip
