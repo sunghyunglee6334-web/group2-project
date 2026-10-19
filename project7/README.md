@@ -50,9 +50,11 @@
 
 ### Architecture
 
-> 준비 중 — 여기에 Architecture 그림과 설명이 들어갑니다 (`docs/00_architecture.md`).
+원본 RAW 는 읽기만 하고, 프로그램으로 고친 라벨은 작업본 WORK 에만 저장합니다. 검수와 자동 검사 조건을 **모두 통과해야만** FINAL 900쌍이 만들어져 교과 8 로 넘어갑니다.
 
-데이터 처리 흐름: **원본 RAW(읽기만) → 작업본 WORK(프로그램이 저장) → 합치기 · 검수 → FINAL(교과 8 입력)**
+![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)
+
+단계별 코드 · 산출물 · 담당 · 프로그램 내부 구조 → [00 Architecture](docs/00_architecture.md)
 
 <br>
 
@@ -172,6 +174,7 @@ project7/
 
 | 알고 싶은 것 | 문서 | 담당 · 수정일 |
 |---|---|---|
+| 전체 구조 · 데이터 흐름 | [00 Architecture](docs/00_architecture.md) | PM · 10/19 |
 | 기준 · 완료 조건 | [01 Project Baseline](docs/01_project_baseline.md) | PM · Manifest · 10/15 |
 | 어떤 Class 로 라벨할지 | [02 Class 기준서](docs/02_class_guide.md) v1.7.2 | Coord · 10/14 |
 | 박스를 어디까지 그릴지 | [03 BBox 기준서](docs/03_bbox_guide.md) v1.2 | Coord · 10/13 |
@@ -278,7 +281,7 @@ project7/
 - **QA** — 이미지 900 · TXT 900 · CRITICAL **0** · 최종 REVIEW **0** → [01 QA Summary](reports/01_qa_summary.md) · [검사 결과 파일](reports/03_validation_final.csv)
 - **사람이 찾은 오류** — 빈 라벨 26건 중 2건이 고무장갑만 있는 사진 → 장면 유형 `none` 추가 → [ISSUE-08](docs/05_issue_improvement.md#issue-08-배경만-있는-사진-2장)
 - **프로그램 테스트** — 개발 단계 오류 **8개** 모두 수정 · 재시험 PASS · 자동 테스트 **4개 통과** → [02 Test Report](reports/02_test_report.md)
-- Golden → Pilot → Final Acceptance 중 Golden · Pilot 결과 작성 중 → [Golden Test](reports/02_test_report.md#1-golden-test)
+- **Golden → Pilot → Final Acceptance** — Golden 13 / 13 PASS · Pilot 30 / 30 PASS · 900장 최종 판정 ACCEPTED → [Golden Test](reports/02_test_report.md#1-golden-test)
 
 <br><br>
 
@@ -316,7 +319,7 @@ project7/
 | 6 | BBox 기준서 | [docs/03](docs/03_bbox_guide.md) | 완료 · v1.2 |
 | 7 | Dataset Manifest | `manifests/dataset_manifest.csv` | 예정 · FINAL 후 생성 |
 | 8 | QA Summary | [reports/01](reports/01_qa_summary.md) | 완료 |
-| 9 | Test Report | [reports/02](reports/02_test_report.md) | 예정 · Golden 결과 칸 |
+| 9 | Test Report | [reports/02](reports/02_test_report.md) | 완료 · Golden 13 / 13 · Pilot 30 / 30 |
 | 10 | README | 이 문서 | 완료 |
 | 11 | 교과 8 Handoff | [docs/10](docs/10_subject08_handoff.md) | 완료 |
 
@@ -324,6 +327,7 @@ project7/
 
 | 추가 산출물 | 위치 | 추가 사유 |
 |---|---|---|
+| Architecture | [docs/00](docs/00_architecture.md) | 데이터 흐름 6단계 · 프로그램 구조 · 설계 원칙을 한 장으로 설명 |
 | 사용설명서 | [docs/04](docs/04_user_manual.md) | 처음 쓰는 사람도 설치 · 실행 · 문제 해결을 따라 하게 |
 | 이슈 → 개선 보고서 | [docs/05](docs/05_issue_improvement.md) | 이슈 발견 · 원인 · 조치 과정 기록 |
 | 버전 기록 | [docs/06](docs/06_version_history.md) | 프로그램 · 기준서 · 데이터 변경 이력 관리 |
