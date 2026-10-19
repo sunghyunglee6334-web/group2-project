@@ -40,28 +40,28 @@
 900장 작업을 시작하기 전에 핵심 기능이 정상인지 소수의 실제 데이터로 확인합니다.
 
 ### 테스트 데이터
-- 실제 조각김치 이미지: ( 20 )장, 목록 `golden.txt`
+- 실제 조각김치 이미지: (  )장, 목록 `golden.txt`
 - 자동 시험: `python scripts/09_golden_test.py --list golden.txt` → `reports/golden_test.txt`
 
 ### 테스트 결과
 
 | 테스트 항목 | 결과 |
 |---|---|
-| 이미지 열기 | PASS |
-| 기존 YOLO TXT Load (TXT 줄 수 = 화면 BBox 수) | PASS |
-| 기존 BBox 표시 | PASS |
-| BBox 추가 | PASS |
-| BBox 수정 (이동·크기 조절·좌표 입력) | PASS |
-| BBox 삭제 | PASS |
-| Class 변경 | PASS |
-| Zoom | PASS |
-| Pan | PASS |
-| YOLO TXT 저장 | PASS |
-| 저장 후 Reload (좌표 왕복 오차 < 1e-6) | PASS |
-| 수정 없이 저장 = RAW 와 바이트 동일 | PASS |
-| Validation | PASS |
+| 이미지 열기 | |
+| 기존 YOLO TXT Load (TXT 줄 수 = 화면 BBox 수) | |
+| 기존 BBox 표시 | |
+| BBox 추가 | |
+| BBox 수정 (이동·크기 조절·좌표 입력) | |
+| BBox 삭제 | |
+| Class 변경 | |
+| Zoom | |
+| Pan | |
+| YOLO TXT 저장 | |
+| 저장 후 Reload (좌표 왕복 오차 < 1e-6) | |
+| 수정 없이 저장 = RAW 와 바이트 동일 | |
+| Validation | |
 
-최종 결과: ( 13 ) / ( 13 ) PASS
+최종 결과: (  ) / (  ) PASS
 
 ---
 
@@ -71,19 +71,23 @@
 실제 900장 작업을 시작하기 전에 작업 흐름 전체(배분 → 작업 → 병합 → 교차검수)가 안정적인지 확인합니다.
 
 ### 테스트 데이터
-- 실제 이미지 30장 
-(`03_assign.py --pilot 30`, 고르게 섞이도록 그룹별로 돌아가며 배분)
+- 실제 이미지 30장 (`03_assign.py --pilot 30`, 1인 5장)
 
 ### 최초 결과
-- PASS: ( 30 )장
-- FAIL: ( 0 )장
-- 1장 평균 처리 시간: ( 30 )초
+- PASS: (  )장
+- FAIL: (  )장
+- 1장 평균 처리 시간: (  )분
 
 ### 발견된 문제
-- 해당 없음 (FAIL 0)
+
+#### FAIL-01
+문제:
+원인:
+조치:
+재시험:
 
 ### Pilot 최종 결과
-- PASS: ( 30 )장
+- PASS: (  )장
 - FAIL: 0장
 
 ---
@@ -98,19 +102,19 @@
 
 | 항목 | 결과 |
 |---|---|
-| 900장 이미지 탐색 가능 | o |
-| 이미지와 TXT Pair 정상 (images 900 / labels 900) | o |
-| 저장 후 Reload 정상 | o |
-| 미처리 REVIEW 0 | o |
-| Critical Error 0 | o |
-| Validation 오류 0 (`02_validate.py`) | o |
-| RAW 변경 0 (`00_raw_snapshot.py --verify`) | o |
-| `07_build_final.py` 성공 | o |
+| 900장 이미지 탐색 가능 | |
+| 이미지와 TXT Pair 정상 (images 900 / labels 900) | |
+| 저장 후 Reload 정상 | |
+| 미처리 REVIEW 0 | |
+| Critical Error 0 | |
+| Validation 오류 0 (`02_validate.py`) | |
+| RAW 변경 0 (`00_raw_snapshot.py --verify`) | |
+| `07_build_final.py` 성공 | |
 
 ### 최종 결과
 - 전체 대상: 900장
-- Critical Error: ( 0 )건
-- Unresolved Review: ( 0 )건
-- Validation Error: ( 0 )건
+- Critical Error: (  )건
+- Unresolved Review: (  )건
+- Validation Error: (  )건
 
-최종 판정: ( ACCEPTED )
+최종 판정: (ACCEPTED / 보류)

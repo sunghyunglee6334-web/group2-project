@@ -21,15 +21,9 @@ def main() -> int:
     ap.add_argument("--target", choices=["raw", "work"], default="work")
     ap.add_argument("--raw")
     ap.add_argument("--work")
-    ap.add_argument("--require-work", action="store_true")  # WORK 라벨 검사 옵션 보완 / 10.18
     a = ap.parse_args()
     paths = Paths(a.raw, a.work)
-    if a.require_work and a.target != "work":
-        ap.error("--require-work는 --target work에서만 사용할 수 있습니다.")
-    issues = validate(paths, 
-        use_work=(a.target == "work"),
-        require_work=a.require_work,                        # WORK 라벨 검사 옵션 보완 / 10.18
-    )
+    issues = validate(paths, use_work=(a.target == "work"))
     out = REPORT_DIR / f"validation_{a.target}_{datetime.now():%Y%m%d_%H%M%S}.csv"
     write_report(issues, out)
     for sev, codes in summarize(issues).items():
