@@ -164,7 +164,6 @@ def validate(
     records: list[ImageRecord] | None = None, 
     manifest=None,
     coverage: ValidationCoverage | None = None,             # coverage 추가 / 10.13
-    require_work: bool = False,                         # WORK 라벨 검사 옵션 보완 / 10.18
 ) -> list[Issue]:
     """use_work=True 이면 WORK 저장본(없으면 RAW)을, False 이면 RAW 만 검사.
     manifest 를 주면 검수 상태가 REVIEW 인 이미지도 결과에 넣는다."""
@@ -185,17 +184,16 @@ def validate(
                 "검사할 이미지가 없습니다. RAW 경로를 확인하세요.",
             )
         )                           
-#######   ~ 추가             # WORK 라벨 검사 옵션 보완 / 10.18
+#######   ~ 추가
+
     for rec in records:
         img_path = rec.raw_image(paths)
 
-        if not use_work:
-            label_path = rec.raw_label(paths)
-        elif require_work:
-            label_path = rec.work_label(paths)
-        else:
-            label_path = rec.effective_label(paths)
-# ~ 수정        
+        label_path = (                      # 수정 ~    / 10.13
+            rec.effective_label(paths)
+            if use_work
+            else rec.raw_label(paths)
+        )       # ~ 수정        
         coverage.mark("checked", ("IMAGE_READ",))   # 추가  / 10.13
         
         try:
