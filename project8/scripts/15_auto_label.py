@@ -1,8 +1,8 @@
 """Final Model로 시연 이미지를 추론하고 후보 YOLO TXT를 저장한다.
 
 실행 (project8 폴더에서):
-    python scripts/12_auto_label.py
-    python scripts/12_auto_label.py --input data/test_detection/sample.jpg
+    python scripts/15_auto_label.py
+    python scripts/15_auto_label.py --input data/test_detection/sample.jpg
 
 후보 라벨 기본 저장 위치:
     demo/auto_label/candidate_labels/

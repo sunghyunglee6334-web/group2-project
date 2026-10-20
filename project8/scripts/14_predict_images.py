@@ -1,8 +1,8 @@
 """Final Model로 승인된 시연 이미지를 추론하고 결과를 저장한다.
 
 실행 (project8 폴더에서):
-    python scripts/08_predict_images.py
-    python scripts/08_predict_images.py --input data/test_detection/sample.jpg
+    python scripts/14_predict_images.py
+    python scripts/14_predict_images.py --input data/test_detection/sample.jpg
 
 기본 출력:
     demo/prediction_images/              시각화 이미지
@@ -86,15 +86,16 @@ def detection_rows(
     """이미지별 기록을 검출 1건당 한 행으로 만든다 (미검출도 이미지 행 유지)."""
     def display_path(path: Path) -> str:
         try:
-            return path.relative_to(PROJECT_ROOT).as_posix()
+            return path.expanduser().resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
         except ValueError:
-            return path.as_posix()
+            # 프로젝트 외부 입력의 개인 PC 절대경로는 CSV에 남기지 않는다.
+            return path.name
 
     common = {
         "model_weight": display_path(weight_path),
         "confidence_threshold": conf,
         "imgsz": imgsz,
-        "input_image": image_path.as_posix(),
+        "input_image": display_path(image_path),
         "output_image": display_path(output_path),
         "inference_seconds": round(elapsed, 6),
         "detection_count": len(detections),
