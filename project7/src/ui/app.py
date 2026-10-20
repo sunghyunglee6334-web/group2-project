@@ -125,6 +125,9 @@ class LabelApp(CanvasEditor):
             command("Undo", self.undo, "Ctrl+Z"),
             SEPARATOR,
             command("Validation 실행", self.run_validation),
+            SEPARATOR,
+            command("AI Detection 실행", lambda: self.ai.on_detection()),
+            command("AI Auto Label", lambda: self.ai.on_auto_label()),
         ]
 
         review_items = [
@@ -340,6 +343,8 @@ class LabelApp(CanvasEditor):
         self.make_pyramid(img)
         self.selected = None
         self.drag = None
+        if getattr(self, "ai", None):           # 이전 이미지의 AI 결과 지우기
+            self.ai.on_image_changed()
         self.load_meta()
         self.highlight_list()
         self.fit()
@@ -355,6 +360,8 @@ class LabelApp(CanvasEditor):
         self.s.cur = None
         self.selected = None
         self.drag = None
+        if getattr(self, "ai", None):
+            self.ai.on_image_changed()
 
         text = message or f"'{self.s.filter_name}' 에 해당하는 이미지가 없습니다"
         self.head_var.set(text)
