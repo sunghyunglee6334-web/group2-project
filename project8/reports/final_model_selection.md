@@ -135,3 +135,14 @@
 - **병해·갈변:** Test에서도 Recall 0 (45개) → Validation에서 기록한 한계와 같다.
 - **규칙:** Test 결과를 보고 모델 · conf · 설정을 바꾸지 않았다. 헛박스는 교과 14에서 Validation으로 conf 기준을 정할 때 다시 본다.
 
+### 75장 / 74장 (eval_exclude 제외)
+
+| 기준 | Precision | Recall | mAP50 | mAP50-95 |
+|---|---:|---:|---:|---:|
+| 75장 (전체 · 객체 428) | 0.6046 | 0.4660 | 0.4934 | 0.4115 |
+| 74장 (eval_exclude 제외 · 객체 421) | 0.6047 | 0.4655 | 0.4992 | 0.4171 |
+
+- `250411_140406550160.jpg`(T08)는 검수 단계에서 Class가 모호한 사진(갈변/이물 판단 애매)으로 확인되어, Split 확정 시점(10/15, Test 평가 전)에 `eval_exclude=True`로 지정했다 (`docs/split_policy.md`).
+- 13번 스크립트는 test 폴더 75장 전체로 평가했으므로, 75장 결과는 그대로 두고 같은 모델 · 같은 설정으로 74장 결과를 추가 기록했다 (`scripts/13b_evaluate_final_test_eval74.py` → `reports/final_metrics_eval74.csv` · `final_class_metrics_eval74.csv`).
+- 모델 · imgsz · conf는 바꾸지 않았다. 제외 후 mAP50-95는 0.4115 → 0.4171로 결론에 변화 없다.
+- 실행 속도 (참고): RTX 3060 · imgsz 1280 · 사진 1장당 추론 8.7ms (전처리 · 후처리 포함 약 15ms).
