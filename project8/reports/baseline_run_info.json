@@ -3,7 +3,7 @@
   "run_name": "baseline_v1",
   "run_dir": "runs/baseline_v1",
   "best_weight": "models/baseline/baseline_best.pt",
-  "dataset_version": "kimchi_v1",
+  "dataset_version": "kimchi_v4",
   "dataset_yaml": "configs/dataset.yaml",
   "train_manifest": "train.csv rows=600 md5=0328cbb2",
   "val_manifest": "val.csv rows=75 md5=59a179dc",
