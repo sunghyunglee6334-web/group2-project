@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="975" viewBox="0 0 2560 975" font-family="Noto Sans CJK KR, Malgun Gothic, sans-serif"><rect width="2560" height="975" fill="#fff"/>
+<text x="50" y="66" font-size="34" font-weight="700" fill="#1E293B">Architecture · 조각김치 이물검출 AI (교과 7 → 교과 8 · 2조)</text>
+<text x="50" y="96" font-size="17" fill="#475569">원본에서 정답 데이터를 만들고(교과 7) → 그 데이터로 YOLO11 을 학습 · 검증해(교과 8) → Final Model 이 다시 라벨 후보를 만들어 교과 7 프로그램에서 사람이 확정합니다</text>
+<rect x="30" y="128" width="1231" height="4" rx="2" fill="#6D28D9"/>
+<text x="30" y="158" font-size="17" font-weight="700" fill="#6D28D9">교과 7 · 라벨링 — 정답 데이터 만들기</text>
+<rect x="1298" y="128" width="1231" height="4" rx="2" fill="#0E7490"/>
+<text x="1298" y="158" font-size="17" font-weight="700" fill="#0E7490">교과 8 · 객체검출 — YOLO11 학습 · 검증 · 활용</text>
+<line x1="170" y1="268" x2="170" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="170" y1="536" x2="170" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="487" y1="268" x2="487" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="487" y1="536" x2="487" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="804" y1="268" x2="804" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="804" y1="536" x2="804" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1121" y1="268" x2="1121" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1121" y1="536" x2="1121" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1438" y1="268" x2="1438" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1438" y1="536" x2="1438" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1755" y1="268" x2="1755" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="1755" y1="536" x2="1755" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="2072" y1="268" x2="2072" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="2072" y1="536" x2="2072" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="2389" y1="268" x2="2389" y2="370" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<line x1="2389" y1="536" x2="2389" y2="640" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="30" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(46,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></g><text x="90" y="221" font-size="16.5" font-weight="700" fill="#1E293B">메일 · USB 로만 받음</text><text x="90" y="243" font-size="14" fill="#475569">NDA · 사진 Git 금지</text>
+<rect x="30" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(46,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g><text x="90" y="681" font-size="16.5" font-weight="700" fill="#1E293B">읽기만</text><text x="90" y="703" font-size="14" fill="#475569">SHA-256 무변경 확인</text>
+<rect x="347" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(363,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5c3-1.5 6-1.5 9 0v14c-3-1.5-6-1.5-9 0z"/><path d="M21 5c-3-1.5-6-1.5-9 0v14c3-1.5 6-1.5 9 0z"/></g><text x="407" y="221" font-size="16.5" font-weight="700" fill="#1E293B">팀 기준서</text><text x="407" y="243" font-size="14" fill="#475569">Class 0~6 · BBox 밀착</text>
+<rect x="347" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(363,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></g><text x="407" y="681" font-size="16.5" font-weight="700" fill="#1E293B">팀 6명</text><text x="407" y="703" font-size="14" fill="#475569">역할별 배분 · 직접 라벨링</text>
+<rect x="664" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(680,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8l1.5 1.5L12 7M8 14l1.5 1.5L12 13M14 8h3M14 14h3"/></g><text x="724" y="221" font-size="16.5" font-weight="700" fill="#1E293B">자동 검사</text><text x="724" y="243" font-size="14" fill="#475569">CRITICAL 0 · REVIEW 0</text>
+<rect x="664" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(680,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8l1.5 1.5L12 7M8 14l1.5 1.5L12 13M14 8h3M14 14h3"/></g><text x="724" y="681" font-size="16.5" font-weight="700" fill="#1E293B">테스트</text><text x="724" y="703" font-size="14" fill="#475569">Golden 13/13 · Pilot 30/30</text>
+<rect x="981" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(997,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></g><text x="1041" y="221" font-size="16.5" font-weight="700" fill="#1E293B">라벨 보정</text><text x="1041" y="243" font-size="14" fill="#475569">778장 수정 · 누락 350 추가</text>
+<rect x="981" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(997,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h12M12 7l5 5-5 5"/><path d="M19 5v14"/></g><text x="1041" y="681" font-size="16.5" font-weight="700" fill="#1E293B">Handoff</text><text x="1041" y="703" font-size="14" fill="#475569">교과 7 → 교과 8 전달</text>
+<rect x="1298" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1314,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g><text x="1358" y="221" font-size="16.5" font-weight="700" fill="#1E293B">5분 촬영 묶음</text><text x="1358" y="243" font-size="14" fill="#475569">18개 묶음 · 통째 배정</text>
+<rect x="1298" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1314,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></g><text x="1358" y="681" font-size="16.5" font-weight="700" fill="#1E293B">누수 점검</text><text x="1358" y="703" font-size="14" fill="#475569">MD5 · pHash · 섞임 0</text>
+<rect x="1615" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1631,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 15h9"/></g><text x="1675" y="221" font-size="16.5" font-weight="700" fill="#1E293B">한 변수 실험</text><text x="1675" y="243" font-size="14" fill="#475569">640 → 960 → 1280</text>
+<rect x="1615" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1631,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></g><text x="1675" y="681" font-size="16.5" font-weight="700" fill="#1E293B">실패 분석</text><text x="1675" y="703" font-size="14" fill="#475569">작은 이물 놓침 63.9%</text>
+<rect x="1932" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1948,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4l6 6M11 7l6 6M12.5 5.5l-4 4M17.5 10.5l-4 4M10 12l-7 7"/><path d="M13 21h8"/></g><text x="1992" y="221" font-size="16.5" font-weight="700" fill="#1E293B">선택 규칙</text><text x="1992" y="243" font-size="14" fill="#475569">+0.02 · Test 보기 전 확정</text>
+<rect x="1932" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(1948,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g><text x="1992" y="681" font-size="16.5" font-weight="700" fill="#1E293B">Test 1회</text><text x="1992" y="703" font-size="14" fill="#475569">74장 0.417 · 재실행 차단</text>
+<rect x="2249" y="182" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(2265,210) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V10l5 3V10l5 3V7l8 4v9z"/><path d="M7 17h2M12 17h2M17 17h2"/></g><text x="2309" y="221" font-size="16.5" font-weight="700" fill="#1E293B">교과 14</text><text x="2309" y="243" font-size="14" fill="#475569">Bridge 150 · 다음 후보 EXP004</text>
+<rect x="2249" y="642" width="280" height="86" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><g transform="translate(2265,670) scale(1.25)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></g><text x="2309" y="681" font-size="16.5" font-weight="700" fill="#1E293B">Human Review</text><text x="2309" y="703" font-size="14" fill="#475569">교과 7 프로그램 재사용</text>
+<line x1="288" y1="453" x2="339" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M335 433 L369 453 L335 473 Z" fill="#1E1B4B"/>
+<line x1="605" y1="453" x2="656" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M652 433 L686 453 L652 473 Z" fill="#1E1B4B"/>
+<line x1="922" y1="453" x2="973" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M969 433 L1003 453 L969 473 Z" fill="#1E1B4B"/>
+<line x1="1239" y1="453" x2="1290" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M1286 433 L1320 453 L1286 473 Z" fill="#1E1B4B"/>
+<line x1="1556" y1="453" x2="1607" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M1603 433 L1637 453 L1603 473 Z" fill="#1E1B4B"/>
+<line x1="1873" y1="453" x2="1924" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M1920 433 L1954 453 L1920 473 Z" fill="#1E1B4B"/>
+<line x1="2190" y1="453" x2="2241" y2="453" stroke="#1E1B4B" stroke-width="5"/><path d="M2237 433 L2271 453 L2237 473 Z" fill="#1E1B4B"/>
+<path d="M764 536 V586 H527 V562" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-dasharray="7 6"/><path d="M514 564 L527 540 L540 564 Z" fill="#6D28D9"/>
+<text x="645" y="604" font-size="14.5" font-weight="700" fill="#6D28D9" text-anchor="middle">문제 있으면 다시 수정</text>
+<path d="M2389 728 V776 H487 V754" fill="none" stroke="#0E7490" stroke-width="2.5" stroke-dasharray="8 6"/><path d="M474 756 L487 732 L500 756 Z" fill="#0E7490"/>
+<rect x="1138" y="760" width="600" height="30" fill="#fff"/><text x="1438" y="782" font-size="15.5" font-weight="700" fill="#0E7490" text-anchor="middle">AI 후보 라벨 → 교과 7 라벨링 프로그램에서 사람이 확정 (Human Review)</text>
+<rect x="52" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#475569" stroke-width="3"/>
+<g transform="translate(146,393) scale(2.0)" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+<text x="170" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">원본 데이터</text>
+<text x="170" y="512" font-size="15" fill="#475569" text-anchor="middle">RAW · JPG 900 + TXT 900</text>
+<circle cx="55" cy="375" r="18" fill="#475569"/><text x="55" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<rect x="369" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#6D28D9" stroke-width="3"/>
+<g transform="translate(463,393) scale(2.0)" fill="none" stroke="#6D28D9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><rect x="6" y="11" width="6" height="5"/><path d="M14 12h4M14 15h4"/></g>
+<text x="487" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">라벨링 프로그램</text>
+<text x="487" y="512" font-size="15" fill="#475569" text-anchor="middle">kimchi_labeler v2.2</text>
+<circle cx="372" cy="375" r="18" fill="#6D28D9"/><text x="372" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<rect x="686" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#6D28D9" stroke-width="3"/>
+<g transform="translate(780,393) scale(2.0)" fill="none" stroke="#6D28D9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></g>
+<text x="804" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">검수 · 검사</text>
+<text x="804" y="512" font-size="15" fill="#475569" text-anchor="middle">1차 → 교차 → 최종</text>
+<circle cx="689" cy="375" r="18" fill="#6D28D9"/><text x="689" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<rect x="1003" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#2563EB" stroke-width="3"/>
+<g transform="translate(1097,393) scale(2.0)" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+<text x="1121" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">FINAL 900쌍</text>
+<text x="1121" y="512" font-size="15" fill="#475569" text-anchor="middle">BBox 4,405 · CRITICAL 0</text>
+<circle cx="1006" cy="375" r="18" fill="#2563EB"/><text x="1006" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<rect x="1320" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#2563EB" stroke-width="3"/>
+<g transform="translate(1414,393) scale(2.0)" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></g>
+<text x="1438" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">Split</text>
+<text x="1438" y="512" font-size="15" fill="#475569" text-anchor="middle">v4-B · 609 / 66 / 75 / 150</text>
+<circle cx="1323" cy="375" r="18" fill="#2563EB"/><text x="1323" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+<rect x="1637" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#0E7490" stroke-width="3"/>
+<g transform="translate(1731,393) scale(2.0)" fill="none" stroke="#0E7490" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></g>
+<text x="1755" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">학습 · 개선</text>
+<text x="1755" y="512" font-size="15" fill="#475569" text-anchor="middle">Baseline → EXP003</text>
+<circle cx="1640" cy="375" r="18" fill="#0E7490"/><text x="1640" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+<rect x="1954" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#0E7490" stroke-width="3"/>
+<g transform="translate(2048,393) scale(2.0)" fill="none" stroke="#0E7490" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g>
+<text x="2072" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">Final · Frozen Test</text>
+<text x="2072" y="512" font-size="15" fill="#475569" text-anchor="middle">1280 · Test 0.411</text>
+<circle cx="1957" cy="375" r="18" fill="#0E7490"/><text x="1957" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+<rect x="2271" y="372" width="236" height="162" rx="12" fill="#fff" stroke="#0E7490" stroke-width="3"/>
+<g transform="translate(2365,393) scale(2.0)" fill="none" stroke="#0E7490" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M3 13h2M19 13h2"/><circle cx="9.5" cy="13" r="1.2"/><circle cx="14.5" cy="13" r="1.2"/><path d="M10 16.5h4"/></g>
+<text x="2389" y="483" font-size="20.5" font-weight="700" fill="#1E293B" text-anchor="middle">Auto Label</text>
+<text x="2389" y="512" font-size="15" fill="#475569" text-anchor="middle">후보 TXT → 사람 확정</text>
+<circle cx="2274" cy="375" r="18" fill="#0E7490"/><text x="2274" y="382" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">8</text>
+<rect x="960" y="816" width="640" height="66" rx="8" fill="#FAF5FF" stroke="#6D28D9" stroke-width="1.5" stroke-dasharray="6 5"/>
+<g transform="translate(980,834) scale(1.25)" fill="none" stroke="#6D28D9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 8v8M18 11c0 4-6 3-10 6"/></g>
+<text x="1026" y="844" font-size="17" font-weight="700" fill="#1E293B">GitHub · 역할 브랜치 → PR → main</text>
+<text x="1026" y="868" font-size="14.5" fill="#475569">코드 · 라벨 TXT · 지표 · 문서 · Weight 만 · 원본 사진 · 결과 이미지 · 영상은 올리지 않음</text>
+<text x="50" y="953" font-size="15" fill="#475569">굵은 화살표 = 데이터 · 모델이 가는 길 · 점선 = 각 단계에 붙는 기준 · 확인 · 결과 · 청록 점선 = Final Model 이 교과 7 로 돌아가는 길</text></svg>
