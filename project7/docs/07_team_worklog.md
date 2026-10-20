@@ -136,3 +136,15 @@ Manifest 문제 확인
 Final Data
 - Images/Labels : 각 900장
    - 세부사항은 project7/reports/01_qa_summary.md 확인
+
+
+# 10-16
+
+> [!info] 10-16 한 줄 요약
+> **1.** manifests/dataset_manifest.csv 생성
+
+
+Dataset_manifest가 기존의 manifest_final과 다른 형식임을 확인
+- scripts/10_export_manifest.py 활용하여 다시 생성
+- 확인 과정 중 해당 파일 코드에서 경로관련 부분 수정 필요할수도 있음을 확인
+  (현재 보류)

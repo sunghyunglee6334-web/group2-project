@@ -1,9 +1,9 @@
 """
-check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
+03b_check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
 
 실행 (project8 폴더에서, 03_build_split.py 다음에):
-    python scripts/check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
-    python scripts/check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
+    python scripts/03b_check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
+    python scripts/03b_check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
 
 입력 : manifests/split_manifest.csv, data/final/images
 출력 : reports/phash_check.csv (비슷한 사진 쌍 목록), 화면 요약
