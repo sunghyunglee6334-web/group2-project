@@ -200,6 +200,10 @@ class CanvasEditor:
             for i, box in enumerate(cur.boxes):
                 self._draw_one_box(i, box)
 
+        ai = getattr(self, "ai", None)          # AI 검출 결과 (점선) - src/ui/ai_panel.py
+        if ai is not None:
+            ai.draw_on_canvas()
+
         c.tag_raise("overlay")          # Zoom 막대·미니맵은 항상 BBox 위
         self.refresh_box_list()
         self.refresh_box_info()

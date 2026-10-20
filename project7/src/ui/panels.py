@@ -22,6 +22,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from ..config import CLASS_COLORS, CLASS_NAMES, UNUSED_CLASS_IDS
+from .ai_panel import build_ai_card
 from .overlay import CanvasOverlay
 from .style import (BG, BLUE, CANVAS_BG, CARD, EDIT_STATUSES, FILL, FONT, FONT_APP, FONT_BIG,
                     FONT_BOLD, FONT_CAPTION, FONT_CTA, FONT_HEADER, FONT_LARGE, FONT_MONO_BOLD,
@@ -218,6 +219,7 @@ def build_right(app, parent):
     scroll.pack(fill=tk.BOTH, expand=True)
     body = scroll.body
 
+    build_ai_card(app, body)        # AI 검출 · Auto Label (교과 8 연결)
     build_class_card(app, body)
     build_box_card(app, body)
     build_review_card(app, body)
