@@ -10,6 +10,7 @@
 import importlib.util
 import shutil
 import signal
+import tempfile
 import tkinter as tk
 from datetime import datetime
 from pathlib import Path
@@ -47,6 +48,12 @@ class LabelApp(CanvasEditor):
     def __init__(self, root, session):
         self.root = root
         self.s = session
+        self._review_mode = False
+        self._review_original_session = None
+        self._review_temp = None
+        self._review_output_dir = None
+        self._review_image_sources = {}
+        self._review_report_module = None
         self.view = ViewTransform()
 
         self.pyramid = []           # 원본, 1/2, 1/4 이미지
@@ -125,9 +132,6 @@ class LabelApp(CanvasEditor):
             command("Undo", self.undo, "Ctrl+Z"),
             SEPARATOR,
             command("Validation 실행", self.run_validation),
-            SEPARATOR,
-            command("AI Detection 실행", lambda: self.ai.on_detection()),
-            command("AI Auto Label", lambda: self.ai.on_auto_label()),
         ]
 
         review_items = [
@@ -343,8 +347,6 @@ class LabelApp(CanvasEditor):
         self.make_pyramid(img)
         self.selected = None
         self.drag = None
-        if getattr(self, "ai", None):           # 이전 이미지의 AI 결과 지우기
-            self.ai.on_image_changed()
         self.load_meta()
         self.highlight_list()
         self.fit()
@@ -360,8 +362,6 @@ class LabelApp(CanvasEditor):
         self.s.cur = None
         self.selected = None
         self.drag = None
-        if getattr(self, "ai", None):
-            self.ai.on_image_changed()
 
         text = message or f"'{self.s.filter_name}' 에 해당하는 이미지가 없습니다"
         self.head_var.set(text)
@@ -688,6 +688,13 @@ class LabelApp(CanvasEditor):
         if not cur:
             return False
 
+        reviewed_path = None
+        if self._review_mode:
+            reviewed_path = self._review_output_dir / Path(cur.rec.image_name).with_suffix(".txt")
+            if reviewed_path.exists() and not messagebox.askyesno(
+                    "검수 라벨 덮어쓰기", f"이미 검수 라벨이 있습니다. 덮어쓸까요?\n{reviewed_path}"):
+                return False
+
         status = self.status_var.get()
         row = self.s.manifest.get(self.s.current_key)
 
@@ -709,10 +716,24 @@ class LabelApp(CanvasEditor):
         try:
             applied = self.s.save(status, scene, note, self.issue_var.get().strip(),
                                   reviewer=self.reviewer_var.get().strip())
+            if reviewed_path is not None:
+                reviewed_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(cur.rec.work_label(self.s.paths), reviewed_path)
         except Exception as e:
             messagebox.showerror("저장 실패", f"저장하지 못했습니다. 이동하지 마세요.\n{e}")
             self.status_bar.set(f"저장 실패: {e}")
             return False
+
+        if self._review_mode:
+            try:
+                self._write_human_review_record(cur, reviewed_path, status)
+            except Exception as e:
+                messagebox.showerror(
+                    "검수 기록 저장 실패",
+                    f"검수 라벨은 저장했지만 auto_label_review.csv를 갱신하지 못했습니다.\n{e}",
+                )
+                self.status_bar.set(f"검수 라벨 저장 완료 · CSV 기록 실패: {e}")
+                return False
 
         self.load_meta()
         self.update_list_item(self.s.index)
@@ -724,6 +745,155 @@ class LabelApp(CanvasEditor):
         else:
             self.status_bar.set(f"저장 완료: {cur.rec.image_name} [{applied}]")
         return True
+
+    def _write_human_review_record(self, cur, reviewed_path: Path, status: str) -> None:
+        """현재 후보의 검수 행을 교과 8 auto_label_review.csv에서 갱신한다."""
+        if self._review_report_module is None:
+            raise RuntimeError("Human Review 기록 모듈이 준비되지 않았습니다.")
+
+        image_path = self._review_image_sources.get(Path(cur.rec.image_name).stem.casefold())
+        if image_path is None:
+            raise FileNotFoundError(f"원본 시연 이미지 경로를 찾을 수 없습니다: {cur.rec.image_name}")
+        candidate_path = self._review_candidate_dir / Path(cur.rec.image_name).with_suffix(".txt")
+        project_root = PROJECT_ROOT.parent.resolve()
+
+        def relative_path(path: Path) -> str:
+            try:
+                return path.resolve().relative_to(project_root).as_posix()
+            except ValueError:
+                return path.name
+
+        actions = dict(cur.review_actions)
+        changed = any(actions.values())
+        review_status = "REVIEW" if status == "REVIEW" else (
+            "APPROVED_EDITED" if changed else "APPROVED_UNCHANGED"
+        )
+        self._review_report_module.update_review_result(
+            self._review_report_path,
+            input_image=relative_path(image_path),
+            candidate_label=relative_path(candidate_path),
+            reviewed_label=relative_path(reviewed_path),
+            candidate_bbox_count=len(cur.raw_boxes),
+            final_bbox_count=len(cur.boxes),
+            review_status=review_status,
+            accepted_unchanged=int(not changed and status != "REVIEW"),
+            actions=actions,
+            reviewed_by=self.s.worker,
+            reviewed_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+        )
+
+    def start_human_review(self):
+        """교과 8의 Auto Label 후보와 대응 이미지를 임시 세션으로 열고 검수본을 내보낸다."""
+        if self._review_mode:
+            if not self.confirm_leave():
+                return
+            self.s = self._review_original_session
+            self._review_original_session = None
+            self._review_mode = False
+            self._review_output_dir = None
+            self._review_image_sources = {}
+            self._review_report_module = None
+            if self._review_temp is not None:
+                self._review_temp.cleanup()
+                self._review_temp = None
+            self.review_btn.command = self.start_human_review
+            self.review_btn.set_text("Human Review")
+            self.reload_session(self.s)
+            self.status_bar.set("기존 라벨링 세션으로 돌아왔습니다.")
+            return
+
+        if not self.confirm_leave():
+            return
+
+        project8 = PROJECT_ROOT.parent / "project8"
+        image_root = project8 / "data" / "test_detection"
+        candidate_root = project8 / "demo" / "auto_label" / "candidate_labels"
+        review_report_path = project8 / "reports" / "auto_label_review.csv"
+        review_module_path = project8 / "src" / "auto_label_review.py"
+        if not image_root.is_dir() or not candidate_root.is_dir():
+            messagebox.showerror(
+                "Human Review 자료 없음",
+                "시연 이미지 또는 Auto Label 후보 폴더를 찾을 수 없습니다.\n\n"
+                f"이미지: {image_root}\n후보 TXT: {candidate_root}",
+            )
+            return
+
+        candidates = sorted(p for p in candidate_root.glob("*.txt") if p.is_file())
+        if not candidates:
+            messagebox.showinfo("후보 라벨 없음", f"후보 TXT가 없습니다. 먼저 Auto Label을 실행하세요.\n{candidate_root}")
+            return
+
+        images_by_stem = {}
+        for image_path in image_root.rglob("*"):
+            if image_path.is_file() and image_path.suffix.lower() in IMAGE_EXTS:
+                images_by_stem.setdefault(image_path.stem.casefold(), []).append(image_path)
+
+        matched = []
+        unmatched = []
+        ambiguous = []
+        for label_path in candidates:
+            matches = images_by_stem.get(label_path.stem.casefold(), [])
+            if len(matches) == 1:
+                matched.append((matches[0], label_path))
+            elif not matches:
+                unmatched.append(label_path.name)
+            else:
+                ambiguous.append(label_path.name)
+        if not matched:
+            details = ""
+            if unmatched:
+                details += "\n이미지를 찾지 못한 TXT: " + ", ".join(unmatched[:10])
+            if ambiguous:
+                details += "\n같은 파일명이 여러 이미지와 일치: " + ", ".join(ambiguous[:10])
+            messagebox.showerror("이미지 매칭 실패", "후보 TXT와 파일명이 같은 시연 이미지를 찾지 못했습니다." + details)
+            return
+
+        try:
+            spec = importlib.util.spec_from_file_location("project8_auto_label_review", review_module_path)
+            if spec is None or spec.loader is None:
+                raise ImportError(f"검수 기록 모듈을 불러올 수 없습니다: {review_module_path}")
+            review_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(review_module)
+
+            temp = tempfile.TemporaryDirectory(prefix="p7_human_review_")
+            temp_root = Path(temp.name)
+            staged_raw = temp_root / "raw"
+            staged_work = temp_root / "work"
+            staged_images = staged_raw / "images" / "train"
+            staged_labels = staged_raw / "labels" / "train"
+            staged_images.mkdir(parents=True)
+            staged_labels.mkdir(parents=True)
+            for image_path, label_path in matched:
+                shutil.copy2(image_path, staged_images / image_path.name)
+                shutil.copy2(label_path, staged_labels / f"{image_path.stem}.txt")
+            session = LabelSession(Paths(raw_root=staged_raw, work_root=staged_work), self.s.worker)
+        except Exception as e:
+            if "temp" in locals():
+                temp.cleanup()
+            messagebox.showerror("Human Review 불러오기 실패", str(e))
+            return
+
+        self._review_original_session = self.s
+        self._review_temp = temp
+        self._review_output_dir = project8 / "demo" / "auto_label" / "reviewed_labels"
+        self._review_candidate_dir = candidate_root
+        self._review_report_path = review_report_path
+        self._review_report_module = review_module
+        self._review_image_sources = {
+            image_path.stem.casefold(): image_path for image_path, _ in matched
+        }
+        self._review_mode = True
+        self.review_btn.command = self.start_human_review
+        self.review_btn.set_text("검수 종료")
+        self.reload_session(session)
+        self.status_bar.set(f"Human Review: 후보 {len(matched)}건을 불러왔습니다. 저장은 교과 8 reviewed_labels에 기록됩니다.")
+        if unmatched or ambiguous:
+            lines = []
+            if unmatched:
+                lines.append(f"이미지 미매칭 {len(unmatched)}건")
+            if ambiguous:
+                lines.append(f"동일 파일명 중복 {len(ambiguous)}건")
+            messagebox.showwarning("일부 후보 제외", "\n".join(lines) + "\n\n매칭된 후보만 검수 목록에 넣었습니다.")
 
     def save_next(self):
         if not self.save():
@@ -815,6 +985,9 @@ class LabelApp(CanvasEditor):
     def on_close(self):
         if self.confirm_leave():
             self.menubar.close()
+            if self._review_temp is not None:
+                self._review_temp.cleanup()
+                self._review_temp = None
             self.root.destroy()
 
     def reload_session(self, session, select=None):
@@ -827,6 +1000,9 @@ class LabelApp(CanvasEditor):
 
     def open_raw_folder(self):
         """다른 RAW 폴더를 연다. WORK 는 RAW 폴더 이름별로 따로 만든다."""
+        if self._review_mode:
+            messagebox.showinfo("Human Review 중", "먼저 Human Review를 종료한 뒤 RAW 폴더를 여세요.")
+            return
         if not self.confirm_leave():
             return
         chosen = filedialog.askdirectory(title="RAW 데이터 폴더 선택 (이미지가 들어 있는 상위 폴더)",
@@ -845,6 +1021,9 @@ class LabelApp(CanvasEditor):
     def add_images(self):
         """연습용: 사진을 현재 RAW 의 '추가이미지/images/train' 으로 복사한다.
         RAW 스냅샷이 있는 실제 프로젝트 폴더에서는 RAW 를 바꾸면 안 되므로 막는다."""
+        if self._review_mode:
+            messagebox.showinfo("Human Review 중", "먼저 Human Review를 종료한 뒤 파일을 추가하세요.")
+            return
         if (self.s.paths.work / "raw_checksums.csv").exists():
             messagebox.showerror("이미지 추가 불가",
                                  "이 폴더는 RAW 스냅샷이 기록된 실제 프로젝트 데이터입니다.\n"
