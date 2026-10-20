@@ -14,12 +14,13 @@
 # (라벨 원본은 project7/data/final 에 Git 으로 있음)
 data/
 
-# ── 모델 Weight: 용량 때문에 제외 ──
-models/
+# ── 모델 Weight ──
+# models/ 안의 .pt 는 팀 공유 (2026-10-20 · 팀 결정) · runs/ 의 weight 는 계속 제외
 *.pt
 *.pth
 *.onnx
 *.engine
+!models/**/*.pt
 
 # runs/ · demo/ : 사진 · Weight 는 위 규칙으로 빠지고 results.csv · 라벨 후보 TXT 만 올라감
 
