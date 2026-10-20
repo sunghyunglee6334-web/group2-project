@@ -10,7 +10,7 @@
 | Final | **EXP003 — yolo11n · imgsz 1280** (`runs/exp003/weights/best.pt`, 37에포크) |
 | 이유 | Baseline 대비 단일 변수 실험 중 P · R · mAP50 · mAP50-95 모두 1등 · 정밀도 0.948 · 계산량 약 26 GFLOPs |
 | 제외 | EXP004 (s · 1280, mAP50-95 0.490) — Baseline 대비 2변수 누적 · 정밀도 하락 · 계산량 3.3배 → 교과 14 참고 |
-| Test | `models/final/final_best.pt` · **imgsz=1280** · 1회 |
+| Test | `models/final/final_best.pt` · **imgsz=1280** · 1회 → **mAP50-95 0.4115 · Recall 0.466** (Val 0.4457 · 0.491) |
 
 ---
 
@@ -98,3 +98,40 @@
 - Test는 `scripts/13_evaluate_final_test.py`로 **한 번만** 실행한다 (결과 파일이 있으면 스크립트가 멈춘다).
 - Test 점수가 Validation보다 낮게 나와도 모델이나 설정을 바꾸지 않고 그대로 기록한다.
 - Test에도 파·고추는 1개뿐이라 Class 6 점수는 참고만 한다.
+
+---
+
+## ⑧ Frozen Test 결과 (2026-10-20 · 1회)
+
+> `python scripts/13_evaluate_final_test.py` · `models/final/final_best.pt` · imgsz 1280 · Test 75장 · 객체 428개
+> 결과: `reports/final_metrics.csv` · `reports/final_class_metrics.csv` · `reports/figures/final_test_confusion_matrix.png`
+
+| 지표 | Validation (66장) | **Frozen Test (75장)** | 차이 |
+|---|---:|---:|---:|
+| Precision | 0.9477 | **0.6046** | -0.343 |
+| Recall | 0.4914 | **0.4660** | -0.025 |
+| mAP50 | 0.5498 | **0.4934** | -0.056 |
+| mAP50-95 | 0.4457 | **0.4115** | -0.034 |
+
+### Class별 (Test)
+
+| Class | 객체 | P | R | mAP50 | mAP50-95 | Val mAP50-95 |
+|---|---:|---:|---:|---:|---:|---:|
+| leaf_paper | 14 | 0.320 | 0.857 | 0.667 | 0.581 | 0.688 |
+| plastic_stone_metal | 181 | 0.977 | 0.480 | 0.783 | 0.633 | 0.604 |
+| branch | 177 | 0.990 | 0.559 | 0.953 | 0.806 | 0.602 |
+| insect | 10 | 0.341 | 0.900 | 0.495 | 0.419 | 0.778 |
+| disease_browning | 45 | 1.000 | 0.000 | 0.063 | 0.029 | 0.003 |
+| green_onion_pepper | 1 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+
+### 해석
+
+- **mAP50-95 · Recall은 Validation과 비슷하다** (-0.034 · -0.025). Validation에서 고른 모델이 처음 보는 Test에서도 비슷한 수준을 유지했다.
+- **객체가 많은 Class는 오히려 좋아졌다:** branch 0.602 → 0.806, plastic 0.604 → 0.633 (Test 객체의 84%).
+- **Precision 하락(0.948 → 0.605)의 이유**
+  - 파·고추: Test에 1개뿐인데 헛박스가 생겨 P 1.0 → 0.0 → 6개 Class 평균에서 약 -0.17
+  - leaf_paper(14개) · insect(10개): 대부분 찾지만(R 0.86 · 0.90) 헛박스가 많아 P 0.32 · 0.34
+  - branch · plastic은 P 0.98 이상 유지 → 객체가 적은 Class에서 헛박스가 많다
+- **병해·갈변:** Test에서도 Recall 0 (45개) → Validation에서 기록한 한계와 같다.
+- **규칙:** Test 결과를 보고 모델 · conf · 설정을 바꾸지 않았다. 헛박스는 교과 14에서 Validation으로 conf 기준을 정할 때 다시 본다.
+
