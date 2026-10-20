@@ -134,7 +134,7 @@ pip install -r requirements.txt pytest
 
 ```bash
 python scripts/01_check_environment.py     # CUDA available: True
-python scripts/03_build_split_v4.py        # data/yolo · configs/dataset.yaml 생성
+python scripts/03_build_split.py        # data/yolo · configs/dataset.yaml 생성
 ```
 
 Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않아도** 평가 · Detection 을 바로 실행할 수 있습니다.
@@ -145,7 +145,7 @@ Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않�
 
 | 단계 | 스크립트 |
 |---|---|
-| Split · 점검 | `02_audit` → `03_build_split_v4` → `03b_check_phash` → `04_preview_dataset` |
+| Split · 점검 | `02_audit` → `03_build_split` → `03b_check_phash` → `04_preview_dataset` |
 | Smoke · Baseline | `05_smoke_train` → `06_train_baseline` → `07_evaluate_baseline` |
 | 실패 분석 | `compare_gt_pred` → `09_collect_failures` → `10_fn_by_size` → `12_failure_deliverables` |
 | 개선 실험 | `11_train_experiment` → `11b_evaluate_experiment` → `11c_compare_failures` |
