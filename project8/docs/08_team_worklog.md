@@ -88,3 +88,36 @@ Evalution
 	- src/failure_analyzer.py, label_visualizer.py 완료
 	- docs/failure_Analysis.md 작성
 	- demo/failure_analysis NDA상 jpg 커밋 불가 팀내 공유
+
+Data
+	- split 된 데이터에 누수 위험 확인
+	- split 관련 코드 수정 및 재진행
+	- split_builder.py
+	  1. 그룹 분할 경로와 실행 설정의 덮어쓰기 제거
+	  2. 기본 묶음·최종 그룹 식별자 보존. 
+	  3. 기존 validation 우선은 그룹 단위 선호 조건으로만 적용.
+	  4. 조건을 만족하는 배정이 없으면 그룹 분할로 해결하지 않음.
+	  5. same_bundle_split 검증 제외 제거.
+	  6. 확인된 동일·파생 관계의 split 간 분할 검사, 실패 시 최종 저장·복사 차단.
+
+
+# 10-19
+
+> [!info] 10-19 한 줄 요약
+> **1.** Data 다시 split 후 재배포
+> **2.** Baseline 모델 학습 후 결과 분석
+> **3.** improve 모델 작업
+> **4.** final 모델 확정
+
+Data
+	- split 재실시에 따른 관련 문서 갱신
+	- 재분류 후 데이터 확정 및 배포
+
+Train
+	- 재배포 된 데이터로 다시 smoke test 및 basline 학습 완료
+	- 관련 산출물 작성
+
+Experiment
+	- 결과 분석에서 개선 근거 탐색
+	- 개선점 정리하면서 개선 총 4차까지 진행
+	- 4차 모델은 정밀도 하락 확인되어 3차로 final 모델 진행

@@ -1,7 +1,7 @@
 task: detect
 mode: train
-model: /home/jaden/교과_7_2조/group2-project/project8/yolo11n.pt
-data: /home/jaden/교과_7_2조/group2-project/project8/configs/dataset.yaml
+model: /home/user27/group2-project/project8/yolo11n.pt
+data: /home/user27/group2-project/project8/configs/dataset.yaml
 epochs: 70
 time: null
 patience: 30
@@ -12,7 +12,7 @@ save_period: -1
 cache: false
 device: ''
 workers: 8
-project: /home/jaden/교과_7_2조/group2-project/project8/runs
+project: /home/user27/group2-project/project8/runs
 name: baseline_v1
 exist_ok: true
 pretrained: true
@@ -111,4 +111,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: tracktrack.yaml
-save_dir: /home/jaden/교과_7_2조/group2-project/project8/runs/baseline_v1
+save_dir: /home/user27/group2-project/project8/runs/baseline_v1
