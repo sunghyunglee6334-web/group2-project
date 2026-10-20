@@ -1,0 +1,2 @@
+﻿input_image,candidate_label,reviewed_label,auto_label_status,candidate_bbox_count,final_bbox_count,review_status,accepted_unchanged,class_edits,bbox_edits,deleted,added,review_count,reviewed_by,reviewed_at
+project8/data/test_detection/250424_160002175452.jpg,project8/demo/auto_label/candidate_labels/250424_160002175452.txt,project8/demo/auto_label/reviewed_labels/250424_160002175452.txt,OK,3,4,APPROVED_EDITED,0,1,0,0,1,1,kjh,2026-10-20T16:55:33+09:00

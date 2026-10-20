@@ -49,6 +49,10 @@ class LoadedImage:
     raw_had_errors: bool = False
     undo_stack: list[list[Box]] = field(default_factory=list)
     loaded_snapshot: list[str] = field(default_factory=list)
+    review_actions: dict[str, int] = field(default_factory=lambda: {
+        "class_edits": 0, "bbox_edits": 0, "deleted": 0, "added": 0,
+    })
+    review_action_undo_stack: list[dict[str, int]] = field(default_factory=list)
 
     def changed_since_load(self) -> bool:
         return canonical(self.boxes, self.width, self.height) != self.loaded_snapshot
@@ -124,7 +128,16 @@ class LabelSession:
     def _push_undo(self) -> None:
         assert self.cur
         self.cur.undo_stack.append([copy.copy(b) for b in self.cur.boxes])
+        self.cur.review_action_undo_stack.append(dict(self.cur.review_actions))
         del self.cur.undo_stack[:-50]
+        del self.cur.review_action_undo_stack[:-50]
+
+    def record_review_action(self, action: str) -> None:
+        """Human Review CSV용으로 실제 반영된 BBox 편집을 센다."""
+        assert self.cur
+        if action not in self.cur.review_actions:
+            raise ValueError(f"알 수 없는 검수 작업 유형입니다: {action}")
+        self.cur.review_actions[action] += 1
 
     def add_box(self, cls: int, x1: float, y1: float, x2: float, y2: float) -> Box | None:
         """새 BBox. 이미지 밖은 잘라내고, 너무 작으면 만들지 않는다."""
@@ -136,12 +149,14 @@ class LabelSession:
             return None
         self._push_undo()
         self.cur.boxes.append(b)
+        self.record_review_action("added")
         return b
 
     def delete_box(self, idx: int) -> None:
         assert self.cur
         self._push_undo()
         del self.cur.boxes[idx]
+        self.record_review_action("deleted")
 
     def set_box_class(self, idx: int, cls: int) -> None:
         assert self.cur
@@ -151,6 +166,7 @@ class LabelSession:
             return
         self._push_undo()
         self.cur.boxes[idx].cls = cls
+        self.record_review_action("class_edits")
 
     def move_box(self, idx: int, box: Box) -> None:
         """BBox 위치/크기 변경 (경계 Clamp)."""
@@ -158,8 +174,12 @@ class LabelSession:
         b = box.clamp(self.cur.width, self.cur.height)
         if b.w < MIN_BOX_PX or b.h < MIN_BOX_PX:
             return
+        old = self.cur.boxes[idx]
+        if (old.cls, old.x1, old.y1, old.x2, old.y2) == (b.cls, b.x1, b.y1, b.x2, b.y2):
+            return
         self._push_undo()
         self.cur.boxes[idx] = b
+        self.record_review_action("bbox_edits")
 
     def begin_edit(self) -> None:
         """드래그로 이동/크기조절을 시작할 때 1번만 Undo 지점을 만든다."""
@@ -173,7 +193,11 @@ class LabelSession:
             return False
         if push_undo:
             self._push_undo()
+        old = self.cur.boxes[idx]
         self.cur.boxes[idx] = b
+        if push_undo and (old.cls, old.x1, old.y1, old.x2, old.y2) != (
+                b.cls, b.x1, b.y1, b.x2, b.y2):
+            self.record_review_action("bbox_edits")
         return True
 
     def undo(self) -> bool:
@@ -181,6 +205,7 @@ class LabelSession:
         if not self.cur.undo_stack:
             return False
         self.cur.boxes = self.cur.undo_stack.pop()
+        self.cur.review_actions = self.cur.review_action_undo_stack.pop()
         return True
 
     def find_box_at(self, x: float, y: float) -> int | None:
