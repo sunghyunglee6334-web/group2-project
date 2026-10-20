@@ -21,7 +21,7 @@
 | Final Model | **EXP003 — yolo11n · imgsz 1280** |
 | 원본 Weight | `runs/exp003/weights/best.pt` (37에포크, 조기 종료 67에포크) |
 | 보관 위치 | `models/improved/exp003_best.pt` → `models/final/final_best.pt` |
-| Dataset | `manifests/train.csv` md5 fa803448 · `val.csv` md5 e1c68baa (`DATASET_VERSION = kimchi_v1`) |
+| Dataset | `manifests/train.csv` md5 fa803448 · `val.csv` md5 e1c68baa (`DATASET_VERSION = kimchi_v4`) |
 | Frozen Test 실행 조건 | **imgsz=1280**, split=test, 한 번만 — `python scripts/13_evaluate_final_test.py` |
 | Frozen Test 결과 | `reports/final_metrics.csv` · `final_class_metrics.csv` · `figures/final_test_confusion_matrix.png` |
 
