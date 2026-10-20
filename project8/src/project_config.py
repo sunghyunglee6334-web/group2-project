@@ -21,7 +21,7 @@ DATASET_YAML = CONFIG_DIR / "dataset.yaml"
 
 # 03_build_split.py 입력 (교과 7 FINAL 900장 · 원본, 건드리지 않음)
 FINAL_DIR = DATA_DIR / "final"
-DATASET_VERSION = "kimchi_v1"
+DATASET_VERSION = "kimchi_v4"
 
 # 교과 7 Class 번호 그대로 사용 (번호 변경 금지)
 CLASS_NAMES = {
