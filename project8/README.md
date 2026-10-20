@@ -28,7 +28,9 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 ### Architecture
 
-<!-- TODO: Architecture 그림 · 설명 -->
+교과 7 FINAL 900쌍을 **5분 촬영 묶음 단위**로 나누고, Baseline 에서 **변수 하나씩** 바꿔 개선합니다. **Frozen Test 를 보기 전에** 고른 Final Model 만 Auto Label 과 교과 14 로 넘어갑니다.
+
+![조각김치 이물검출 객체검출 Architecture](docs/images/architecture.svg)
 
 <br>
 
