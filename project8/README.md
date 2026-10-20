@@ -26,6 +26,21 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 <br>
 
+### 한계
+
+점수는 올랐지만 아직 풀지 못한 문제도 분명합니다. 숨기지 않고 원인과 다음 단계로 넘깁니다.
+
+| 한계 | 내용 |
+|---|---|
+| 병해 · 갈변 Recall **0** | 데이터의 46% 가 Bridge 묶음에 몰려 학습량 부족 → 모델이 아니라 **데이터 문제** · 교과 11 재촬영 |
+| 작은 이물 **60%** 놓침 | 해상도로는 63.9% → 60.2% 만 개선 · 모델까지 키운 EXP004 는 49.4% |
+| 평가 규모 | Val 66장 · seed 1개 · 파 · 고추는 Val · Test 각 1개라 평가 불가 |
+| 속도 | 1280 은 Baseline 의 약 4배 계산량 · 실제 장비(Jetson) 속도는 교과 14 에서 확인 |
+
+자세히 → [14. 알려진 한계](#14-알려진-한계)
+
+<br>
+
 ### Architecture
 
 교과 7 FINAL 900쌍을 **5분 촬영 묶음 단위**로 나누고, Baseline 에서 **변수 하나씩** 바꿔 개선합니다. **Frozen Test 를 보기 전에** 고른 Final Model 만 Auto Label 과 교과 14 로 넘어갑니다.
@@ -56,7 +71,7 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | 3 | Failure Analysis | [failure_analysis](reports/failure_analysis.csv) · `demo/failure_analysis/` | 완료 |
 | 4 | Improved / Final Model | `models/improved/` · `models/final/` · [selection](reports/final_model_selection.md) | 완료 · EXP003 |
 | 5 | 성능 · 실험 기록 | [experiment_log](reports/experiment_log.csv) · [final_metrics](reports/final_metrics.csv) · [figures](reports/figures) | 완료 |
-| 6 | Detection · Auto Label | `demo/prediction_images/` · `demo/auto_label/` | 진행 중 |
+| 6 | Detection · Auto Label | `demo/prediction_images/` · `demo/auto_label/` · [auto_label_review](reports/auto_label_review.csv) | 완료 · 시연 1장 |
 | 7 | 문서 · 교과 14 연결 | README · `reports/acceptance_test.md` · `docs/handoff_subject14.md` | 진행 중 |
 | 8 | 발표 · 시연 | `presentation/` · `demo/*.mp4` | 진행 중 |
 
@@ -150,6 +165,7 @@ Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않�
 | 실패 분석 | `compare_gt_pred` → `09_collect_failures` → `10_fn_by_size` → `12_failure_deliverables` |
 | 개선 실험 | `11_train_experiment` → `11b_evaluate_experiment` → `11c_compare_failures` |
 | Frozen Test | `13_evaluate_final_test` (**1회 · 완료**) · `13b_evaluate_final_test_eval74` |
+| Detection · Auto Label | `14_predict_images` → `15_auto_label` → 교과 7 프로그램 **Human Review** |
 | 자동 테스트 | `pytest tests/` |
 
 <br>
@@ -297,14 +313,18 @@ Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로�
 새 사진 → Final Model (1280 · conf 0.25) → 후보 TXT → 교과 7 프로그램 → Human Review → 확정 TXT
 ```
 
-| 산출물 | 위치 | 상태 |
+| 단계 | 실행 | 결과 |
 |---|---|---|
-| Detection 결과 | `demo/prediction_images/` | 진행 중 |
-| 후보 · 검수 라벨 | `demo/auto_label/candidate_labels/` · `reviewed_labels/` | 진행 중 |
-| 검수 통계 | `reports/auto_label_review.csv` | 진행 중 |
+| Detection | `14_predict_images` | `demo/prediction_images/` · [inference_results.csv](demo/prediction_images/inference_results.csv) |
+| Auto Label | `15_auto_label` | `demo/auto_label/candidate_labels/` (후보 TXT) |
+| Human Review | 교과 7 프로그램 **Human Review** 버튼 | `demo/auto_label/reviewed_labels/` · [auto_label_review.csv](reports/auto_label_review.csv) |
 
-- 교과 7 프로그램에 Detection · Auto Label 버튼 추가 (PR #71)
-- 검수 결과: <!-- TODO: 이미지 수 · 후보 BBox · 승인 · 수정 · 삭제 · 추가 -->
+| 시연 이미지 | 후보 BBox | 최종 BBox | Class 수정 | BBox 수정 | 삭제 | 추가 | 판정 |
+|---:|---:|---:|---:|---:|---:|---:|---|
+| 1장 | 3 | 4 | 1 | 0 | 0 | 1 | APPROVED_EDITED |
+
+- Human Review 에서 저장하면 검수 라벨과 수정 · 삭제 · 추가 횟수가 **자동 기록**됩니다 (PR #74)
+- 시연 이미지는 `data/test_detection/` · 결과 이미지(사진)는 Git 제외 · `fr_test` · `bridge_holdout` 폴더는 실행 차단
 
 <br><br>
 
