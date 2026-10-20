@@ -5,8 +5,8 @@
   "best_weight": "models/baseline/baseline_best.pt",
   "dataset_version": "kimchi_v4",
   "dataset_yaml": "configs/dataset.yaml",
-  "train_manifest": "train.csv rows=600 md5=0328cbb2",
-  "val_manifest": "val.csv rows=75 md5=59a179dc",
+  "train_manifest": "train.csv rows=609 md5=fa803448",
+  "val_manifest": "val.csv rows=66 md5=e1c68baa",
   "epochs": 70,
   "batch": 8,
   "imgsz": 640,
@@ -18,8 +18,8 @@
   "python": "3.14.4",
   "torch": "2.14.1+cu130",
   "ultralytics": "8.4.175",
-  "start_time": "2026-10-16T11:29:13",
-  "end_time": "2026-10-16T11:36:58",
-  "duration_min": 7.7,
+  "start_time": "2026-10-19T16:14",
+  "end_time": "2026-10-19T16:22",
+  "duration_min": 7.9,
   "test_bridge_used": false
 }

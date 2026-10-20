@@ -10,7 +10,7 @@
 | 항목 | 값 | 출처 |
 |---|---|---|
 | Model | yolo11n.pt (COCO 사전학습) | `BASELINE_CONFIG["model_name"]` |
-| Dataset Version | kimchi_v1 | `DATASET_VERSION` |
+| Dataset Version | kimchi_v4 | `DATASET_VERSION` |
 | Dataset YAML | configs/dataset.yaml (train · val · test, **Bridge 제외**) | 03_build_split 생성 |
 | Train Manifest | manifests/train.csv · 609장 · md5 `fa803448` | baseline_run_info.json |
 | Val Manifest | manifests/val.csv · 66장 · md5 `e1c68baa` | baseline_run_info.json |
