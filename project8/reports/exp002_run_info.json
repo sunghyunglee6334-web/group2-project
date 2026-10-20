@@ -6,7 +6,7 @@
   "run_name": "exp002",
   "run_dir": "runs/exp002",
   "best_weight": "models/improved/exp002_best.pt",
-  "dataset_version": "kimchi_v1",
+  "dataset_version": "kimchi_v4",
   "dataset_yaml": "configs/dataset.yaml",
   "train_manifest": "train.csv rows=609 md5=fa803448",
   "val_manifest": "val.csv rows=66 md5=e1c68baa",

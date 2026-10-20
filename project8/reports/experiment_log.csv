@@ -1,6 +1,6 @@
 ﻿experiment_id,date,dataset_version,model,imgsz,epochs,batch,seed,changed_variable,reason,validation_precision,validation_recall,validation_map50,validation_map50_95,decision
-baseline_v1,2026-10-19,kimchi_v1,yolo11n.pt,640,70,8,42,-,비교 기준 (팀 공통 Baseline) · 값 = runs/baseline_v1/results.csv best epoch 50,0.9161,0.4437,0.506,0.3445,baseline
-exp001,2026-10-19,kimchi_v1,yolo11n.pt,960,70,8,42,imgsz 640 -> 960,small 이물 FN 36%(37/103) · large 5% → 640 축소 시 작은 이물 특징 손실 가설,0.8795,0.4844,0.5293,0.4231,KEEP (EXP003으로 대체)
-exp002,2026-10-19,kimchi_v1,yolo11s.pt,640,70,8,42,model_name yolo11n.pt -> yolo11s.pt,CLASS 오류 17개 · branch↔plastic↔leaf 혼동 (박스 IoU는 0.9 이상) → 모델 용량 부족 가설,0.9408,0.4768,0.5442,0.4148,REJECT (Baseline+1 중 mAP50-95 3위)
-exp003,2026-10-19,kimchi_v1,yolo11n.pt,1280,70,8,42,imgsz 640 -> 1280,EXP001(960)에서 Baseline 대비 mAP50-95 +0.079 · 재현율 +0.041 → 해상도를 더 올리면 작은 이물 FN이 더 줄어드는지 확인,0.9477,0.4914,0.5498,0.4457,FINAL (Baseline+1 중 4지표 1등 · EXP001 대비 mAP50-95 +0.023)
-exp004,2026-10-19,kimchi_v1,yolo11s.pt,1280,70,8,42,[기준 exp003] model_name yolo11n.pt -> yolo11s.pt,EXP003(n·1280) KEEP 후 모델만 n→s · EXP002에서 Class 혼동(정밀도) 개선 확인 → 1280 위에서도 효과 있는지 확인,0.7448,0.5453,0.5828,0.49,REFERENCE (EXP003 대비 +0.044 · Baseline 대비 2변수 누적 · 계산량 3.3배 → Final 범위 밖)
+baseline_v1,2026-10-19,kimchi_v4,yolo11n.pt,640,70,8,42,-,비교 기준 (팀 공통 Baseline) · 값 = runs/baseline_v1/results.csv best epoch 50,0.9161,0.4437,0.506,0.3445,baseline
+exp001,2026-10-19,kimchi_v4,yolo11n.pt,960,70,8,42,imgsz 640 -> 960,small 이물 FN 36%(37/103) · large 5% → 640 축소 시 작은 이물 특징 손실 가설,0.8795,0.4844,0.5293,0.4231,KEEP (EXP003으로 대체)
+exp002,2026-10-19,kimchi_v4,yolo11s.pt,640,70,8,42,model_name yolo11n.pt -> yolo11s.pt,CLASS 오류 17개 · branch↔plastic↔leaf 혼동 (박스 IoU는 0.9 이상) → 모델 용량 부족 가설,0.9408,0.4768,0.5442,0.4148,REJECT (Baseline+1 중 mAP50-95 3위)
+exp003,2026-10-19,kimchi_v4,yolo11n.pt,1280,70,8,42,imgsz 640 -> 1280,EXP001(960)에서 Baseline 대비 mAP50-95 +0.079 · 재현율 +0.041 → 해상도를 더 올리면 작은 이물 FN이 더 줄어드는지 확인,0.9477,0.4914,0.5498,0.4457,FINAL (Baseline+1 중 4지표 1등 · EXP001 대비 mAP50-95 +0.023)
+exp004,2026-10-19,kimchi_v4,yolo11s.pt,1280,70,8,42,[기준 exp003] model_name yolo11n.pt -> yolo11s.pt,EXP003(n·1280) KEEP 후 모델만 n→s · EXP002에서 Class 혼동(정밀도) 개선 확인 → 1280 위에서도 효과 있는지 확인,0.7448,0.5453,0.5828,0.49,REFERENCE (EXP003 대비 +0.044 · Baseline 대비 2변수 누적 · 계산량 3.3배 → Final 범위 밖)
