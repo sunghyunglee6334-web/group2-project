@@ -1,0 +1,2 @@
+﻿model_version,source,dataset_version,split,model,imgsz,precision,recall,map50,map50_95
+final,exp003,kimchi_v4,test,yolo11n.pt,1280,0.6046,0.466,0.4934,0.4115
