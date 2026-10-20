@@ -1,0 +1,2 @@
+﻿model_version,dataset_version,split,model,imgsz,batch,epochs,seed,precision,recall,map50,map50_95
+exp004,kimchi_v4,val,yolo11s.pt,1280,8,70,42,0.7448,0.5453,0.5828,0.49
