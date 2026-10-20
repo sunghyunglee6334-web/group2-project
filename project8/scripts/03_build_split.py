@@ -1,8 +1,8 @@
 """
-03_build_split_v4.py — Split v4-B 실행 (묶음 단위 · 배정 직접 지정)
+03_build_split.py — Split v4-B 실행 (묶음 단위 · 배정 직접 지정)
 
 실행 (project8 폴더에서):
-    python scripts/03_build_split_v4.py
+    python scripts/03_build_split.py
 
 입력 : data/final/manifest_final.csv, data/final/images, data/final/labels  (원본, 건드리지 않음)
 출력 (기존 파일에 덮어쓰기):
