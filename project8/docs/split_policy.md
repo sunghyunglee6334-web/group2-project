@@ -3,7 +3,8 @@
 - 기준일: 2026-10-19 
 - 작성자 : 장세훈(Dataset-audit 담당)
 - Policy Version : `group_fixed_v4` · Dataset Version : `kimchi_v4` · 대상: 교과 7 FINAL 900장
-- 실행 : `scripts/03_build_split_v4.py`
+- 실행 : `scripts/03_build_split.py`
+
 
 ## 1. 그룹 분할 정책 (v4-B)
 
@@ -22,48 +23,33 @@
 | 평가 제외 | T08의 애매한 라벨 1장에 eval_exclude 표시. 실제 평가에서도 제외하여 구분 |
 | 보존 | RAW·FINAL 보호, Bridge는 dataset.yaml에서 제외. 기존 결과 이동 후 새 결과 저장·복사 |
 
-## 2. Split 역 정의
 
-Train
-- 모델 학습용. 
+## 2. split 역할별 그룹 배정 및 사용 목적
 
-Validation
-- 기존 Dataset 2 / validation을 우선 후보로 검토.
-- Baseline과 Improved 비교에 사용.
-
-Frozen Test
-- Final Model을 Validation 한 뒤 Final 성능 확인용 평가에 쓰임.
-
-Bridge Holdout 
-- 교과 8 Train / Validation / Frozen Test와 별도 분리.
-- 교과 8 학습·튜닝·모델 선택에 사용하지 않음.
-- 교과 14 Final Model 연결 성능 확인용으로 보존.
-
-## 3. split 역할 배정
-
-| split | 그룹 | 이미지 수 |
-|---|---|---:|
-| Train | T00·T02·T04·T05·T06·T10·T12·T13·T15·T17 | 609 |
-| Val | T01·T03·T07 | 66 |
-| Frozen Test | T08·T14 | 75 |
-| Bridge | T09·T11·T16 | 150 |
-| 합계 | 18개 그룹, T17 전체 Train | 900 |
+| split | 그룹 | 이미지 수 | 사용 목적 |
+|---|---|---:|---|
+| Train | T00·T02·T04·T05·T06·T10·T12·T13·T15·T17 | 609 | 모델 학습에 사용함 |
+| Val | T01·T03·T07 | 66 | 개발 중 성능 비교·개선 및 모델 선택에 사용함 |
+| Frozen Test | T08·T14 | 75 | 모델 선택 이후 최종평가에 사용함 |
+| Bridge | T09·T11·T16 | 150 | 이후 교과 연결 평가를 위해 별도 보존함 |
+| 합계 | 18개 그룹, T17 전체 Train | 900 | |
 
 - 세부 수량·분포·검증 증거는 [reports/split_report.md] 참조.
 
-## 4. split_manifest.csv 필드 설명
 
-- 가이드 기준 `image_path` 필드는 팀 산출물 기준 `relative_path`로, `label_path`를 `label_relative_path`로 연결. 
-  반면, `yolo_image_path`와 `yolo_label_path`는 **분할 결과가 놓일 경로**
+## 3. 산출물(split_manifest.csv) 설명
+
+- 가이드 기준 `image_path` 필드는 팀 산출물 기준 `relative_path`, `label_path`는 `label_relative_path`임. 
+  반면, `yolo_image_path`와 `yolo_label_path`는 **분할 결과가 놓일 경로**.
 - `capture_group` 은 `group_id`-병합 과정을 거친 배정 묶음으로 연결. ( 다만 코드상 `time_group`은 최초 시간 묶음 )
 
-## 5. 문제와 한계
+
+## 4. 확인된 문제와 한계
 
 | 항목 | 현재 상태·대응 |
 |---|---|
 | **Class 6·대상 단독·정상 장면의 평가 표본 부족** | Class 6은 Val·Test 각 1개로 평가 불가. 대상 단독은 T17 전체 Train이라 Val·Test 0장. 정상 김치는 Test 0장으로 Val 15장의 오탐만 확인 가능 |
 | **Class·출처·크기 분포 편중** | Val Class 1은 56.6%, Dataset 1은 83.3%. Bridge Class 5는 236개로 Train 163개보다 많음. Bridge Class 0 small 81.6%, Test Class 2 medium 63.8%. Class·크기별 지표와 표본 수를 함께 보고 |
-| **코드·저장 결과의 버전 혼재** | 실행 스크립트는 v4-B이나 기본 정책에는 v5 후보(T06 Bridge, 151장)와 Train Class 최다 검사가 추가됨. v4-B 실행이 배정·수량은 덮어써도 최다 검사는 상속하여 Class 5에서 실패 가능. 공유 Manifest·CSV는 아직 kimchi_v1. 동기화·검증 차단 동작 확인 전 첨부의 ‘14개 통과’를 현행 코드 재검증으로 취급하지 않음 |
 
 
 ## 부록. 버전별 문제와 조치
