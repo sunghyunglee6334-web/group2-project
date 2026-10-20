@@ -22,7 +22,6 @@ import tkinter as tk
 from tkinter import ttk
 
 from ..config import CLASS_COLORS, CLASS_NAMES, UNUSED_CLASS_IDS
-from .ai_panel import build_ai_card
 from .overlay import CanvasOverlay
 from .style import (BG, BLUE, CANVAS_BG, CARD, EDIT_STATUSES, FILL, FONT, FONT_APP, FONT_BIG,
                     FONT_BOLD, FONT_CAPTION, FONT_CTA, FONT_HEADER, FONT_LARGE, FONT_MONO_BOLD,
@@ -205,21 +204,32 @@ def show_warn(app, on):
 
 # ==================================================================== 오른쪽
 def build_right(app, parent):
-    # 맨 아래 큰 저장 버튼 (스크롤과 상관없이 항상 보이게 먼저 붙인다)
-    cta = tk.Frame(parent, bg=BG)
-    cta.pack(side=tk.BOTTOM, fill=tk.X, pady=(12, 0))
-    cta.columnconfigure(0, weight=1, uniform="cta")
-    cta.columnconfigure(1, weight=2, uniform="cta")
-    RoundButton(cta, "저장", app.save, variant="soft", height=54, radius=16, font=FONT_CTA,
-                tooltip="Ctrl+S").grid(row=0, column=0, sticky="ew", padx=(0, 8))
-    RoundButton(cta, "저장하고 다음", app.save_next, variant="primary", height=54, radius=16,
+    # Human Review와 검수 라벨 저장: 기존 버튼 비율(저장 1, 저장하고 다음 2)을 유지한다.
+    review_cta = tk.Frame(parent, bg=BG)
+    review_cta.pack(side=tk.BOTTOM, fill=tk.X, pady=(12, 0))
+    review_cta.columnconfigure(0, weight=2, uniform="review_cta")
+    review_cta.columnconfigure(1, weight=1, uniform="review_cta")
+    app.review_btn = RoundButton(review_cta, "Human Review", app.start_human_review,
+                                 variant="primary", height=54, radius=16, font=FONT_CTA)
+    app.review_btn.grid(row=0, column=0, sticky="ew", padx=(0, 8))
+    RoundButton(review_cta, "저장", app.save, variant="soft", height=54, radius=16,
+                font=FONT_CTA, tooltip="Ctrl+S · Human Review 중에는 reviewed_labels에 저장").grid(
+                    row=0, column=1, sticky="ew")
+
+    # 일반 라벨 작업 저장 버튼은 상단 파일/Validation 버튼 바로 아래에 고정한다.
+    save_cta = tk.Frame(parent, bg=BG)
+    save_cta.pack(side=tk.TOP, fill=tk.X, pady=(0, 12))
+    save_cta.columnconfigure(0, weight=1, uniform="save_cta")
+    save_cta.columnconfigure(1, weight=2, uniform="save_cta")
+    RoundButton(save_cta, "저장", app.save, variant="soft", height=54, radius=16,
+                font=FONT_CTA, tooltip="Ctrl+S").grid(row=0, column=0, sticky="ew", padx=(0, 8))
+    RoundButton(save_cta, "저장하고 다음", app.save_next, variant="primary", height=54, radius=16,
                 font=FONT_CTA, tooltip="Space", arrow=30).grid(row=0, column=1, sticky="ew")
 
     scroll = ScrollFrame(parent, bg=BG)
     scroll.pack(fill=tk.BOTH, expand=True)
     body = scroll.body
 
-    build_ai_card(app, body)        # AI 검출 · Auto Label (교과 8 연결)
     build_class_card(app, body)
     build_box_card(app, body)
     build_review_card(app, body)

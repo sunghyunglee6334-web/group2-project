@@ -1,0 +1,2 @@
+﻿input_image,candidate_label,status,detection_count,elapsed_seconds,model_weight,confidence_threshold,imgsz,message
+250424_160002175452.jpg,project8/demo/auto_label/candidate_labels/250424_160002175452.txt,OK,3,1.367757,project8/models/final/final_best.pt,0.25,1280,후보 라벨 저장: 250424_160002175452.txt (3개)
