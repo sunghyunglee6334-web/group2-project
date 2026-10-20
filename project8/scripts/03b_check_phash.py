@@ -1,9 +1,9 @@
 """
-check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
+03b_check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
 
-실행 (project8 폴더에서, 03_build_split_v4.py 다음에):
-    python scripts/check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
-    python scripts/check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
+실행 (project8 폴더에서, 03_build_split.py 다음에):
+    python scripts/03b_check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
+    python scripts/03b_check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
 
 입력 : manifests/split_manifest.csv, data/final/images
 출력 : reports/phash_check.csv (비슷한 사진 쌍 목록), 화면 요약
@@ -12,7 +12,6 @@ check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나�
   [A] 묶음 경계: 앞 묶음 끝 K장 ↔ 다음 묶음 첫 K장의 가장 가까운 거리
       → 다른 split으로 갈라진 경계가 비슷하면 누수 의심
   [B] split 사이 전체: 서로 다른 split의 모든 사진 쌍 중 거리가 SIMILAR 이하인 쌍
-  (v4는 묶음을 쪼개지 않으므로 v1의 [C] T17_V 검사와 [B]의 T17 예외는 뺌)
 
 pHash 거리 (64비트 중 다른 비트 수)
   0~5   거의 같은 사진 (같은 장면)
@@ -73,7 +72,7 @@ def main():
     a.manifest = Path(a.manifest or PROJECT_ROOT / "manifests" / "split_manifest.csv")
     a.out = Path(a.out or PROJECT_ROOT / "reports" / "phash_check.csv")
     if not a.manifest.exists():
-        sys.exit(f"manifest 없음: {a.manifest} (03_build_split_v4.py 먼저 실행)")
+        sys.exit(f"manifest 없음: {a.manifest} (03_build_split.py 먼저 실행)")
     print(f"manifest {a.manifest}")
 
     df = pd.read_csv(a.manifest, encoding="utf-8-sig")
