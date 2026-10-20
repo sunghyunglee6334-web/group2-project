@@ -27,7 +27,17 @@
 
 원본 RAW 는 읽기만 하고, 검수를 모두 통과한 **FINAL 900쌍** 만 교과 8 로 넘어갑니다. 교과 8 은 묶음 단위로 나누고 **변수 하나씩** 개선해 Final Model 을 고르고, Final Model 이 만든 후보 라벨은 다시 **교과 7 프로그램에서 사람이 확정**합니다.
 
-![조각김치 이물검출 AI Architecture](images/architecture.svg)
+![조각김치 이물검출 AI Architecture](docs/images/architecture.svg)
+
+<br>
+
+### 화면 설계 · 작동 화면
+
+교과 7 에서 직접 만든 라벨링 프로그램 **kimchi_labeler** 입니다. 교과 8 의 Final Model 이 만든 후보 라벨도 이 화면에서 **Human Review** 로 확정합니다.
+
+![SCR-01 메인 작업 화면 UI 스토리보드](project7/docs/images/gui_main.png)
+
+*화면 ID SCR-01 · 번호는 화면 영역, 오른쪽 표는 영역별 기능 · 동작 · 단축키입니다. NDA 에 따라 원본 사진은 블러 처리했습니다.* 사용 방법 → [교과 7 사용설명서](project7/docs/04_user_manual.md)
 
 <br>
 
