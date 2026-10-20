@@ -37,3 +37,5 @@ Thumbs.db
 .vscode/
 .idea/
 *:Zone.Identifier
+backup/
+runs/
