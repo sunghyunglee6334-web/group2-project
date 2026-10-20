@@ -18,8 +18,8 @@
   "python": "3.14.4",
   "torch": "2.14.1+cu130",
   "ultralytics": "8.4.175",
-  "start_time": "2026-10-16T11:29:13",
-  "end_time": "2026-10-16T11:36:58",
-  "duration_min": 7.7,
+  "start_time": "2026-10-16T14:41:31",
+  "end_time": "2026-10-16T14:49:34",
+  "duration_min": 8.0,
   "test_bridge_used": false
 }
