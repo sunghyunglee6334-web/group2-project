@@ -1,9 +1,9 @@
 """
-03b_check_phash.py — Split 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
+check_phash.py — Split v4 후 pHash로 '비슷한 사진'이 split을 넘나드는지 확인 (배정은 바꾸지 않음)
 
-실행 (project8 폴더에서, 03_build_split.py 다음에):
-    python scripts/03b_check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
-    python scripts/03b_check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
+실행 (project8 폴더에서, 03_build_split_v4.py 다음에):
+    python scripts/check_phash.py           확인만 (imagehash 설치 없이 동작 — 같은 pHash 계산을 numpy로 직접 함)
+    python scripts/check_phash.py --apply   거리 ≤ 5(거의 같음)인 평가 쪽 사진을 manifests에 eval_exclude=True로 표시
 
 입력 : manifests/split_manifest.csv, data/final/images
 출력 : reports/phash_check.csv (비슷한 사진 쌍 목록), 화면 요약
@@ -12,7 +12,7 @@
   [A] 묶음 경계: 앞 묶음 끝 K장 ↔ 다음 묶음 첫 K장의 가장 가까운 거리
       → 다른 split으로 갈라진 경계가 비슷하면 누수 의심
   [B] split 사이 전체: 서로 다른 split의 모든 사진 쌍 중 거리가 SIMILAR 이하인 쌍
-  [C] T17_V(Val 이물만 15장) ↔ T17 나머지(Train): 같은 이물이라 가까운 게 정상 → 얼마나 가까운지 기록
+  (v4는 묶음을 쪼개지 않으므로 v1의 [C] T17_V 검사와 [B]의 T17 예외는 뺌)
 
 pHash 거리 (64비트 중 다른 비트 수)
   0~5   거의 같은 사진 (같은 장면)
@@ -65,11 +65,16 @@ def phash_all(paths):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--manifest", default=PROJECT_ROOT / "manifests" / "split_manifest.csv")
+    ap.add_argument("--manifest", default=None, help="직접 지정 (기본: manifests/split_manifest.csv)")
     ap.add_argument("--images", default=PROJECT_ROOT / "data" / "final")
-    ap.add_argument("--out", default=PROJECT_ROOT / "reports" / "phash_check.csv")
+    ap.add_argument("--out", default=None, help="직접 지정 (기본: reports/phash_check.csv)")
     ap.add_argument("--apply", action="store_true", help="거리 ≤ 5인 평가 쪽 사진을 eval_exclude=True로 manifests에 기록")
     a = ap.parse_args()
+    a.manifest = Path(a.manifest or PROJECT_ROOT / "manifests" / "split_manifest.csv")
+    a.out = Path(a.out or PROJECT_ROOT / "reports" / "phash_check.csv")
+    if not a.manifest.exists():
+        sys.exit(f"manifest 없음: {a.manifest} (03_build_split_v4.py 먼저 실행)")
+    print(f"manifest {a.manifest}")
 
     df = pd.read_csv(a.manifest, encoding="utf-8-sig")
     idx = {p.name: p for p in Path(a.images).rglob("*") if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".bmp"}}
@@ -101,7 +106,7 @@ def main():
     hs = list(zip(df.index, df["_h"], df["split"], df["group_id"]))
     found = []
     for (i, hi, si, gi), (j, hj, sj, gj) in itertools.combinations(hs, 2):
-        if si != sj and not ({gi, gj} >= {"T17", "T17_V"}):     # T17_V ↔ T17은 [C]에서 따로
+        if si != sj:                                          # v4: 예외 없이 전부 검사
             d = hi - hj
             if d <= SIMILAR:
                 found.append((d, i, j))
@@ -116,21 +121,7 @@ def main():
         print("  없음 ✅")
     else:
         print(pairs.groupby(["split_a", "split_b", "flag"]).size().to_string())
-        print("  (자세한 목록: reports/phash_check.csv)")
-
-    # [C] T17_V ↔ T17
-    v, t = df[df["group_id"] == "T17_V"], df[df["group_id"] == "T17"]
-    if len(v) and len(t):
-        dmin = []
-        for i, h in zip(v.index, v["_h"]):
-            d, j = min((h - ht, j) for j, ht in zip(t.index, t["_h"]))
-            dmin.append(d)
-            rows.append({"check": "C_T17V_vs_T17", "image_a": v.at[i, "image_name"], "image_b": t.at[j, "image_name"],
-                         "group_a": "T17_V", "group_b": "T17", "split_a": v.at[i, "split"], "split_b": t.at[j, "split"],
-                         "distance": d, "flag": "거의 같음" if d <= SAME else ("비슷함" if d <= SIMILAR else "다름")})
-        print(f"\n[C] T17_V {len(v)}장 ↔ T17 나머지(Train): 최소 거리 중앙값 {int(pd.Series(dmin).median())}, "
-              f"거의 같음(≤{SAME}) {sum(d <= SAME for d in dmin)}장")
-        print("    → 같은 이물이라 가까운 게 정상. Val 이물만 점수는 참고용 (same_bundle_split=True)")
+        print(f"  (자세한 목록: {a.out})")
 
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -169,7 +160,7 @@ def apply_exclude(rows, manifest):
         m.loc[hit, "eval_exclude"] = True
         m.loc[hit, "eval_exclude_reason"] = m.loc[hit, "image_name"].map(excl)
         m.to_csv(f, index=False, encoding="utf-8-sig")
-    print(f"\n[--apply] eval_exclude=True 추가 {len(excl)}장 → manifests/*.csv (split은 그대로)")
+    print(f"\n[--apply] eval_exclude=True 추가 {len(excl)}장 → {man}/*.csv (split은 그대로)")
     for n, why in sorted(excl.items()):
         print(f"  - {n}  ({why})")
 

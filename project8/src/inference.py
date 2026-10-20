@@ -2,7 +2,7 @@
 
 Validation/Test 평가와 분리된 이미지 추론 기능이다. 데이터셋 split을 읽거나
 ``model.val()``을 호출하지 않으므로 Bridge Holdout을 사용하지 않는다.
-파일 저장·배치 실행은 이 기능을 호출하는 ``scripts/08_predict_images.py``가 담당한다.
+파일 저장·배치 실행은 이 기능을 호출하는 ``scripts/14_predict_images.py``가 담당한다.
 """
 from __future__ import annotations
 
