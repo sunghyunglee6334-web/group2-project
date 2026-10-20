@@ -174,17 +174,68 @@ Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않�
 
 ```text
 project8/
-├── configs/       ← 데이터 설정
-├── src/           ← 공통 코드
-├── scripts/       ← 실행 01 ~ 13
-├── tests/         ← 테스트
-├── manifests/     ← Split 목록
-├── models/        ← Weight
-├── reports/       ← 결과 · 문서
-├── docs/          ← 기준 · 기록
-├── runs/          ← 학습 기록
-├── demo/          ← 시연 결과
-└── data/          ← 데이터 · Git 제외
+├── README.md                    ← 이 문서
+├── requirements.txt             ← 패키지 버전
+│
+├── configs/
+│   ├── dataset.yaml             ← 학습 데이터 설정 (정본 · v4-B)
+│   └── smoke_dataset.yaml       ← Smoke Test 용
+│
+├── src/                         ← 공통 기능 (scripts 가 불러 씀)
+│   ├── project_config.py        ← 경로 · Baseline 조건 · Dataset Version
+│   ├── dataset_audit.py         ← 교과 7 FINAL 점검
+│   ├── split_builder.py         ← 촬영 묶음 단위 Split
+│   ├── train_detector.py        ← YOLO 학습
+│   ├── evaluate_detector.py     ← 평가 · Test 잠금 (allow_test)
+│   ├── failure_analyzer.py      ← TP · FP · FN · CLASS · BBOX 판정
+│   ├── experiment_runner.py     ← 변수 1개 실험 · 같은 데이터 확인
+│   ├── inference.py             ← Detection
+│   ├── auto_label.py            ← 후보 라벨 TXT 생성
+│   └── auto_label_review.py     ← Human Review 통계
+│
+├── scripts/                     ← 실행 순서 01 ~ 15
+│   ├── 01 ~ 04                  ← 환경 · FINAL 점검 · Split · pHash · 미리보기
+│   ├── 05 ~ 07                  ← Smoke · Baseline 학습 · 평가
+│   ├── 09 · 10 · 12             ← 실패 분석
+│   ├── 11 · 11b · 11c           ← 개선 실험 · 평가 · 실패 비교
+│   ├── 13 · 13b                 ← Frozen Test (1회)
+│   └── 14 · 15                  ← Detection · Auto Label
+│
+├── tests/                       ← pytest (Split · 평가 · 실패 분석 · 실험)
+│
+├── manifests/                   ← Split 목록 (정본)
+│   ├── train.csv · val.csv · test.csv
+│   ├── bridge_holdout.csv       ← 교과 14 용 · 봉인
+│   ├── split_manifest.csv       ← 900장 전체 · 촬영 묶음 · 역할
+│   └── kimchi_v4/               ← 옛 사본 · 쓰지 않음
+│
+├── models/                      ← Weight · Git 공유 (10/20)
+│   ├── baseline/                ← baseline_best.pt
+│   ├── improved/                ← exp001 ~ exp004_best.pt
+│   └── final/                   ← final_best.pt (= EXP003)
+│
+├── reports/                     ← 결과 · 산출물
+│   ├── dataset_summary · split_report · phash_check      ← 데이터
+│   ├── baseline_* · exp00N_* · experiment_log            ← 학습 · 실험
+│   ├── failure_* · fn_by_size*                           ← 실패 분석
+│   ├── final_model_selection.md · final_metrics*         ← Final · Frozen Test
+│   ├── auto_label_review.csv                             ← Human Review 통계
+│   └── figures/                 ← 학습 곡선 · Confusion Matrix (사진 없음)
+│
+├── docs/                        ← split_policy · failure_analysis · 08 팀 작업 기록 · Architecture
+│
+├── demo/                        ← 시연 결과 (TXT · CSV 만 Git)
+│   ├── prediction_images/       ← inference_results.csv
+│   └── auto_label/              ← candidate_labels · reviewed_labels
+│
+├── presentation/                ← 발표 자료
+├── runs/                        ← 학습 기록 (results.csv · args.yaml · Weight 제외)
+│
+└── data/                        ← Git 제외
+    ├── final/                   ← 교과 7 FINAL 900쌍 (메일 · USB)
+    ├── yolo/                    ← train · val · test (03 생성)
+    ├── bridge_holdout/          ← 150장 · 사용 금지
+    └── test_detection/          ← 시연 이미지
 ```
 
 <br>
