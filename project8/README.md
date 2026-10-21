@@ -350,7 +350,6 @@ Final Model 을 처음 보는 Test 에 **한 번만** 평가 · 결과를 보고
 
 - mAP50-95 · Recall 은 Validation 과 비슷하게 유지 · 나뭇가지는 0.602 → **0.806** 상승
 - Precision 하락 — 파 · 고추(Test 1개) 헛박스 · 나뭇잎 · 벌레 헛박스 (P 0.32 · 0.34)
-- 74장 — 애매한 1장은 Test 전에 제외로 정했으나 75장으로 평가되어, 74장 결과를 추가 기록 (결론 같음)
 - [final_metrics](reports/final_metrics.csv) · [eval74](reports/final_metrics_eval74.csv) · [혼동 행렬](reports/figures/final_test_confusion_matrix.png)
 
 <br><br>
@@ -400,6 +399,6 @@ Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로�
 | Final Model | `models/final/final_best.pt` · EXP003 · imgsz 1280 · conf 0.25 |
 | Dataset | kimchi_v4 · Split v4-B · `manifests/` |
 | Bridge Holdout | 150장 · T09 · T11 · T16 · 교과 8 미사용 |
-| Frozen Test | mAP50-95 0.4115 (74장 0.4171) |
+| Frozen Test | mAP50-95 0.4115 |
 | 다음 후보 | 더 정확: EXP004 (약 86 GFLOPs) · 더 빠름: EXP001 (약 15 GFLOPs) |
 | 한계 | [14. 알려진 한계](#14-알려진-한계) |
