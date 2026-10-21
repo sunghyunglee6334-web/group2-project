@@ -19,7 +19,7 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | 데이터 | FINAL **900쌍** → Train 609 · Val 66 · Test 75 · Bridge 150 |
 | Baseline | yolo11n · 640 · Val mAP50-95 **0.345** |
 | Final Model | **EXP003** yolo11n · 1280 · Val mAP50-95 **0.446 (+29%)** |
-| Frozen Test | 1회 · mAP50-95 **0.4115** (75장) · **0.4171** (74장) |
+| Frozen Test | 1회 · mAP50-95 **0.4115** (75장) |
 | 속도 | 약 26 GFLOPs · RTX 3060 사진 1장당 추론 **8.7ms** |
 
 근거 → [Final Model Selection](reports/final_model_selection.md) · [Baseline vs Improved](reports/baseline_vs_improved.md)
