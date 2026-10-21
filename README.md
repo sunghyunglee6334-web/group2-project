@@ -18,7 +18,7 @@
 | 교과 7 · 기준 | 고무장갑은 **배경** 으로 정의 → 실제 이물만 검출 · Class 0 ~ 6 (4번 미사용) |
 | 교과 8 · Split | 5분 촬영 묶음 단위 · Train 609 · Val 66 · Test 75 · Bridge 150 · 누수 0 |
 | 교과 8 · 모델 | Baseline mAP50-95 **0.345** → Final **EXP003 (yolo11n · 1280) 0.446 (+29%)** |
-| 교과 8 · 검증 | Frozen Test 1회 · mAP50-95 **0.4115** (eval_exclude 제외 74장 **0.4171**) |
+| 교과 8 · 검증 | Frozen Test 1회 · mAP50-95 **0.4115** |
 | 교과 8 · 활용 | Final Model 후보 라벨 → 교과 7 프로그램 **Human Review** 로 확정 |
 
 <br>
