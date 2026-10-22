@@ -1,4 +1,4 @@
 ﻿model_weight,confidence_threshold,imgsz,input_image,output_image,inference_seconds,detection_count,detection_index,class_id,class_name,confidence,bbox_x1,bbox_y1,bbox_x2,bbox_y2
-models/final/final_best.pt,0.25,1280,/home/user27/group2-project/project8/data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.42063,3,1,3,insect,0.922046,1434.102,1224.504,1565.718,1359.948
-models/final/final_best.pt,0.25,1280,/home/user27/group2-project/project8/data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.42063,3,2,2,branch,0.867942,2276.424,1583.433,2403.239,1724.643
-models/final/final_best.pt,0.25,1280,/home/user27/group2-project/project8/data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.42063,3,3,3,insect,0.800038,2800.7,1395.065,2899.574,1494.572
+models/final/final_best.pt,0.25,1280,data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.406399,3,1,3,insect,0.922046,1434.102,1224.504,1565.718,1359.948
+models/final/final_best.pt,0.25,1280,data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.406399,3,2,2,branch,0.867942,2276.424,1583.433,2403.239,1724.643
+models/final/final_best.pt,0.25,1280,data/test_detection/250424_160002175452.jpg,demo/prediction_images/250424_160002175452.jpg,2.406399,3,3,3,insect,0.800038,2800.7,1395.065,2899.574,1494.572
