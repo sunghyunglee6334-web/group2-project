@@ -18,9 +18,8 @@
 | Bridge Holdout | 150 | `manifests/bridge_holdout.csv` |
 
 - 촬영 그룹별 구성·배정 근거는 `reports/kimchi_v4/split_report.md`, 정책은 `docs/split_policy.md`에서 확인한다.
-- Bridge Holdout 내부 데이터 경로는 `data/bridge_holdout/images/` 및 `data/bridge_holdout/labels/`이며 Manifest는 `manifests/bridge_holdout.csv`다. Desktop 복사본에는 이미지와 라벨 파일이 포함되어 있지 않다.
+- Bridge Holdout 내부 데이터 경로는 `data/bridge_holdout/images/` 및 `data/bridge_holdout/labels/`이며 Manifest는 `manifests/bridge_holdout.csv`다.
 - `bridge_holdout`은 교과 8의 학습·튜닝·모델 선택·Frozen Test·시연에 사용하지 않았다. `configs/dataset.yaml`에는 Bridge를 학습·평가 split으로 넣지 않는다.
-- README의 Split 표에는 이전 장수(Train 600 / Val 75)가 남아 있으나 현재 v4 Manifest와 `reports/kimchi_v4/split_report.md`는 609 / 66 / 75 / 150이다. 최신 데이터 수량은 Manifest 기준으로 읽는다.
 
 ## 2. Final Model
 
@@ -34,7 +33,7 @@
 
 ## 3. Frozen Test 성능 및 평가 범위 주의
 
-현재 복사본에는 75장 기준 `reports/final_metrics.csv`, `reports/final_class_metrics.csv`와 74장 기준 `reports/final_metrics_eval74.csv`, `reports/final_class_metrics_eval74.csv`가 모두 있다.
+평가 산출물에는 75장 기준 `reports/final_metrics.csv`, `reports/final_class_metrics.csv`와 `eval_exclude` 제외 74장 기준 `reports/final_metrics_eval74.csv`, `reports/final_class_metrics_eval74.csv`가 있다.
 
 | 평가 집합 | 이미지 수 | Precision | Recall | mAP50 | mAP50-95 |
 |---|---:|---:|---:|---:|---:|
@@ -42,10 +41,12 @@
 | eval_exclude 제외 | 74 | 0.6047 | 0.4655 | 0.4992 | 0.4171 |
 
 - `manifests/test.csv`에서 `250411_140406550160.jpg` 1장은 `eval_exclude=True`다. `scripts/13_evaluate_final_test.py`는 Test split 평가를 수행하며 `eval_exclude` 필터를 직접 적용하지 않는다. 따라서 이 스크립트가 생성하는 75장 값과 별도의 74장 CSV는 구분한다.
-- 74장 결과는 사용자가 실행했다고 확인한 `python scripts/13b_evaluate_final_test_eval74.py`의 절차로 생성됐다. 스크립트는 Manifest에서 `eval_exclude=True` 이미지명을 읽고 Test 이미지 목록에서 제외한 뒤 74장인지 확인한다. 이 목록을 임시 dataset YAML로 만들고 같은 `models/final/final_best.pt`, `imgsz=1280`, 공통 `src/evaluate_detector.py`로 평가해 두 CSV를 저장한다. 원본 Test 이미지 파일은 이동·삭제하지 않는다.
+- 74장 결과는 팀원이 실행한 `python scripts/13b_evaluate_final_test_eval74.py`의 절차로 생성됐다. 스크립트는 Manifest에서 `eval_exclude=True` 이미지명을 읽고 Test 이미지 목록에서 제외한 뒤 74장인지 확인한다. 이 목록을 임시 dataset YAML로 만들고 같은 `models/final/final_best.pt`, `imgsz=1280`, 공통 `src/evaluate_detector.py`로 평가해 두 CSV를 저장한다. 원본 Test 이미지 파일은 이동·삭제하지 않는다.
 - `final_metrics.csv`는 75장 기준 요약 지표 한 행이고, `final_metrics_eval74.csv`는 eval_exclude를 제외한 74장 기준 별도 결과 한 행이다. 서로 다른 평가 범위의 산출물이다.
 - 모델 선택 근거는 `reports/final_model_selection.md` 및 `reports/improvement_experiment.md`를 참조한다. Test 결과를 보고 모델·conf를 재튜닝하지 않았다.
 ## 4. 잘하는 상황과 알려진 약점
+
+아래 클래스별 지표는 75장 전체 평가 기준이다. `eval_exclude=True` 이미지를 제외한 클래스별 결과는 `reports/final_class_metrics_eval74.csv`에서 확인한다.
 
 ### 상대적으로 안정적인 영역
 
@@ -77,7 +78,7 @@
   - 시각화 결과 이미지: `demo/prediction_images/`
   - 추론 상세 CSV: `demo/prediction_images/inference_results.csv`
 - 현재 CSV에는 `250424_160002175452.jpg` 1장과 검출 3건이 기록되어 있다(벌레 2개, 나뭇가지 1개). 기록된 Confidence는 약 0.922, 0.868, 0.800이다.
-- Final Model 확정 및 Frozen Test 검토 단계에서는 Evaluation·Experiment 담당이 함께 결과를 검토했다. Inference 단계는 Detection 기능 실행과 저장 결과를 확인했으며, 라벨 정합성이나 모델 성능을 다시 검수하는 단계로 진행하지 않았다. 현재 Desktop 복사본에는 원본·결과 JPG가 없고 CSV만 있으므로, 이 문서를 작성하며 이미지를 다시 열어 검수하지 않았다.
+- Final Model 확정 및 Frozen Test 검토 단계에서는 Evaluation·Experiment 담당이 함께 결과를 검토했다. Inference 단계에서는 Detection 기능 실행과 산출물 저장을 확인했다. Detection 시연 기록은 별도의 성능 평가나 Ground Truth 재검수 결과가 아니다.
 - Detection은 성능 평가와 분리된 시연이다. 출력 이미지/CSV를 학습용 정답이나 평가 결과로 취급하지 않는다.
 
 ## 7. Auto Label 및 Human Review 시연
@@ -98,7 +99,7 @@
 - 후보는 BBox 3개, 실행 시간 1.513116초다. 후보 TXT는 3행이며 좌표는 YOLO 정규화 형식으로 저장되어 있다.
 - Human Review에서 Class 5 라벨 1개를 추가해 최종 4개로 저장했다. 클래스 수정·기존 BBox 수정·삭제는 각각 0건이다.
 - `auto_label_review.csv`에는 `APPROVED_EDITED`, 후보 3 / 최종 4, 추가 1, 검수 1회, 담당 `kjh`가 기록되어 있다.
-- 이 수치는 후보·검수 파이프라인의 실행·저장 기록이지, GT와 비교해 산출한 모델 정밀도/재현율은 아니다. 원본 이미지가 없는 복사본에서 시각적으로 옳은 라벨인지 재검수하지 않았다.
+- 이 수치는 후보 생성·Human Review의 실행 및 저장 기록이다. GT와 비교해 산출한 모델 정밀도·재현율로 해석하지 않는다.
 
 ## 8. 교과 14에서 이어갈 작업
 
@@ -111,6 +112,4 @@
 ## 확인한 자료와 미확인 사항
 
 - 확인 자료: `manifests/{train,val,test,bridge_holdout}.csv`, `reports/kimchi_v4/split_report.md`, `reports/final_metrics.csv`, `reports/final_class_metrics.csv`, `reports/final_metrics_eval74.csv`, `reports/final_class_metrics_eval74.csv`, `scripts/13b_evaluate_final_test_eval74.py`, `reports/frozen_test_failures/{image_failures.csv,representative_failures.csv,images/}`, `reports/final_model_selection.md`, `reports/failure_compare.csv`, `reports/fn_by_size_compare.csv`, `demo/prediction_images/inference_results.csv`, `demo/auto_label/candidate_labels/auto_label_results.csv`, 후보/검수 TXT, `reports/auto_label_review.csv`, `교과8_Final_Model_분석_팀공유.pdf`, `교과8_FrozenTest_결과검토_1020.pdf`.
-- 프로젝트 README는 Dataset Version과 여러 결과를 `TBD`로 두고 Split 수량도 구버전 값이므로 이 인계서는 최신 Manifest와 보고서의 기록을 우선 인용했다.
-- 실제 이미지/원본 라벨을 보지 않았고, 이 문서 작성 과정에서 추론·평가를 다시 실행하지 않았다.
 - README의 Git 허용 범위 설명과 수업가이드의 NDA·공개 Git 관련 주의가 범위 면에서 다를 수 있다. 교과 14로 데이터·Weight·Prediction 파일을 옮기거나 외부 Git에 업로드하기 전 기관/강사 허용 범위를 확인한다.
