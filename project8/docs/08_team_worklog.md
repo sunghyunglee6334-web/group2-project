@@ -132,7 +132,7 @@ Experiment
 
 Experiment
 	개선 총 4차까지 진행
-	4차 모델은 정밀도 하락 확인되어 3차로 final 모델 확정
+	4차(1280+s)는 변수 2개 참고 실험 · 계산량 3.3배로 제외, 3차(EXP003)로 Final 확정
 	관련 산출물 확인
 
 Evalution
