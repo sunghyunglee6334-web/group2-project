@@ -2,6 +2,16 @@
 
 ## 프로젝트 소개
 
+### Architecture
+
+원본 RAW 는 읽기만 하고, 프로그램으로 고친 라벨은 작업본 WORK 에만 저장합니다. 검수와 자동 검사 조건을 **모두 통과해야만** FINAL 900쌍이 만들어져 교과 8 로 넘어갑니다.
+
+![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)
+
+단계별 코드 · 산출물 · 담당 · 프로그램 내부 구조 → [00 Architecture](docs/00_architecture.md)
+
+<br>
+
 ### 개요
 
 조각김치 이물검출 라벨링 · 2조 프로젝트입니다. 제공된 조각김치 이물검출 데이터(4K JPG 900장 + YOLO TXT 900개, 기존 BBox 4,399개)에는 오표기 · 누락 라벨이 포함되어 있었습니다. 이를 그대로 학습하면 모델 성능이 저하되므로, **이미지 단위 확인 · 수정이 가능한 라벨링 프로그램**을 자체 개발하고 6명이 공통 기준서에 따라 검수했습니다.
@@ -36,16 +46,6 @@
 | 품질 | 자동 검사 CRITICAL **0** · 남은 REVIEW **0** |
 
 근거 → [QA Summary](reports/01_qa_summary.md)
-
-<br>
-
-### Architecture
-
-원본 RAW 는 읽기만 하고, 프로그램으로 고친 라벨은 작업본 WORK 에만 저장합니다. 검수와 자동 검사 조건을 **모두 통과해야만** FINAL 900쌍이 만들어져 교과 8 로 넘어갑니다.
-
-![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)
-
-단계별 코드 · 산출물 · 담당 · 프로그램 내부 구조 → [00 Architecture](docs/00_architecture.md)
 
 <br>
 
