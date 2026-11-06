@@ -6,7 +6,7 @@
 
 원본 RAW 는 읽기만 하고, 프로그램으로 고친 라벨은 작업본 WORK 에만 저장합니다. 검수와 자동 검사 조건을 **모두 통과해야만** FINAL 900쌍이 만들어져 교과 8 로 넘어갑니다.
 
-[![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)](docs/images/architecture.png?raw=true)
+![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)
 
 단계별 코드 · 산출물 · 담당 · 프로그램 내부 구조 → [00 Architecture](docs/00_architecture.md)
 
