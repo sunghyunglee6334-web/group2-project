@@ -68,7 +68,7 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 | 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
 |---|---|---|---|---|
-| PM | 이성형 | 일정 · GitHub 관리 · 발표 총괄 | feature/pm | README · 발표 · Acceptance Test |
+| PM | 이성형 | 프로젝트 총괄 · 일정 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · 발표 총괄 | feature/pm | README · Architecture · Acceptance Test · 발표 |
 | Data | 장세훈 | Dataset Audit · Split · 누수 점검 | feature/dataset-audit | Split v4-B · manifests |
 | Training | 이상직 | Smoke Test · Baseline 학습 | feature/train | Baseline Model |
 | Evaluation | 박하나 | 평가 모듈 · 실패 분석 · Frozen Test | feature/evaluation | Failure Analysis · Final Test |
