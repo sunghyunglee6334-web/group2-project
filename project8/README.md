@@ -1,6 +1,6 @@
 # Kimchi Foreign Object Detection — YOLO11
 
-## 1. 프로젝트 목적
+## 프로젝트 소개
 
 ### 개요
 
@@ -37,7 +37,7 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | 평가 규모 | Val 66장 · seed 1개 · 파 · 고추는 Val · Test 각 1개라 평가 불가 |
 | 속도 | 1280 은 Baseline 의 약 4배 계산량 · 실제 장비(Jetson) 속도는 교과 14 에서 확인 |
 
-자세히 → [14. 알려진 한계](#14-알려진-한계)
+자세히 → [13. 알려진 한계](#limits)
 
 <br>
 
@@ -46,19 +46,6 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 교과 7 FINAL 900쌍을 **5분 촬영 묶음 단위**로 나누고, Baseline 에서 **변수 하나씩** 바꿔 개선합니다. **Frozen Test 를 보기 전에** 고른 Final Model 만 Auto Label 과 교과 14 로 넘어갑니다.
 
 ![조각김치 이물검출 객체검출 Architecture](docs/images/architecture.svg)
-
-<br>
-
-### 팀원 소개
-
-| 직책 | 역할 | 브랜치 | 주요 산출물 |
-|---|---|---|---|
-| PM | 일정 · GitHub 관리 · 발표 총괄 | feature/pm | README · 발표 · Acceptance Test |
-| Data | Dataset Audit · Split · 누수 점검 | feature/dataset-audit | Split v4-B · manifests |
-| Training | Smoke Test · Baseline 학습 | feature/train | Baseline Model |
-| Evaluation | 평가 모듈 · 실패 분석 · Frozen Test | feature/evaluation | Failure Analysis · Final Test |
-| Experiment | 한 변수 개선 실험 · Final 선택 | feature/experiment | EXP001 ~ 004 · Final Model |
-| Inference | Detection · Auto Label · Human Review | feature/inference | candidate · reviewed labels |
 
 <br>
 
@@ -77,17 +64,67 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 <br>
 
+### 팀원 소개
+
+| 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
+|---|---|---|---|---|
+| PM | 이성형 | 일정 · GitHub 관리 · 발표 총괄 | feature/pm | README · 발표 · Acceptance Test |
+| Data | 장세훈 | Dataset Audit · Split · 누수 점검 | feature/dataset-audit | Split v4-B · manifests |
+| Training | 이상직 | Smoke Test · Baseline 학습 | feature/train | Baseline Model |
+| Evaluation | 박하나 | 평가 모듈 · 실패 분석 · Frozen Test | feature/evaluation | Failure Analysis · Final Test |
+| Experiment | 박하솔 | 한 변수 개선 실험 · Final 선택 | feature/experiment | EXP001 ~ 004 · Final Model |
+| Inference | 김준형 | Detection · Auto Label · Human Review | feature/inference | candidate · reviewed labels |
+
+<br>
+
 ### 바로가기
 
 | 용도 | 바로가기 |
 |---|---|
-| 처음 실행 | [5. 실행방법](#5-실행방법) |
-| 성과 · 근거 | [11. Improvement](#11-improvement) · [12. Final Test](#12-final-test) |
-| 한계 · 다음 단계 | [14. 알려진 한계](#14-알려진-한계) · [15. 교과 14 Handoff](#15-교과-14-handoff) |
+| 처음 실행 | [빠른 시작](#빠른-시작) → [4. 실행방법](#run) |
+| 성과 · 근거 | [10. Improvement](#improvement) · [11. Final Test](#final-test) |
+| 한계 · 다음 단계 | [13. 알려진 한계](#limits) · [14. 교과 14 Handoff](#handoff) |
 
 <br><br>
 
-## 2. 데이터 설명
+## 빠른 시작
+
+준비물: Windows 11 + WSL2 Ubuntu · NVIDIA GPU (없으면 CPU 로 느리게 실행). WSL · Git 설치는 [교과 7 빠른 시작](../project7/README.md#빠른-시작) 1단계와 같습니다.
+
+**1단계 · 받기 · 설치** — Ubuntu 창에서 실행
+
+```bash
+git clone https://github.com/sunghyunglee6334-web/group2-project.git ~/group2_project
+cd ~/group2_project/project8
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt pytest
+```
+
+**2단계 · 확인** — 환경 점검과 자동 테스트
+
+```bash
+python scripts/01_check_environment.py
+python -m pytest tests/ -q
+```
+
+`YOLO load OK` 와 `87 passed` 가 나오면 완료입니다. GPU PC 는 `CUDA available: True` 가 함께 나옵니다.
+
+**3단계 · Detection · Auto Label 시연** — Git 으로 받은 Final Model(`models/final/final_best.pt`)로 바로 실행하며, 다시 학습하지 않아도 됩니다
+
+```bash
+mkdir -p data/test_detection
+python scripts/14_predict_images.py --output demo/quickstart
+python scripts/15_auto_label.py --output-dir demo/quickstart/labels --results demo/quickstart/labels/auto_label_results.csv
+git restore reports/auto_label_review.csv
+```
+
+시연할 사진 1장을 `data/test_detection/` 에 넣고 실행합니다 (학습 · 평가 사진은 실행이 막힘). `demo/quickstart/` 에 검출 결과 이미지와 후보 TXT 가 생기면 완료이며, 후보 TXT 는 교과 7 프로그램에서 Human Review 로 확정합니다 → [12. Auto Label](#auto-label) · 학습 · 평가는 FINAL 900쌍을 받은 뒤 [4. 실행방법](#run)
+
+<br><br>
+
+<a id="data"></a>
+<details>
+<summary><b>1. 데이터 설명</b> — FINAL 900쌍 · 4848 × 2704 · 장면 구성 · kimchi_v4 · 데이터 위치</summary>
 
 - 입력: 교과 7 **FINAL 900쌍** (JPG 900 · YOLO TXT 900 · BBox 4,405) → [교과 8 Handoff](../project7/docs/10_subject08_handoff.md)
 - 원본: 4848 × 2704 · AI캠퍼스 교육용 **100% 가상 생성** · **NDA 대상**
@@ -100,9 +137,11 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | `data/yolo/` | train · val · test (03_build_split 생성) | 제외 |
 | `data/bridge_holdout/` | 교과 14 용 150장 · 학습 · 평가 미사용 | 제외 |
 
-<br><br>
+</details>
 
-## 3. Class
+<a id="classes"></a>
+<details>
+<summary><b>2. Class</b> — Class 0~6 · Train / Val / Test 개수 · 고무장갑 배경 · 파 · 고추 평가 불가</summary>
 
 교과 7 번호 그대로 · **번호 변경 금지** · 설정 [configs/dataset.yaml](configs/dataset.yaml)
 
@@ -118,9 +157,11 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 - **김치 · 고무장갑 = 배경** · 파 · 고추는 Val · Test 1개씩이라 **평가 불가 · 참고만**
 
-<br><br>
+</details>
 
-## 4. 환경
+<a id="env"></a>
+<details>
+<summary><b>3. 환경</b> — WSL2 · RTX 3060 12GB · Python 3.14 · PyTorch 2.14 · Ultralytics 8.4</summary>
 
 | 항목 | 값 |
 |---|---|
@@ -130,11 +171,13 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | Ultralytics | 8.4.175 |
 | 공통 설정 | [src/project_config.py](src/project_config.py) — 경로 · Class · Baseline 조건 · conf 0.25 · IoU 0.5 |
 
-<br><br>
+</details>
 
-## 5. 실행방법
+<a id="run"></a>
+<details>
+<summary><b>4. 실행방법</b> — 설치 · 데이터 · 실행 순서 01 ~ 15 · 폴더 구조 · 주의사항</summary>
 
-### 설치 · 데이터
+#### 설치 · 데이터
 
 WSL · Git 설치는 [교과 7 빠른 시작](../project7/README.md#빠른-시작) 과 같습니다.
 
@@ -156,7 +199,7 @@ Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않�
 
 <br>
 
-### 실행 순서
+#### 실행 순서
 
 | 단계 | 스크립트 |
 |---|---|
@@ -170,7 +213,7 @@ Weight 6개(`models/`)는 Git 으로 받아지므로 **다시 학습하지 않�
 
 <br>
 
-### 폴더 구조
+#### 폴더 구조
 
 ```text
 project8/
@@ -240,16 +283,18 @@ project8/
 
 <br>
 
-### 주의사항
+#### 주의사항
 
 - **원본 사진 · 결과 이미지 · 영상은 Git 금지** · TXT · CSV · 문서 · 그래프는 허용 (10/13 강사님 확인)
 - `models/` Weight 는 팀 공유 (10/20) · `runs/` Weight 는 제외
 - **Frozen Test 는 한 번만** · **Bridge Holdout 은 교과 8 에서 사용 금지**
 - main 은 PR 로만 · `git add .` · `-f` 금지
 
-<br><br>
+</details>
 
-## 6. Dataset Split
+<a id="split"></a>
+<details>
+<summary><b>5. Dataset Split</b> — 5분 촬영 묶음 · 609 / 66 / 75 / 150 · 누수 0.781 → 0.444</summary>
 
 **v4-B (10/19 · PR #61)** · 기준 [split_policy](docs/split_policy.md) · 결과 [split_report](reports/split_report.md)
 
@@ -264,9 +309,11 @@ project8/
 - **누수 확인** — 사진 단위 Recall **0.781** → 묶음 단위 **0.444** · 부풀린 점수를 걷어내고 전부 재학습
 - **라벨이 애매한 Test 1장** — 250411_140406550160.jpg
 
-<br><br>
+</details>
 
-## 7. Smoke Test
+<a id="smoke"></a>
+<details>
+<summary><b>6. Smoke Test</b> — 960 · 1280 GPU 메모리 · batch 8 결정</summary>
 
 본 학습 전에 학습 → 저장 → 예측이 끝까지 도는지, GPU 메모리를 확인했습니다 (성능 판단용 아님).
 
@@ -277,9 +324,11 @@ project8/
 
 - 결정: **batch 8** 이면 1280 까지 같은 조건으로 비교 가능 → [smoke_test](reports/smoke_test.md)
 
-<br><br>
+</details>
 
-## 8. Baseline
+<a id="baseline"></a>
+<details>
+<summary><b>7. Baseline</b> — yolo11n · 640 · batch 8 · 70 epoch · seed 42</summary>
 
 | 항목 | 값 | 이유 |
 |---|---|---|
@@ -291,9 +340,11 @@ project8/
 - 학습 7.9분 · best epoch 50 · Train 609 만 학습 · Test · Bridge 미사용
 - [학습 조건](reports/baseline_training_condition.md) · `models/baseline/baseline_best.pt`
 
-<br><br>
+</details>
 
-## 9. 평가
+<a id="evaluation"></a>
+<details>
+<summary><b>8. 평가</b> — 대표 지표 mAP50-95 · Baseline 0.345 · Test 잠금</summary>
 
 모든 모델을 같은 모듈 [evaluate_detector.py](src/evaluate_detector.py) 로 평가합니다. **대표 지표는 mAP50-95** (박스를 얼마나 정확히 그렸는지까지 봄).
 
@@ -304,9 +355,11 @@ project8/
 - 잡은 건 대부분 맞지만 이물 10개 중 약 6개를 놓침
 - `allow_test=True` 없이는 Test 평가를 막음 · [Class별](reports/baseline_class_metrics.csv) · [figures](reports/figures)
 
-<br><br>
+</details>
 
-## 10. Failure Analysis
+<a id="failure"></a>
+<details>
+<summary><b>9. Failure Analysis</b> — FN 82 · FP 24 · 작은 이물 63.9% · 가설 3개</summary>
 
 conf ≥ 0.25 · IoU ≥ 0.5 기준 박스 판정 · [failure_compare](reports/failure_compare.csv) · [fn_by_size_compare](reports/fn_by_size_compare.csv)
 
@@ -319,9 +372,11 @@ conf ≥ 0.25 · IoU ≥ 0.5 기준 박스 판정 · [failure_compare](reports/f
 - **병해 · 갈변 Recall 0** — 데이터가 Bridge 묶음에 몰림 → 데이터 문제
 - 대표 사례 → [failure_analysis.csv](reports/failure_analysis.csv) · 가설 원문 [failure_hypothesis](reports/failure_hypothesis.md) (Split v1 기준)
 
-<br><br>
+</details>
 
-## 11. Improvement
+<a id="improvement"></a>
+<details>
+<summary><b>10. Improvement</b> — 변수 1개 · EXP001 ~ 004 · Final EXP003 0.446 (+29%)</summary>
 
 **Baseline 에서 변수 하나만** · 채택 기준 **mAP50-95 +0.02 를 결과 보기 전(10/16)에 결정**
 
@@ -337,9 +392,11 @@ conf ≥ 0.25 · IoU ≥ 0.5 기준 박스 판정 · [failure_compare](reports/f
 - EXP004 는 더 높지만 계산량 **3.3배** · 실시간 속도 미확인 · 변수 2개 → 교과 14 후보
 - [experiment_log](reports/experiment_log.csv) · [improvement_experiment](reports/improvement_experiment.md) · [baseline_vs_improved](reports/baseline_vs_improved.md)
 
-<br><br>
+</details>
 
-## 12. Final Test
+<a id="final-test"></a>
+<details>
+<summary><b>11. Final Test</b> — Frozen Test 1회 · mAP50-95 0.4115 · Precision 하락 원인</summary>
 
 Final Model 을 처음 보는 Test 에 **한 번만** 평가 · 결과를 보고 모델을 바꾸지 않음
 
@@ -352,9 +409,11 @@ Final Model 을 처음 보는 Test 에 **한 번만** 평가 · 결과를 보고
 - Precision 하락 — 파 · 고추(Test 1개) 헛박스 · 나뭇잎 · 벌레 헛박스 (P 0.32 · 0.34)
 - [final_metrics](reports/final_metrics.csv) · [eval74](reports/final_metrics_eval74.csv) · [혼동 행렬](reports/figures/final_test_confusion_matrix.png)
 
-<br><br>
+</details>
 
-## 13. Auto Label
+<a id="auto-label"></a>
+<details>
+<summary><b>12. Auto Label</b> — Detection → 후보 TXT → Human Review · 3 → 4 · APPROVED_EDITED</summary>
 
 Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로그램**에서 확인 · 수정해 확정합니다.
 
@@ -375,9 +434,11 @@ Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로�
 - Human Review 에서 저장하면 검수 라벨과 수정 · 삭제 · 추가 횟수가 **자동 기록**됩니다 (PR #74)
 - 시연 이미지는 `data/test_detection/` · 결과 이미지(사진)는 Git 제외 · `fr_test` · `bridge_holdout` 폴더는 실행 차단
 
-<br><br>
+</details>
 
-## 14. 알려진 한계
+<a id="limits"></a>
+<details>
+<summary><b>13. 알려진 한계</b> — 병해 · 갈변 Recall 0 · 작은 이물 60% · 계산량 · 평가 규모</summary>
 
 | 한계 | 원인 | 다음 |
 |---|---|---|
@@ -388,9 +449,11 @@ Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로�
 | 1280 계산량 | Baseline 의 약 4배 | Jetson 속도 · EXP001 대안 |
 | Val 66 · seed 1개 | 시간 제약 | 작은 차이는 신뢰 낮음 |
 
-<br><br>
+</details>
 
-## 15. 교과 14 Handoff
+<a id="handoff"></a>
+<details>
+<summary><b>14. 교과 14 Handoff</b> — Final Model · Bridge Holdout 150 · Frozen Test · 다음 후보</summary>
 
 <!-- TODO: docs/handoff_subject14.md 연결 -->
 
@@ -401,4 +464,6 @@ Final Model 이 만든 **후보 TXT** 를 사람이 **교과 7 라벨링 프로�
 | Bridge Holdout | 150장 · T09 · T11 · T16 · 교과 8 미사용 |
 | Frozen Test | mAP50-95 0.4115 |
 | 다음 후보 | 더 정확: EXP004 (약 86 GFLOPs) · 더 빠름: EXP001 (약 15 GFLOPs) |
-| 한계 | [14. 알려진 한계](#14-알려진-한계) |
+| 한계 | [13. 알려진 한계](#limits) |
+
+</details>

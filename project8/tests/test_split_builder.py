@@ -19,7 +19,7 @@ from src import split_builder as sb  # noqa: E402
 from src.split_builder import CLASS_NAMES, DEFAULT_POLICY, SPLITS, SplitError  # noqa: E402
 
 MANIFESTS = ROOT / "manifests"
-SIZES = {"train": 600, "val": 75, "test": 75, "bridge_holdout": 150}
+SIZES = {"train": 609, "val": 66, "test": 75, "bridge_holdout": 150}
 
 
 # ---------------------------------------------------------------- 가짜 manifest
@@ -60,7 +60,7 @@ def test_split_names():
     assert SPLITS == ["train", "val", "test", "bridge_holdout"]
 
 
-def test_default_sizes_make_600_75_75_150():
+def test_default_sizes_make_609_66_75_150():
     sizes = DEFAULT_POLICY["sizes"]
     assert {**sizes, "train": 900 - sum(sizes.values())} == SIZES
 
