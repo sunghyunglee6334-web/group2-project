@@ -60,14 +60,14 @@
 
 ### 팀원 소개
 
-| 직책 | 역할 | 브랜치 | 주요 산출물 |
-|---|---|---|---|
-| PM | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 | feature/pm | README · Baseline · 사용설명서 · FINAL |
-| GUI | 프로그램 화면 디자인 · 발표 캡처 · Figma | feature/gui | 화면 v01 → v02 |
-| Coord | BBox 좌표 · Golden Test · 기준서 | feature/coord | Class · BBox 기준서 |
-| Storage | 라벨 저장 로직 · 데이터 취합 · 배포 | feature/storage | 저장 · 합치기 |
-| QA | 자동 검사 · RAW 보호 · 테스트 | feature/qa | Validation · Test Report |
-| Manifest | 작업 장부 · 기록 · 인계 · 서기 | feature/manifest | Manifest · QA Summary · Handoff |
+| 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
+|---|---|---|---|---|
+| PM | 이성형 | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 | feature/pm | README · Baseline · 사용설명서 · FINAL |
+| GUI | 박하솔 | 프로그램 화면 디자인 · 발표 캡처 · Figma | feature/gui | 화면 v01 → v02 |
+| Coord | 박하나 | BBox 좌표 · Golden Test · 기준서 | feature/coord | Class · BBox 기준서 |
+| Storage | 이상직 | 라벨 저장 로직 · 데이터 취합 · 배포 | feature/storage | 저장 · 합치기 |
+| QA | 장세훈 | 자동 검사 · RAW 보호 · 테스트 | feature/qa | Validation · Test Report |
+| Manifest | 김준형 | 작업 장부 · 기록 · 인계 · 서기 | feature/manifest | Manifest · QA Summary · Handoff |
 
 <br>
 
