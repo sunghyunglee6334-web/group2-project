@@ -1,6 +1,4 @@
-# group2-project — 조각김치 이물검출 AI
-
-<p align="right"><b>한국어</b> | <a href="README.en.md">English</a></p>
+# group2-project — 조각김치 이물검출 AI &nbsp;<sup><b>한국어</b> | <a href="README.en.md">English</a></sup>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white">
