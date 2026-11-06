@@ -1,4 +1,4 @@
-# Kimchi Foreign Object Detection — YOLO11 &nbsp;<sup><b>한국어</b> | <a href="README.en.md">English</a></sup>
+# <a href="README.en.md"><img align="right" src="../docs/lang/en_link.svg" alt="English"></a><a href="README.md"><img align="right" src="../docs/lang/ko_on.svg" alt="한국어"></a>Kimchi Foreign Object Detection — YOLO11
 
 ## 프로젝트 소개
 
