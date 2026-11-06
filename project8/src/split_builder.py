@@ -56,13 +56,13 @@ DEFAULT_POLICY = {
     "small_concentration": {"top_k": 5, "share": 0.5},   # [4-6] small 상위 5장이 split small의 50% 이상이면 경고
     "ambiguous_keywords": ["모호", "ambiguous", "불확실", "의심", "REVIEW"],
     "source_d1": "이물검출_학습데이터1",
-    # [3단계] v5: v4-B에서 Bridge의 T09(병해 46%)를 T06과 맞바꿈 · Val·Test는 v4-B와 같음 · 나머지 Train
+    # [3단계] v4-B 확정 (PR #61): 적힌 묶음만 그 split · 나머지 Train · scripts/03_build_split.py 와 같음
     "assignment": {
         "val": ["T01", "T03", "T07"],
         "test": ["T08", "T14"],
-        "bridge_holdout": ["T06", "T11", "T16"],
+        "bridge_holdout": ["T09", "T11", "T16"],
     },
-    "sizes": {"val": 66, "test": 75, "bridge_holdout": 151},   # train = 나머지 608. 다르면 실패
+    "sizes": {"val": 66, "test": 75, "bridge_holdout": 150},   # train = 나머지 609. 다르면 실패
     # [4-1] '완화 3' 되돌림: 이 Class들은 Train 박스가 다른 split보다 많아야 함 (어기면 ❌)
     "train_most_classes": ["0", "1", "2", "3", "5", "6"],
     # [4단계] 역할별 확인 (어기면 '확인 필요'에 기록, 배정은 바꾸지 않음)

@@ -85,7 +85,7 @@ python scripts/01_check_environment.py
 python scripts/03_build_split.py
 ```
 
-학습된 Weight 는 `project8/models/` 에 함께 받아지므로 다시 학습하지 않아도 평가 · Detection 을 바로 실행할 수 있습니다. 자세한 실행 순서 → [교과 7 빠른 시작](project7/README.md#빠른-시작) · [교과 8 실행방법](project8/README.md#5-실행방법)
+학습된 Weight 는 `project8/models/` 에 함께 받아지므로 다시 학습하지 않아도 평가 · Detection 을 바로 실행할 수 있습니다. 자세한 실행 순서 → [교과 7 빠른 시작](project7/README.md#빠른-시작) · [교과 8 실행방법](project8/README.md#run)
 
 <br><br>
 
