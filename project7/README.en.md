@@ -1,4 +1,6 @@
-# <a href="README.en.md"><img align="right" src="../docs/lang/en_on.svg" alt="English"></a><a href="README.md"><img align="right" src="../docs/lang/ko_link.svg" alt="한국어"></a>Kimchi YOLO Labeling Tool
+# Kimchi YOLO Labeling Tool
+
+<p align="right"><a href="README.md">한국어</a> | <b>English</b></p>
 
 ## Project Overview
 

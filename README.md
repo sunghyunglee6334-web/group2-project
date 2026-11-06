@@ -1,4 +1,6 @@
-# <a href="README.en.md"><img align="right" src="docs/lang/en_link.svg" alt="English"></a><a href="README.md"><img align="right" src="docs/lang/ko_on.svg" alt="한국어"></a>group2-project — 조각김치 이물검출 AI
+# group2-project — 조각김치 이물검출 AI
+
+<p align="right"><b>한국어</b> | <a href="README.en.md">English</a></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white">
