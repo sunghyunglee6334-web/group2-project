@@ -1,6 +1,4 @@
-# group2-project — Kimchi Foreign Object Detection AI
-
-<p align="right"><a href="README.md">한국어</a> | <b>English</b></p>
+# group2-project — Kimchi Foreign Object Detection AI &nbsp;<sup><a href="README.md">한국어</a> | <b>English</b></sup>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white">

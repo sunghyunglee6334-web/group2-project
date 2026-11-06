@@ -1,6 +1,4 @@
-# Kimchi YOLO Labeling Tool
-
-<p align="right"><b>한국어</b> | <a href="README.en.md">English</a></p>
+# Kimchi YOLO Labeling Tool &nbsp;<sup><b>한국어</b> | <a href="README.en.md">English</a></sup>
 
 ## 프로젝트 소개
 
