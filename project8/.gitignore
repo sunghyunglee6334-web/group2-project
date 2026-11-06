@@ -11,6 +11,7 @@
 !reports/figures/*.png
 # Architecture 도식은 사진이 아니라 허용
 !docs/images/architecture.png
+!docs/images/architecture_en.png
 
 # ── 데이터: 교과 7 FINAL 복사본 · 학습용 폴더 → 용량 · 중복 때문에 제외 ──
 # (라벨 원본은 project7/data/final 에 Git 으로 있음)
