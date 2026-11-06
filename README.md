@@ -1,6 +1,30 @@
 # group2-project — 조각김치 이물검출 AI
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/PyTorch-2.14_CUDA-EE4C2C?logo=pytorch&logoColor=white">
+  <img src="https://img.shields.io/badge/Ultralytics-YOLO11_8.4-111F68?logo=ultralytics&logoColor=white">
+  <img src="https://img.shields.io/badge/OpenCV-5.0-5C3EE8?logo=opencv&logoColor=white">
+  <img src="https://img.shields.io/badge/Pandas-3.0-150458?logo=pandas&logoColor=white">
+  <img src="https://img.shields.io/badge/Tkinter-GUI-FFB000?logo=python&logoColor=white">
+  <br>
+  <img src="https://img.shields.io/badge/NVIDIA-RTX_3060-76B900?logo=nvidia&logoColor=white">
+  <img src="https://img.shields.io/badge/Ubuntu-WSL2-E95420?logo=ubuntu&logoColor=white">
+  <img src="https://img.shields.io/badge/VS_Code-Editor-007ACC?logo=visualstudiocode&logoColor=white">
+  <img src="https://img.shields.io/badge/pytest-87_passed-0A9EDC?logo=pytest&logoColor=white">
+  <img src="https://img.shields.io/badge/GitHub-PR_Flow-181717?logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/Figma-UI_Design-F24E1E?logo=figma&logoColor=white">
+</p>
+
 ## 프로젝트 소개
+
+### Architecture
+
+원본 RAW 는 읽기만 하고, 검수를 모두 통과한 **FINAL 900쌍** 만 교과 8 로 넘어갑니다. 교과 8 은 묶음 단위로 나누고 **변수 하나씩** 개선해 Final Model 을 고르고, Final Model 이 만든 후보 라벨은 다시 **교과 7 프로그램에서 사람이 확정**합니다.
+
+![조각김치 이물검출 AI Architecture](docs/architecture.svg)
+
+<br>
 
 ### 개요
 
@@ -23,14 +47,6 @@
 
 <br>
 
-### Architecture
-
-원본 RAW 는 읽기만 하고, 검수를 모두 통과한 **FINAL 900쌍** 만 교과 8 로 넘어갑니다. 교과 8 은 묶음 단위로 나누고 **변수 하나씩** 개선해 Final Model 을 고르고, Final Model 이 만든 후보 라벨은 다시 **교과 7 프로그램에서 사람이 확정**합니다.
-
-![조각김치 이물검출 AI Architecture](docs/architecture.svg)
-
-<br>
-
 ### 화면 설계 · 작동 화면
 
 교과 7 에서 직접 만든 라벨링 프로그램 **kimchi_labeler** 입니다. 교과 8 의 Final Model 이 만든 후보 라벨도 이 화면에서 **Human Review** 로 확정합니다.
@@ -38,6 +54,48 @@
 ![SCR-01 메인 작업 화면 UI 스토리보드](project7/docs/images/gui_main.png)
 
 *화면 ID SCR-01 · 번호는 화면 영역, 오른쪽 표는 영역별 기능 · 동작 · 단축키입니다. NDA 에 따라 원본 사진은 블러 처리했습니다.* 사용 방법 → [교과 7 사용설명서](project7/docs/04_user_manual.md)
+
+<br>
+
+### 산출물
+
+| 교과 | 번호 | 산출물 | 위치 | 상태 |
+|---|---:|---|---|---|
+| 교과 7 | 1 | 라벨링 프로그램 | `project7/main.py` · `project7/src/` | 완료 · v2.2 |
+| 교과 7 | 2 | 소스코드 · 실행 환경 | `project7/src/` · `requirements.txt` · `configs/` | 완료 |
+| 교과 7 | 3 | FINAL YOLO 라벨 | `project7/data/final/` (Git 제외) | 완료 · 900쌍 |
+| 교과 7 | 4 | Project Baseline | [docs/01](project7/docs/01_project_baseline.md) | 완료 |
+| 교과 7 | 5 | Class 기준서 | [docs/02](project7/docs/02_class_guide.md) | 완료 · v1.7.2 |
+| 교과 7 | 6 | BBox 기준서 | [docs/03](project7/docs/03_bbox_guide.md) | 완료 · v1.2 |
+| 교과 7 | 7 | Dataset Manifest | `project7/manifests/dataset_manifest.csv` | 예정 · FINAL 후 생성 |
+| 교과 7 | 8 | QA Summary | [reports/01](project7/reports/01_qa_summary.md) | 완료 |
+| 교과 7 | 9 | Test Report | [reports/02](project7/reports/02_test_report.md) | 완료 · Golden 13 / 13 · Pilot 30 / 30 |
+| 교과 7 | 10 | README | [project7/README](project7/README.md) | 완료 |
+| 교과 7 | 11 | 교과 8 Handoff | [docs/10](project7/docs/10_subject08_handoff.md) | 완료 |
+| 교과 7 | 추가 | Architecture · 사용설명서 · 이슈 → 개선 · 버전 기록 · 팀 작업 기록 · 코드 리뷰 · 공부 · 검사 결과 CSV | [project7 13. 산출물](project7/README.md#deliverables) | 완료 · 7개 |
+| 교과 8 | 1 | Dataset Version | `project8/configs/` · `manifests/` · [split_policy](project8/docs/split_policy.md) | 완료 · kimchi_v4 |
+| 교과 8 | 2 | Baseline Model | `project8/models/baseline/` · [baseline_metrics](project8/reports/baseline_metrics.csv) | 완료 |
+| 교과 8 | 3 | Failure Analysis | [failure_analysis](project8/reports/failure_analysis.csv) · `project8/demo/failure_analysis/` | 완료 |
+| 교과 8 | 4 | Improved / Final Model | `project8/models/improved/` · `models/final/` · [selection](project8/reports/final_model_selection.md) | 완료 · EXP003 |
+| 교과 8 | 5 | 성능 · 실험 기록 | [experiment_log](project8/reports/experiment_log.csv) · [final_metrics](project8/reports/final_metrics.csv) · [figures](project8/reports/figures) | 완료 |
+| 교과 8 | 6 | Detection · Auto Label | `project8/demo/prediction_images/` · `demo/auto_label/` · [auto_label_review](project8/reports/auto_label_review.csv) | 완료 · 시연 1장 |
+| 교과 8 | 7 | 문서 · 교과 14 연결 | [project8/README](project8/README.md) · `reports/acceptance_test.md` · `docs/handoff_subject14.md` | 진행 중 |
+| 교과 8 | 8 | 발표 · 시연 | `project8/presentation/` · `demo/*.mp4` | 진행 중 |
+
+*모델 가중치(`models/`) · 원본 사진 · 예측 이미지는 NDA · 용량 문제로 Git 에 올리지 않습니다.*
+
+<br>
+
+### 팀원 소개
+
+| 이름 | 교과 7 | 교과 8 | 주요 역할 · 산출물 |
+|---|---|---|---|
+| 이성형 | PM | PM | 프로젝트 총괄 · 일정 · Class 기준 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · README · Architecture · 발표 총괄 |
+| 박하솔 | GUI | Experiment | 화면 v01 → v02 · Figma · EXP001 ~ 004 · Final 선택 |
+| 박하나 | Coord | Evaluation | Class · BBox 기준서 · Golden Test · 실패 분석 · Frozen Test |
+| 이상직 | Storage | Training | 라벨 저장 · 데이터 취합 · Smoke Test · Baseline 학습 |
+| 장세훈 | QA | Data | 자동 검사 · Test Report · Dataset Audit · Split v4-B |
+| 김준형 | Manifest | Inference | 작업 장부 · QA Summary · Handoff · Detection · Auto Label |
 
 <br>
 

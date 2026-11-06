@@ -2,6 +2,14 @@
 
 ## 프로젝트 소개
 
+### Architecture
+
+교과 7 FINAL 900쌍을 **5분 촬영 묶음 단위**로 나누고, Baseline 에서 **변수 하나씩** 바꿔 개선합니다. **Frozen Test 를 보기 전에** 고른 Final Model 만 Auto Label 과 교과 14 로 넘어갑니다.
+
+![조각김치 이물검출 객체검출 Architecture](docs/images/architecture.svg)
+
+<br>
+
 ### 개요
 
 조각김치 이물검출 객체검출 · 2조 프로젝트입니다. 교과 7 에서 전수 검수한 **FINAL 900쌍**으로 YOLO11 을 학습하고, **실패 분석 → 한 변수 개선 → Final Model → Frozen Test → Auto Label** 까지 완성합니다.
@@ -38,14 +46,6 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 | 속도 | 1280 은 Baseline 의 약 4배 계산량 · 실제 장비(Jetson) 속도는 교과 14 에서 확인 |
 
 자세히 → [13. 알려진 한계](#limits)
-
-<br>
-
-### Architecture
-
-교과 7 FINAL 900쌍을 **5분 촬영 묶음 단위**로 나누고, Baseline 에서 **변수 하나씩** 바꿔 개선합니다. **Frozen Test 를 보기 전에** 고른 Final Model 만 Auto Label 과 교과 14 로 넘어갑니다.
-
-![조각김치 이물검출 객체검출 Architecture](docs/images/architecture.svg)
 
 <br>
 
