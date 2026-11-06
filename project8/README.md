@@ -2,6 +2,8 @@
 
 <p align="right"><b>한국어</b> | <a href="README.en.md">English</a></p>
 
+<p align="center">교과 8 · FINAL 900쌍으로 YOLO11 학습 → 실패 분석 · 한 변수 개선 → <b>Final Model · Auto Label</b></p>
+
 ## 프로젝트 소개
 
 ### Architecture

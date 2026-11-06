@@ -2,6 +2,8 @@
 
 <p align="right"><b>한국어</b> | <a href="README.en.md">English</a></p>
 
+<p align="center">교과 7 · 라벨링 프로그램 직접 개발 → 900장 전수 검수 → 정답 데이터 <b>FINAL 900쌍</b></p>
+
 ## 프로젝트 소개
 
 ### Architecture

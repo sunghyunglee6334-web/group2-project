@@ -2,6 +2,8 @@
 
 <p align="right"><a href="README.md">한국어</a> | <b>English</b></p>
 
+<p align="center">Subject 7 · built our own labeling program → reviewed all 900 images → ground-truth <b>FINAL 900 pairs</b></p>
+
 ## Project Overview
 
 ### Architecture
