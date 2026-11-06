@@ -1,6 +1,6 @@
 # Kimchi YOLO Labeling Tool
 
-## 1. 프로젝트 소개
+## 프로젝트 소개
 
 ### 개요
 
@@ -39,15 +39,6 @@
 
 <br>
 
-### 화면 설계 · 작동 화면
-
-![SCR-01 메인 작업 화면 UI 스토리보드](docs/images/gui_main.png)
-
-*화면 ID SCR-01 · 번호는 화면 영역, 오른쪽 표는 영역별 기능 · 동작 · 단축키입니다. NDA 에 따라 원본 사진은 블러 처리했으며, 노란 박스는 검수 완료된 실제 BBox 입니다.*
-전체 단축키 · 메뉴 → [04 사용설명서 3장](docs/04_user_manual.md#3-사용-순서--화면--단축키) · 디자인 변천 → [v01](docs/images/gui_v01.png) → [v02](docs/images/gui_v02.png)
-
-<br>
-
 ### Architecture
 
 원본 RAW 는 읽기만 하고, 프로그램으로 고친 라벨은 작업본 WORK 에만 저장합니다. 검수와 자동 검사 조건을 **모두 통과해야만** FINAL 900쌍이 만들어져 교과 8 로 넘어갑니다.
@@ -55,6 +46,15 @@
 ![조각김치 이물검출 라벨링 Architecture](docs/images/architecture.png)
 
 단계별 코드 · 산출물 · 담당 · 프로그램 내부 구조 → [00 Architecture](docs/00_architecture.md)
+
+<br>
+
+### 화면 설계 · 작동 화면
+
+![SCR-01 메인 작업 화면 UI 스토리보드](docs/images/gui_main.png)
+
+*화면 ID SCR-01 · 번호는 화면 영역, 오른쪽 표는 영역별 기능 · 동작 · 단축키입니다. NDA 에 따라 원본 사진은 블러 처리했으며, 노란 박스는 검수 완료된 실제 BBox 입니다.*
+전체 단축키 · 메뉴 → [04 사용설명서 3장](docs/04_user_manual.md#3-사용-순서--화면--단축키) · 디자인 변천 → [v01](docs/images/gui_v01.png) → [v02](docs/images/gui_v02.png)
 
 <br>
 
@@ -75,10 +75,10 @@
 
 | 용도 | 바로가기 |
 |---|---|
-| 처음 실행 | [빠른 시작](#빠른-시작) → [5. 기본 사용 순서](#5-기본-사용-순서) |
-| 성과 · 근거 | [개선 효과](#개선-효과) · [11. QA · 테스트 결과](#11-qa--테스트-결과) · [14. 산출물](#14-산출물--버전-관리) |
-| 기준 · 문서 | [3. 폴더 구조 · 문서 지도](#3-프로젝트-폴더-구조) · [13. WBS 일정](#wbs-일정) |
-| 문제 대응 | [15. 주의사항](#15-주의사항) |
+| 처음 실행 | [빠른 시작](#빠른-시작) → [4. 기본 사용 순서](#usage) |
+| 성과 · 근거 | [개선 효과](#개선-효과) · [10. QA · 테스트 결과](#qa) · [13. 산출물](#deliverables) |
+| 기준 · 문서 | [2. 폴더 구조 · 문서 지도](#folders) · [12. WBS 일정](#team) |
+| 문제 대응 | [14. 주의사항](#caution) |
 
 <br><br>
 
@@ -113,7 +113,9 @@ bash run.sh --raw data/dummy_raw
 
 <br><br>
 
-## 2. 프로젝트 주요 기능
+<a id="features"></a>
+<details>
+<summary><b>1. 프로젝트 주요 기능</b> — 이미지 열기 · BBox 편집 · Class 변경 · Zoom · 상태 관리 · 저장 · Validation</summary>
 
 번호는 [작동 화면](#화면-설계--작동-화면)의 영역 번호입니다.
 
@@ -131,9 +133,11 @@ bash run.sh --raw data/dummy_raw
 | 작업 현황 · 사진 목록 필터 | 2 · 3 |
 | 추가 기능: 내장 한글 입력기 · 작업 장부 자동 기록 · 안전 저장 · 운영 스크립트 00~10 | — |
 
-<br><br>
+</details>
 
-## 3. 프로젝트 폴더 구조
+<a id="folders"></a>
+<details>
+<summary><b>2. 프로젝트 폴더 구조</b> — 프로그램 코드 · 설정 · 스크립트 · 테스트 · 문서 지도 · 데이터 위치</summary>
 
 ```text
 project7/
@@ -168,7 +172,7 @@ project7/
 
 파일별 역할 · 코드 흐름 → [09 코드 공부 0.2 파일 지도](docs/09_code_study.md#02-파일-지도와-역할-담당)
 
-### 문서 지도
+#### 문서 지도
 
 문서 번호는 읽는 순서입니다.
 
@@ -186,18 +190,22 @@ project7/
 | 교과 8 에 무엇을 넘겼나 | [10 교과 8 Handoff](docs/10_subject08_handoff.md) | Manifest · 10/14 |
 | 검수 결과 · 테스트 결과 | [01 QA Summary](reports/01_qa_summary.md) · [02 Test Report](reports/02_test_report.md) | Manifest · QA |
 
-<br><br>
+</details>
 
-## 4. 설치 · 실행
+<a id="install"></a>
+<details>
+<summary><b>3. 설치 · 실행</b> — 설치 · 작업자 이름 · RAW 폴더 · 업데이트</summary>
 
 - 설치 명령은 [빠른 시작](#빠른-시작) 과 같습니다.
 - 처음 실행하면 **작업자 이름**을 한 번 입력하고, **폴더 열기**로 원본 RAW 폴더(학습데이터1 · 2 가 바로 안에 있는 폴더)를 고릅니다.
 - 실제 데이터는 NDA 대상이라 Git 에 없습니다. 메일 · USB 로 받은 `이물검출_학습데이터1` · `이물검출_학습데이터2` 를 `data/raw/` 에 넣고 `bash run.sh --raw data/raw` 로 실행합니다.
 - 업데이트 → [1-2. 새 버전으로 업데이트](docs/04_user_manual.md#1-2-새-버전으로-업데이트) · 설치 문제 → [8. 문제 해결](docs/04_user_manual.md#8-문제-해결)
 
-<br><br>
+</details>
 
-## 5. 기본 사용 순서
+<a id="usage"></a>
+<details>
+<summary><b>4. 기본 사용 순서</b> — 폴더 열기 → 확인 → 수정 → REVIEW → 저장하고 다음 → Validation</summary>
 
 1. **폴더 열기** 후 왼쪽 목록에서 **내 담당** 을 고릅니다.
 2. 자동으로 Load 된 기존 BBox 와 Class 를 확인합니다.
@@ -208,17 +216,21 @@ project7/
 
 화면 · 단축키 → [04 사용설명서 3장](docs/04_user_manual.md#3-사용-순서--화면--단축키) · 저장 규칙 → [4장](docs/04_user_manual.md#4-저장-규칙)
 
-<br><br>
+</details>
 
-## 6. YOLO Label 형식
+<a id="label-format"></a>
+<details>
+<summary><b>5. YOLO Label 형식</b> — Class · 중심 x · y · 너비 · 높이 · 0~1 비율 · 빈 TXT</summary>
 
 - TXT 한 줄 = 객체 하나: **Class 번호 · 중심 x · 중심 y · 너비 · 높이**, 이미지 대비 **0~1 비율** · 소수점 6자리
 - 예: `6 0.800620 0.623148 0.034091 0.053704` → Class 6 파 · 고추 박스 하나
 - 이물이 없는 사진도 **빈 TXT** 를 둡니다 (26장) · 라벨을 안 바꾼 사진은 원본 TXT 를 **바이트 그대로** 저장
 
-<br><br>
+</details>
 
-## 7. Class 설정
+<a id="classes"></a>
+<details>
+<summary><b>6. Class 설정</b> — Class 0~6 · BBox 4,399 → 4,405 · 고무장갑 배경</summary>
 
 설정 `configs/classes.yaml` · 판단 기준 [02 Class 기준서](docs/02_class_guide.md) v1.7.2 · 헷갈릴 때 → [Class 구분표](docs/02_class_guide.md#헷갈리기-쉬운-class-구분표)
 
@@ -236,18 +248,22 @@ project7/
 - **김치 · 고무장갑 = 배경**, 박스를 그리지 않습니다. Class 4 번호는 교과 8 과 맞추려고 비워 둡니다.
 - 작아도 이물이 확실하면 박스 + 노트 `small` → [작은 이물 처리 기준](docs/02_class_guide.md#작은-이물-처리-기준)
 
-<br><br>
+</details>
 
-## 8. BBox 작업 기준
+<a id="bbox"></a>
+<details>
+<summary><b>7. BBox 작업 기준</b> — 외곽 밀착 · 한 객체 한 박스 · 위치 · 크기 수정 2,014개</summary>
 
 - 기준 [03 BBox 기준서](docs/03_bbox_guide.md) v1.2 · 좋은 예 · 나쁜 예 → [팀 예시 이미지](docs/03_bbox_guide.md#11-팀-예시-이미지)
 - 객체 **외곽에 밀착**, 여백 3px 이내 · 객체가 잘리지 않는 것을 우선
 - **한 객체 = 박스 1개** · 이미지 경계에 걸리면 보이는 부분만 · 애매하면 REVIEW
 - 이 기준으로 위치 · 크기 수정 **2,014개**, 그중 1,857개가 10px 이내 미세 조정
 
-<br><br>
+</details>
 
-## 9. 데이터 작업 위치
+<a id="data"></a>
+<details>
+<summary><b>8. 데이터 작업 위치</b> — RAW · WORK · FINAL · Git 포함 여부</summary>
 
 | 단계 | 위치 | 내용 | Git |
 |---|---|---|---|
@@ -258,9 +274,11 @@ project7/
 - **RAW 는 열기만 합니다** — 해시로 바뀌지 않았는지 확인
 - 장면 유형: 김치 + 이물 725 · 이물만 149 · 정상 김치 24 · 김치 · 이물 없음 2
 
-<br><br>
+</details>
 
-## 10. 작업 상태 확인
+<a id="status"></a>
+<details>
+<summary><b>9. 작업 상태 확인</b> — PENDING · PASS · EDITED · REVIEW · REVIEWED · 검수 3단계</summary>
 
 모든 사진의 상태는 작업 장부에 자동 기록됩니다. 사본 [manifests/manifest_final.csv](manifests/manifest_final.csv)
 
@@ -274,28 +292,34 @@ project7/
 
 검수 단계: 1차 라벨링 900장 → 교차검수 710장 → 최종검수 3명 × 300장, 본인이 본 사진 제외 → **전체 REVIEWED**
 
-<br><br>
+</details>
 
-## 11. QA · 테스트 결과
+<a id="qa"></a>
+<details>
+<summary><b>10. QA · 테스트 결과</b> — CRITICAL 0 · REVIEW 0 · Golden 13/13 · Pilot 30/30</summary>
 
 - **QA** — 이미지 900 · TXT 900 · CRITICAL **0** · 최종 REVIEW **0** → [01 QA Summary](reports/01_qa_summary.md) · [검사 결과 파일](reports/03_validation_final.csv)
 - **사람이 찾은 오류** — 빈 라벨 26건 중 2건이 고무장갑만 있는 사진 → 장면 유형 `none` 추가 → [ISSUE-08](docs/05_issue_improvement.md#issue-08-배경만-있는-사진-2장)
 - **프로그램 테스트** — 개발 단계 오류 **8개** 모두 수정 · 재시험 PASS · 자동 테스트 **4개 통과** → [02 Test Report](reports/02_test_report.md)
 - **Golden → Pilot → Final Acceptance** — Golden 13 / 13 PASS · Pilot 30 / 30 PASS · 900장 최종 판정 ACCEPTED → [Golden Test](reports/02_test_report.md#1-golden-test)
 
-<br><br>
+</details>
 
-## 12. FINAL Dataset
+<a id="final"></a>
+<details>
+<summary><b>11. FINAL Dataset</b> — 900쌍 · 생성 조건 · 교과 8 입력</summary>
 
 - `data/final/images/` 900장 · `data/final/labels/` 900개, 같은 파일명 쌍 + 최종 장부
 - REVIEW 0 · CRITICAL 0 일 때만 생성 · 직접 고치지 않고 WORK 에서 고친 뒤 다시 생성
 - 교과 8 YOLO11n 학습 입력으로 전달 → [10 교과 8 Handoff](docs/10_subject08_handoff.md)
 
-<br><br>
+</details>
 
-## 13. 팀 운영
+<a id="team"></a>
+<details>
+<summary><b>12. 팀 운영</b> — WBS 일정</summary>
 
-### WBS 일정
+#### WBS 일정
 
 프로젝트 범위를 진행단계 → 수행내용 → 상세수행내용으로 나누고, 상세수행내용마다 담당 · 기간을 정해 일정으로 관리했습니다.
 
@@ -303,11 +327,13 @@ project7/
 
 날짜별 실제 작업 → [07 팀 작업 기록](docs/07_team_worklog.md) · 버전별 변경 → [06 버전 기록](docs/06_version_history.md)
 
-<br><br>
+</details>
 
-## 14. 산출물 · 버전 관리
+<a id="deliverables"></a>
+<details>
+<summary><b>13. 산출물 · 버전 관리</b> — 필수 11 · 추가 7 · 버전 · 이슈 11개</summary>
 
-### 필수 산출물
+#### 필수 산출물
 
 | 번호 | 강사님 필수 11개 | 위치 | 상태 |
 |---:|---|---|---|
@@ -323,7 +349,7 @@ project7/
 | 10 | README | 이 문서 | 완료 |
 | 11 | 교과 8 Handoff | [docs/10](docs/10_subject08_handoff.md) | 완료 |
 
-### 추가 산출물
+#### 추가 산출물
 
 | 추가 산출물 | 위치 | 추가 사유 |
 |---|---|---|
@@ -335,15 +361,17 @@ project7/
 | 코드 리뷰 · 코드 공부 | [docs/08](docs/08_code_review.md) · [docs/09](docs/09_code_study.md) | 팀원 모두가 코드를 설명할 수 있게 |
 | 자동 검사 결과 · 작업 장부 사본 | [reports/03](reports/03_validation_final.csv) · [manifest_final.csv](manifests/manifest_final.csv) | CRITICAL 0 · 전체 상태를 파일로 증명 |
 
-### 버전 · 이슈
+#### 버전 · 이슈
 
 - 현재 버전: 프로그램 **v2.2** · Class 기준서 **v1.7.2** · BBox 기준서 **v1.2** · 데이터 **FINAL 900** → [06 버전 기록](docs/06_version_history.md)
 - 이슈 **11개 모두 해결** + 고도화 4개 → [05 이슈 → 개선](docs/05_issue_improvement.md)
 - 가장 큰 이슈: QA Summary 보정 숫자가 전부 0 → 버그가 아니라 비교 경로 문제 → 원본 · 작업본 경로를 직접 지정해 해결 → [ISSUE-07](docs/05_issue_improvement.md#issue-07-qa-summary-보정-숫자-0건)
 
-<br><br>
+</details>
 
-## 15. 주의사항
+<a id="caution"></a>
+<details>
+<summary><b>14. 주의사항</b> — 원본 사진 Git 금지 · NDA · RAW 보존 · 장애 유형별 확인 문서</summary>
 
 - **원본 김치 사진은 GitHub · 메신저 · 개인 클라우드 금지**, 메일 · USB 로만 · 라벨 TXT · CSV 는 Git 허용 (10/13 강사님 확인)
 - 데이터는 AI캠퍼스 교육용 **100% 가상 생성** 데이터이며 **NDA 대상**입니다.
@@ -352,7 +380,7 @@ project7/
 - 제출 전 저장 · Reload 확인 후 Validation 을 실행합니다.
 - main 은 PR 로만 변경합니다 · `git add .` 금지
 
-### 장애 유형별 확인 문서
+#### 장애 유형별 확인 문서
 
 | 장애 유형 | 확인 문서 |
 |---|---|
@@ -361,3 +389,5 @@ project7/
 | Validation CRITICAL 발생 | [검사 결과](reports/03_validation_final.csv) → [02 Class 기준서](docs/02_class_guide.md) |
 | QA Summary 보정 숫자 0 | [05 ISSUE-07](docs/05_issue_improvement.md#issue-07-qa-summary-보정-숫자-0건) |
 | Class 판단 불명확 | [02 Class 구분표](docs/02_class_guide.md#헷갈리기-쉬운-class-구분표) |
+
+</details>
