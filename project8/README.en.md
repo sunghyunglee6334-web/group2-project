@@ -2,6 +2,8 @@
 
 <p align="right"><a href="README.md">한국어</a> | <b>English</b></p>
 
+<p align="center">Subject 8 · YOLO11 on FINAL 900 pairs → failure analysis · one-variable improvement → <b>Final Model · Auto Label</b></p>
+
 ## Project Overview
 
 ### Architecture
