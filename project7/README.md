@@ -62,7 +62,7 @@
 
 | 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
 |---|---|---|---|---|
-| PM | 이성형 | 일정 · 작업 배분 · GitHub 관리 · FINAL 생성 | feature/pm | README · Baseline · 사용설명서 · FINAL |
+| PM | 이성형 | 프로젝트 총괄 · 일정 · 작업 배분 · Class 기준 결정 · GitHub 관리 · FINAL 생성 | feature/pm | README · Architecture · Baseline · 사용설명서 · FINAL |
 | GUI | 박하솔 | 프로그램 화면 디자인 · 발표 캡처 · Figma | feature/gui | 화면 v01 → v02 |
 | Coord | 박하나 | BBox 좌표 · Golden Test · 기준서 | feature/coord | Class · BBox 기준서 |
 | Storage | 이상직 | 라벨 저장 로직 · 데이터 취합 · 배포 | feature/storage | 저장 · 합치기 |
