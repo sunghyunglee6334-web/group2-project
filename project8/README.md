@@ -66,14 +66,14 @@ Baseline 은 작은 이물을 **63.9%** 놓쳤습니다. "640 으로 줄이면 �
 
 ### 팀원 소개
 
-| 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
+| 직책 | 이⁠름 | 역할 | 브랜치 | 주요 산출물 |
 |---|---|---|---|---|
-| PM | 이성형 | 프로젝트 총괄 · 일정 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · 발표 총괄 | feature/pm | README · Architecture · Acceptance Test · 발표 |
-| Data | 장세훈 | Dataset Audit · Split · 누수 점검 | feature/dataset-audit | Split v4-B · manifests |
-| Training | 이상직 | Smoke Test · Baseline 학습 | feature/train | Baseline Model |
-| Evaluation | 박하나 | 평가 모듈 · 실패 분석 · Frozen Test | feature/evaluation | Failure Analysis · Final Test |
-| Experiment | 박하솔 | 한 변수 개선 실험 · Final 선택 | feature/experiment | EXP001 ~ 004 · Final Model |
-| Inference | 김준형 | Detection · Auto Label · Human Review | feature/inference | candidate · reviewed labels |
+| PM | 이⁠성⁠형 | 프로젝트 총괄 · 일정 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · 발표 총괄 | feature/pm | README · Architecture · Acceptance Test · 발표 |
+| Data | 장⁠세⁠훈 | Dataset Audit · Split · 누수 점검 | feature/dataset‑audit | Split v4-B · manifests |
+| Training | 이⁠상⁠직 | Smoke Test · Baseline 학습 | feature/train | Baseline Model |
+| Evaluation | 박⁠하⁠나 | 평가 모듈 · 실패 분석 · Frozen Test | feature/evaluation | Failure Analysis · Final Test |
+| Experiment | 박⁠하⁠솔 | 한 변수 개선 실험 · Final 선택 | feature/experiment | EXP001 ~ 004 · Final Model |
+| Inference | 김⁠준⁠형 | Detection · Auto Label · Human Review | feature/inference | candidate · reviewed labels |
 
 <br>
 
@@ -145,7 +145,7 @@ git restore reports/auto_label_review.csv
 
 교과 7 번호 그대로 · **번호 변경 금지** · 설정 [configs/dataset.yaml](configs/dataset.yaml)
 
-| Class | 이름 | Train | Val | Test |
+| Class | 이⁠름 | Train | Val | Test |
 |---:|---|---:|---:|---:|
 | 0 | 나뭇잎 · 종이류 | 489 | 27 | 14 |
 | 1 | 플라스틱 · 돌 · 금속 | 1,019 | 145 | 181 |

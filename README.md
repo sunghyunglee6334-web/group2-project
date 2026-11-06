@@ -57,45 +57,16 @@
 
 <br>
 
-### 산출물
-
-| 교과 | 번호 | 산출물 | 위치 | 상태 |
-|---|---:|---|---|---|
-| 교과 7 | 1 | 라벨링 프로그램 | `project7/main.py` · `project7/src/` | 완료 · v2.2 |
-| 교과 7 | 2 | 소스코드 · 실행 환경 | `project7/src/` · `requirements.txt` · `configs/` | 완료 |
-| 교과 7 | 3 | FINAL YOLO 라벨 | `project7/data/final/` (Git 제외) | 완료 · 900쌍 |
-| 교과 7 | 4 | Project Baseline | [docs/01](project7/docs/01_project_baseline.md) | 완료 |
-| 교과 7 | 5 | Class 기준서 | [docs/02](project7/docs/02_class_guide.md) | 완료 · v1.7.2 |
-| 교과 7 | 6 | BBox 기준서 | [docs/03](project7/docs/03_bbox_guide.md) | 완료 · v1.2 |
-| 교과 7 | 7 | Dataset Manifest | `project7/manifests/dataset_manifest.csv` | 예정 · FINAL 후 생성 |
-| 교과 7 | 8 | QA Summary | [reports/01](project7/reports/01_qa_summary.md) | 완료 |
-| 교과 7 | 9 | Test Report | [reports/02](project7/reports/02_test_report.md) | 완료 · Golden 13 / 13 · Pilot 30 / 30 |
-| 교과 7 | 10 | README | [project7/README](project7/README.md) | 완료 |
-| 교과 7 | 11 | 교과 8 Handoff | [docs/10](project7/docs/10_subject08_handoff.md) | 완료 |
-| 교과 7 | 추가 | Architecture · 사용설명서 · 이슈 → 개선 · 버전 기록 · 팀 작업 기록 · 코드 리뷰 · 공부 · 검사 결과 CSV | [project7 13. 산출물](project7/README.md#deliverables) | 완료 · 7개 |
-| 교과 8 | 1 | Dataset Version | `project8/configs/` · `manifests/` · [split_policy](project8/docs/split_policy.md) | 완료 · kimchi_v4 |
-| 교과 8 | 2 | Baseline Model | `project8/models/baseline/` · [baseline_metrics](project8/reports/baseline_metrics.csv) | 완료 |
-| 교과 8 | 3 | Failure Analysis | [failure_analysis](project8/reports/failure_analysis.csv) · `project8/demo/failure_analysis/` | 완료 |
-| 교과 8 | 4 | Improved / Final Model | `project8/models/improved/` · `models/final/` · [selection](project8/reports/final_model_selection.md) | 완료 · EXP003 |
-| 교과 8 | 5 | 성능 · 실험 기록 | [experiment_log](project8/reports/experiment_log.csv) · [final_metrics](project8/reports/final_metrics.csv) · [figures](project8/reports/figures) | 완료 |
-| 교과 8 | 6 | Detection · Auto Label | `project8/demo/prediction_images/` · `demo/auto_label/` · [auto_label_review](project8/reports/auto_label_review.csv) | 완료 · 시연 1장 |
-| 교과 8 | 7 | 문서 · 교과 14 연결 | [project8/README](project8/README.md) · `reports/acceptance_test.md` · `docs/handoff_subject14.md` | 진행 중 |
-| 교과 8 | 8 | 발표 · 시연 | `project8/presentation/` · `demo/*.mp4` | 진행 중 |
-
-*모델 가중치(`models/`) · 원본 사진 · 예측 이미지는 NDA · 용량 문제로 Git 에 올리지 않습니다.*
-
-<br>
-
 ### 팀원 소개
 
-| 이름 | 교과 7 | 교과 8 | 주요 역할 · 산출물 |
+| 이⁠름 | 교과&nbsp;7 | 교과&nbsp;8 | 주요 역할 · 산출물 |
 |---|---|---|---|
-| 이성형 | PM | PM | 프로젝트 총괄 · 일정 · Class 기준 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · README · Architecture · 발표 총괄 |
-| 박하솔 | GUI | Experiment | 화면 v01 → v02 · Figma · EXP001 ~ 004 · Final 선택 |
-| 박하나 | Coord | Evaluation | Class · BBox 기준서 · Golden Test · 실패 분석 · Frozen Test |
-| 이상직 | Storage | Training | 라벨 저장 · 데이터 취합 · Smoke Test · Baseline 학습 |
-| 장세훈 | QA | Data | 자동 검사 · Test Report · Dataset Audit · Split v4-B |
-| 김준형 | Manifest | Inference | 작업 장부 · QA Summary · Handoff · Detection · Auto Label |
+| 이⁠성⁠형 | PM | PM | 프로젝트 총괄 · 일정 · Class 기준 · Split · 평가 기준 결정 · Final Model 확정 · GitHub 관리 · README · Architecture · 발표 총괄 |
+| 박⁠하⁠솔 | GUI | Experiment | 화면 v01 → v02 · Figma · EXP001 ~ 004 · Final 선택 |
+| 박⁠하⁠나 | Coord | Evaluation | Class · BBox 기준서 · Golden Test · 실패 분석 · Frozen Test |
+| 이⁠상⁠직 | Storage | Training | 라벨 저장 · 데이터 취합 · Smoke Test · Baseline 학습 |
+| 장⁠세⁠훈 | QA | Data | 자동 검사 · Test Report · Dataset Audit · Split v4-B |
+| 김⁠준⁠형 | Manifest | Inference | 작업 장부 · QA Summary · Handoff · Detection · Auto Label |
 
 <br>
 

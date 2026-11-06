@@ -60,14 +60,14 @@
 
 ### 팀원 소개
 
-| 직책 | 이름 | 역할 | 브랜치 | 주요 산출물 |
+| 직책 | 이⁠름 | 역할 | 브랜치 | 주요 산출물 |
 |---|---|---|---|---|
-| PM | 이성형 | 프로젝트 총괄 · 일정 · 작업 배분 · Class 기준 결정 · GitHub 관리 · FINAL 생성 | feature/pm | README · Architecture · Baseline · 사용설명서 · FINAL |
-| GUI | 박하솔 | 프로그램 화면 디자인 · 발표 캡처 · Figma | feature/gui | 화면 v01 → v02 |
-| Coord | 박하나 | BBox 좌표 · Golden Test · 기준서 | feature/coord | Class · BBox 기준서 |
-| Storage | 이상직 | 라벨 저장 로직 · 데이터 취합 · 배포 | feature/storage | 저장 · 합치기 |
-| QA | 장세훈 | 자동 검사 · RAW 보호 · 테스트 | feature/qa | Validation · Test Report |
-| Manifest | 김준형 | 작업 장부 · 기록 · 인계 · 서기 | feature/manifest | Manifest · QA Summary · Handoff |
+| PM | 이⁠성⁠형 | 프로젝트 총괄 · 일정 · 작업 배분 · Class 기준 결정 · GitHub 관리 · FINAL 생성 | feature/pm | README · Architecture · Baseline · 사용설명서 · FINAL |
+| GUI | 박⁠하⁠솔 | 프로그램 화면 디자인 · 발표 캡처 · Figma | feature/gui | 화면 v01 → v02 |
+| Coord | 박⁠하⁠나 | BBox 좌표 · Golden Test · 기준서 | feature/coord | Class · BBox 기준서 |
+| Storage | 이⁠상⁠직 | 라벨 저장 로직 · 데이터 취합 · 배포 | feature/storage | 저장 · 합치기 |
+| QA | 장⁠세⁠훈 | 자동 검사 · RAW 보호 · 테스트 | feature/qa | Validation · Test Report |
+| Manifest | 김⁠준⁠형 | 작업 장부 · 기록 · 인계 · 서기 | feature/manifest | Manifest · QA Summary · Handoff |
 
 <br>
 
@@ -234,7 +234,7 @@ project7/
 
 설정 `configs/classes.yaml` · 판단 기준 [02 Class 기준서](docs/02_class_guide.md) v1.7.2 · 헷갈릴 때 → [Class 구분표](docs/02_class_guide.md#헷갈리기-쉬운-class-구분표)
 
-| Class | 이름 | 원본 BBox | 최종 BBox | 변화 |
+| Class | 이⁠름 | 원본 BBox | 최종 BBox | 변화 |
 |---:|---|---:|---:|---:|
 | 0 | 나뭇잎 · 종이류 | 716 | 709 | −7 |
 | 1 | 플라스틱 · 돌 · 금속 | 1,831 | 1,665 | −166 |
